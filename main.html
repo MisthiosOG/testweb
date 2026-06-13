@@ -19,10 +19,30 @@
   .server-btn { transition:all .15s; border:1px solid rgba(255,255,255,.1); }
   .server-btn.selected { border-color:#98cbff; background:rgba(152,203,255,.12); color:#98cbff; }
   .feat-btn:active { transform:scale(.94); }
-  .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); padding:8px 16px; border-radius:12px; font-size:11px; font-weight:600; z-index:999; opacity:0; transition:opacity .3s; pointer-events:none; }
+  .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); padding:8px 16px; border-radius:12px; font-size:11px; font-weight:600; z-index:999; opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap; }
   .toast.show { opacity:1; }
   .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; display:inline-block; margin-right:6px; vertical-align:middle; }
   @keyframes spin{to{transform:rotate(360deg)}}
+  .nav-btn { transition:all .2s; }
+  .nav-btn.active span { color:#98cbff; }
+  .nav-btn.active .nav-label { color:#98cbff; }
+  .nav-btn:not(.active) span { color:#7a8a9a; }
+  .nav-btn:not(.active) .nav-label { color:#7a8a9a; }
+  .page { display:none; }
+  .page.active { display:flex; }
+  .currency-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+  .currency-row:last-child { border-bottom:none; }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in { animation:fadeIn .25s ease forwards; }
+  .history-item { padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.05); margin-bottom:8px; }
+  .toggle-switch { position:relative; display:inline-block; width:42px; height:24px; }
+  .toggle-switch input { opacity:0; width:0; height:0; }
+  .toggle-slider { position:absolute; cursor:pointer; top:0;left:0;right:0;bottom:0; background:#2a2a2a; border-radius:24px; transition:.3s; border:1px solid rgba(255,255,255,.1); }
+  .toggle-slider:before { position:absolute; content:""; height:18px; width:18px; left:2px; bottom:2px; background:#7a8a9a; border-radius:50%; transition:.3s; }
+  input:checked + .toggle-slider { background:rgba(152,203,255,.2); border-color:#98cbff; }
+  input:checked + .toggle-slider:before { transform:translateX(18px); background:#98cbff; }
+  .badge-online { background:rgba(74,222,128,.15); color:#4ade80; border:1px solid rgba(74,222,128,.3); }
+  .badge-offline { background:rgba(255,180,171,.1); color:#ffb4ab; border:1px solid rgba(255,180,171,.2); }
 </style>
 <script>
   tailwind.config = { darkMode:"class", theme:{ extend:{ colors:{
@@ -54,160 +74,296 @@
   <div id="statusBadge" class="text-[10px] px-2 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant">NOT LOGGED IN</div>
 </header>
 
-<main class="pt-16 pb-20 px-4 min-h-screen flex flex-col gap-4">
+<main class="pt-16 pb-20 px-4 min-h-screen">
 
-  <!-- LOGIN SECTION -->
-  <div id="loginSection" class="flex flex-col gap-3 mt-2">
-    <div class="flex items-center gap-2 text-[10px] text-on-surface-variant px-1">
-      <span id="stepLabel" class="uppercase tracking-widest font-bold text-primary">Step 1 — Select Server</span>
+  <!-- ═══════════════ PAGE: HOME ═══════════════ -->
+  <div id="page-home" class="page active flex-col gap-4 mt-2 fade-in">
+
+    <!-- LOGIN SECTION -->
+    <div id="loginSection" class="flex flex-col gap-3">
+      <div class="flex items-center gap-2 text-[10px] text-on-surface-variant px-1">
+        <span id="stepLabel" class="uppercase tracking-widest font-bold text-primary">Step 1 — Select Server</span>
+      </div>
+
+      <!-- Step 1: Server -->
+      <div id="step1" class="step active flex-col glass-card p-4 rounded-2xl gap-3">
+        <p class="text-xs text-on-surface-variant">Choose which Sky server to connect to:</p>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="selectServer('live')" id="btn-live" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
+            <span class="material-symbols-outlined text-primary text-2xl">public</span>
+            <span class="text-xs font-semibold">Live</span>
+            <span class="text-[10px] text-on-surface-variant">Stable server</span>
+          </button>
+          <button onclick="selectServer('beta')" id="btn-beta" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
+            <span class="material-symbols-outlined text-on-surface-variant text-2xl">science</span>
+            <span class="text-xs font-semibold">Beta</span>
+            <span class="text-[10px] text-on-surface-variant">Test server</span>
+          </button>
+        </div>
+        <button onclick="goStep2()" id="nextStep1" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold opacity-50 cursor-not-allowed" disabled>NEXT →</button>
+      </div>
+
+      <!-- Step 2: Login method -->
+      <div id="step2" class="step flex-col glass-card p-4 rounded-2xl gap-3">
+        <p class="text-xs text-on-surface-variant">Choose login method:</p>
+        <div class="flex border-b border-white/5">
+          <button onclick="switchLoginTab('lua')" class="tab-btn active flex-1 py-2 text-xs font-semibold" id="tab-lua">Lua Code</button>
+          <button onclick="switchLoginTab('lib')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-lib">Lib Code</button>
+          <button onclick="switchLoginTab('platform')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-platform">Platform</button>
+        </div>
+
+        <!-- Lua -->
+        <div id="loginTab-lua" class="flex flex-col gap-2">
+          <p class="text-[10px] text-on-surface-variant">Paste your Lua base64 code:</p>
+          <textarea id="luaInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lua code here..."></textarea>
+          <button onclick="submitLogin('lua')" id="btn-lua-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LUA</button>
+        </div>
+
+        <!-- Lib -->
+        <div id="loginTab-lib" class="hidden flex-col gap-2">
+          <p class="text-[10px] text-on-surface-variant">Paste your Lib session code:</p>
+          <textarea id="libInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lib code here..."></textarea>
+          <button onclick="submitLogin('lib')" id="btn-lib-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LIB</button>
+        </div>
+
+        <!-- Platform -->
+        <div id="loginTab-platform" class="hidden flex-col gap-2">
+          <p class="text-[10px] text-on-surface-variant">Select your platform:</p>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectPlatform('Nintendo')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Nintendo">Nintendo</button>
+            <button onclick="selectPlatform('Google')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Google">Google</button>
+            <button onclick="selectPlatform('Steam')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Steam">Steam</button>
+            <button onclick="selectPlatform('Sony')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Sony">Sony</button>
+            <button onclick="selectPlatform('Facebook')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Facebook">Facebook</button>
+            <button onclick="selectPlatform('Huawei')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Huawei">Huawei</button>
+          </div>
+          <div id="platformCodeWrap" class="hidden flex-col gap-2">
+            <p class="text-[10px] text-on-surface-variant">Paste OAuth JSON code:</p>
+            <textarea id="platformInput" rows="3" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder='{"id":"...","token":"..."}'></textarea>
+            <button onclick="submitLogin('platform')" id="btn-plat-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT</button>
+          </div>
+        </div>
+
+        <button onclick="goStep1()" class="text-[11px] text-on-surface-variant text-center mt-1">← Back</button>
+      </div>
     </div>
 
-    <!-- Step 1: Server -->
-    <div id="step1" class="step active flex-col glass-card p-4 rounded-2xl gap-3">
-      <p class="text-xs text-on-surface-variant">Choose which Sky server to connect to:</p>
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="selectServer('live')" id="btn-live" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
-          <span class="material-symbols-outlined text-primary text-2xl">public</span>
-          <span class="text-xs font-semibold">Live</span>
-          <span class="text-[10px] text-on-surface-variant">Stable server</span>
-        </button>
-        <button onclick="selectServer('beta')" id="btn-beta" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
-          <span class="material-symbols-outlined text-on-surface-variant text-2xl">science</span>
-          <span class="text-xs font-semibold">Beta</span>
-          <span class="text-[10px] text-on-surface-variant">Test server</span>
-        </button>
-      </div>
-      <button onclick="goStep2()" id="nextStep1" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold opacity-50 cursor-not-allowed" disabled>NEXT →</button>
-    </div>
-
-    <!-- Step 2: Login method -->
-    <div id="step2" class="step flex-col glass-card p-4 rounded-2xl gap-3">
-      <p class="text-xs text-on-surface-variant">Choose login method:</p>
-      <div class="flex border-b border-white/5">
-        <button onclick="switchTab('lua')" class="tab-btn active flex-1 py-2 text-xs font-semibold" id="tab-lua">Lua Code</button>
-        <button onclick="switchTab('lib')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-lib">Lib Code</button>
-        <button onclick="switchTab('platform')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-platform">Platform</button>
-      </div>
-
-      <!-- Lua -->
-      <div id="loginTab-lua" class="flex flex-col gap-2">
-        <p class="text-[10px] text-on-surface-variant">Paste your Lua base64 code:</p>
-        <textarea id="luaInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lua code here..."></textarea>
-        <button onclick="submitLogin('lua')" id="btn-lua-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LUA</button>
-      </div>
-
-      <!-- Lib -->
-      <div id="loginTab-lib" class="hidden flex-col gap-2">
-        <p class="text-[10px] text-on-surface-variant">Paste your Lib session code:</p>
-        <textarea id="libInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lib code here..."></textarea>
-        <button onclick="submitLogin('lib')" id="btn-lib-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LIB</button>
-      </div>
-
-      <!-- Platform -->
-      <div id="loginTab-platform" class="hidden flex-col gap-2">
-        <p class="text-[10px] text-on-surface-variant">Select your platform:</p>
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="selectPlatform('Nintendo')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Nintendo">Nintendo</button>
-          <button onclick="selectPlatform('Google')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Google">Google</button>
-          <button onclick="selectPlatform('Steam')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Steam">Steam</button>
-          <button onclick="selectPlatform('Sony')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Sony">Sony</button>
-          <button onclick="selectPlatform('Facebook')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Facebook">Facebook</button>
-          <button onclick="selectPlatform('Huawei')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Huawei">Huawei</button>
+    <!-- DASHBOARD -->
+    <div id="dashSection" class="hidden flex-col gap-4">
+      <!-- User card -->
+      <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">person</span>
         </div>
-        <div id="platformCodeWrap" class="hidden flex-col gap-2">
-          <p class="text-[10px] text-on-surface-variant">Paste OAuth JSON code:</p>
-          <textarea id="platformInput" rows="3" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder='{"id":"...","token":"..."}'></textarea>
-          <button onclick="submitLogin('platform')" id="btn-plat-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT</button>
+        <div class="flex-1">
+          <div class="text-sm font-bold" id="dashUsername">—</div>
+          <div class="text-[10px] text-on-surface-variant" id="dashServer">—</div>
+        </div>
+        <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-lg px-2 py-1">LOGOUT</button>
+      </div>
+
+      <!-- Automation -->
+      <div>
+        <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">Automation</p>
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="runFeature('Farm')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
+            <span class="text-[11px] font-medium">Farm</span>
+          </button>
+          <button onclick="runFeature('Quest')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">Assignment</span>
+            <span class="text-[11px] font-medium">Quest</span>
+          </button>
+          <button onclick="runFeature('Eden')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-error/80 text-2xl">local_fire_department</span>
+            <span class="text-[11px] font-medium">Eden</span>
+          </button>
+          <button onclick="runFeature('Wings')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
+            <span class="text-[11px] font-medium">Wings</span>
+          </button>
+          <button onclick="runFeature('Map')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">map</span>
+            <span class="text-[11px] font-medium">Map</span>
+          </button>
+          <button onclick="runFeature('Emotes')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
+            <span class="text-[11px] font-medium">Emotes</span>
+          </button>
         </div>
       </div>
 
-      <button onclick="goStep1()" class="text-[11px] text-on-surface-variant text-center mt-1">← Back</button>
+      <!-- Beta Only -->
+      <div id="betaSection" class="hidden">
+        <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">Beta Only</p>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="runFeature('IAPs')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">redeem</span>
+            <span class="text-[11px] font-medium">Unlock IAPs</span>
+          </button>
+          <button onclick="runFeature('Candles')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
+            <span class="material-symbols-outlined text-primary text-2xl">candle</span>
+            <span class="text-[11px] font-medium">300 Candles</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Console -->
+      <div>
+        <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">System Console</p>
+        <div id="consoleLogs" class="bg-black/30 border border-white/5 rounded-2xl p-4 h-36 overflow-y-auto font-mono text-[10px] hide-scrollbar">
+          <div class="text-primary">[READY] System online... waiting for session.</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashSection" class="hidden flex-col gap-4 mt-2">
-    <!-- User card -->
-    <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-        <span class="material-symbols-outlined text-primary">person</span>
-      </div>
-      <div class="flex-1">
-        <div class="text-sm font-bold" id="dashUsername">—</div>
-        <div class="text-[10px] text-on-surface-variant" id="dashServer">—</div>
-      </div>
-      <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-lg px-2 py-1">LOGOUT</button>
+  <!-- ═══════════════ PAGE: ACCOUNT ═══════════════ -->
+  <div id="page-account" class="page flex-col gap-4 mt-2 fade-in">
+
+    <!-- Not logged in state -->
+    <div id="accountNotLoggedIn" class="flex flex-col items-center justify-center gap-3 py-12">
+      <span class="material-symbols-outlined text-on-surface-variant/40 text-5xl">person_off</span>
+      <p class="text-xs text-on-surface-variant text-center">Login first to see your account info.</p>
     </div>
 
-    <!-- Automation -->
-    <div>
-      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">Automation</p>
-      <div class="grid grid-cols-3 gap-3">
-        <button onclick="runFeature('Farm')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
-          <span class="text-[11px] font-medium">Farm</span>
-        </button>
-        <button onclick="runFeature('Quest')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">Assignment</span>
-          <span class="text-[11px] font-medium">Quest</span>
-        </button>
-        <button onclick="runFeature('Eden')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-error/80 text-2xl">local_fire_department</span>
-          <span class="text-[11px] font-medium">Eden</span>
-        </button>
-        <button onclick="runFeature('Wings')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
-          <span class="text-[11px] font-medium">Wings</span>
-        </button>
-        <button onclick="runFeature('Map')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">map</span>
-          <span class="text-[11px] font-medium">Map</span>
-        </button>
-        <button onclick="runFeature('Emotes')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
-          <span class="text-[11px] font-medium">Emotes</span>
-        </button>
+    <!-- Logged in state -->
+    <div id="accountLoggedIn" class="hidden flex-col gap-4">
+      <!-- User Info Card -->
+      <div class="glass-card p-4 rounded-2xl">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">manage_accounts</span>
+          </div>
+          <div class="flex-1">
+            <div class="text-sm font-bold" id="accUsername">—</div>
+            <div class="text-[10px] text-on-surface-variant" id="accServer">—</div>
+          </div>
+          <span id="accStatusBadge" class="text-[10px] px-2 py-1 rounded-full badge-online">LIVE</span>
+        </div>
+        <div class="text-[10px] text-on-surface-variant/60 font-mono">
+          ID: <span id="accUserId" class="text-primary">—</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Beta Only -->
-    <div id="betaSection" class="hidden">
-      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">Beta Only</p>
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="runFeature('IAPs')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">redeem</span>
-          <span class="text-[11px] font-medium">Unlock IAPs</span>
-        </button>
-        <button onclick="runFeature('Candles')" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
-          <span class="material-symbols-outlined text-primary text-2xl">candle</span>
-          <span class="text-[11px] font-medium">300 Candles</span>
-        </button>
+      <!-- Currency Balance -->
+      <div class="glass-card p-4 rounded-2xl">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest">Balance</p>
+          <button onclick="refreshAccount()" id="refreshBtn" class="flex items-center gap-1 text-[10px] text-primary border border-primary/30 rounded-lg px-2 py-1 hover:bg-primary/10 transition-all">
+            <span class="material-symbols-outlined text-sm" style="font-size:14px">refresh</span>
+            Refresh
+          </button>
+        </div>
+
+        <div id="currencyLoading" class="hidden flex items-center justify-center py-4 gap-2">
+          <div class="spinner"></div>
+          <span class="text-[11px] text-on-surface-variant">Fetching balance...</span>
+        </div>
+
+        <div id="currencyGrid" class="flex flex-col">
+          <!-- Filled by JS -->
+          <div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Console -->
-    <div>
-      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mb-2 px-1">System Console</p>
-      <div id="consoleLogs" class="bg-black/30 border border-white/5 rounded-2xl p-4 h-36 overflow-y-auto font-mono text-[10px] hide-scrollbar">
-        <div class="text-primary">[READY] System online... waiting for session.</div>
+      <!-- Auto-refresh toggle -->
+      <div class="glass-card p-4 rounded-2xl flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold">Auto Refresh</p>
+          <p class="text-[10px] text-on-surface-variant">Update balance every 30 seconds</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
     </div>
   </div>
+
+  <!-- ═══════════════ PAGE: HISTORY ═══════════════ -->
+  <div id="page-history" class="page flex-col gap-4 mt-2 fade-in">
+    <div class="flex items-center justify-between px-1 mb-1">
+      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest">Activity Log</p>
+      <button onclick="clearHistory()" class="text-[10px] text-error border border-error/20 rounded-lg px-2 py-1">Clear</button>
+    </div>
+    <div id="historyList" class="flex flex-col gap-0">
+      <div class="text-center text-[11px] text-on-surface-variant/40 py-8">No activity yet.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ PAGE: SETTINGS ═══════════════ -->
+  <div id="page-settings" class="page flex-col gap-4 mt-2 fade-in">
+
+    <!-- API Config -->
+    <div class="glass-card p-4 rounded-2xl flex flex-col gap-3">
+      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest">API Configuration</p>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-[11px] text-on-surface-variant">Ngrok / API Base URL</label>
+        <div class="flex gap-2">
+          <input type="text" id="apiUrlInput" class="flex-1 bg-black/40 border border-white/5 rounded-xl p-2.5 text-xs outline-none font-mono focus:border-primary/40 transition-colors" placeholder="https://xxxx.ngrok-free.app">
+          <button onclick="saveApiUrl()" class="bg-primary text-on-primary px-3 rounded-xl text-xs font-bold shrink-0">Save</button>
+        </div>
+        <p class="text-[10px] text-on-surface-variant/40">Current: <span id="currentApiUrl" class="text-primary/80 font-mono"></span></p>
+      </div>
+
+      <button onclick="testConnection()" id="testConnBtn" class="w-full border border-white/10 py-2.5 rounded-xl text-xs font-semibold text-on-surface-variant hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm" style="font-size:16px">wifi_tethering</span>
+        Test Connection
+      </button>
+
+      <div id="connTestResult" class="hidden text-[11px] text-center py-2 rounded-xl"></div>
+    </div>
+
+    <!-- App Info -->
+    <div class="glass-card p-4 rounded-2xl flex flex-col gap-3">
+      <p class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest">App Info</p>
+      <div class="flex justify-between text-[11px]">
+        <span class="text-on-surface-variant">Version</span>
+        <span class="text-primary font-mono">1.1.0</span>
+      </div>
+      <div class="flex justify-between text-[11px]">
+        <span class="text-on-surface-variant">Bot</span>
+        <span class="text-primary">SkyNet Bot</span>
+      </div>
+      <div class="flex justify-between text-[11px]">
+        <span class="text-on-surface-variant">Telegram ID</span>
+        <span id="settingsTgId" class="text-primary font-mono">—</span>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="glass-card p-4 rounded-2xl flex flex-col gap-3 border border-error/10">
+      <p class="text-[10px] text-error/70 font-bold uppercase tracking-widest">Danger Zone</p>
+      <button onclick="logout()" class="w-full border border-error/30 text-error py-2.5 rounded-xl text-xs font-semibold hover:bg-error/10 transition-all">
+        Logout Current Session
+      </button>
+      <button onclick="clearAllData()" class="w-full border border-error/20 text-error/60 py-2.5 rounded-xl text-xs font-semibold hover:bg-error/5 transition-all">
+        Clear All Local Data
+      </button>
+    </div>
+  </div>
+
 </main>
 
 <!-- Bottom Nav -->
 <nav class="fixed bottom-0 w-full bg-surface/80 backdrop-blur-md border-t border-white/5 flex justify-around items-center h-16 z-50">
-  <button class="flex flex-col items-center gap-0.5 text-primary">
+  <button onclick="goPage('home')" id="nav-home" class="nav-btn active flex flex-col items-center gap-0.5">
     <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">home</span>
-    <span class="text-[10px] font-semibold">Home</span>
+    <span class="nav-label text-[10px] font-semibold">Home</span>
   </button>
-  <button class="flex flex-col items-center gap-0.5 text-on-surface-variant">
+  <button onclick="goPage('account')" id="nav-account" class="nav-btn flex flex-col items-center gap-0.5">
+    <span class="material-symbols-outlined text-xl">person</span>
+    <span class="nav-label text-[10px]">Account</span>
+  </button>
+  <button onclick="goPage('history')" id="nav-history" class="nav-btn flex flex-col items-center gap-0.5">
     <span class="material-symbols-outlined text-xl">history</span>
-    <span class="text-[10px]">History</span>
+    <span class="nav-label text-[10px]">History</span>
   </button>
-  <button class="flex flex-col items-center gap-0.5 text-on-surface-variant">
+  <button onclick="goPage('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-0.5">
     <span class="material-symbols-outlined text-xl">settings</span>
-    <span class="text-[10px]">Settings</span>
+    <span class="nav-label text-[10px]">Settings</span>
   </button>
 </nav>
 
@@ -216,19 +372,40 @@
   tg.ready();
   tg.expand();
 
-  const API_BASE = "https://b5c9-154-19-38-225.ngrok-free.app";
+  const DEFAULT_API = "https://b5c9-154-19-38-225.ngrok-free.app";
+  let API_BASE = localStorage.getItem('api_base') || DEFAULT_API;
   const TELEGRAM_ID = tg.initDataUnsafe?.user?.id || null;
 
   let selectedServer = null;
   let selectedPlatform = null;
+  let isLoggedIn = false;
+  let autoRefreshInterval = null;
+  let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
+
+  // ── Init ──
+  document.getElementById('apiUrlInput').value = API_BASE;
+  document.getElementById('currentApiUrl').textContent = API_BASE;
+  document.getElementById('settingsTgId').textContent = TELEGRAM_ID || 'N/A';
+  renderHistory();
+
+  // ── Navigation ──
+  function goPage(name) {
+    ['home','account','history','settings'].forEach(p => {
+      document.getElementById('page-' + p).classList.remove('active');
+      document.getElementById('nav-' + p).classList.remove('active');
+    });
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    if (name === 'account' && isLoggedIn) refreshAccount();
+  }
 
   // ── Toast ──
-  function showToast(msg, color = '#98cbff') {
+  function showToast(msg, color = 'primary') {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.style.background = color === 'error' ? '#93000a' : 'rgba(0,163,255,0.2)';
-    t.style.color = color === 'error' ? '#ffb4ab' : '#98cbff';
-    t.style.border = '1px solid ' + (color === 'error' ? 'rgba(255,180,171,.3)' : 'rgba(152,203,255,.3)');
+    t.style.background = color === 'error' ? '#93000a' : color === 'success' ? 'rgba(74,222,128,.15)' : 'rgba(0,163,255,0.2)';
+    t.style.color = color === 'error' ? '#ffb4ab' : color === 'success' ? '#4ade80' : '#98cbff';
+    t.style.border = '1px solid ' + (color === 'error' ? 'rgba(255,180,171,.3)' : color === 'success' ? 'rgba(74,222,128,.3)' : 'rgba(152,203,255,.3)');
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
@@ -240,6 +417,43 @@
     div.className = type === 'error' ? 'text-red-400 mb-1' : 'text-on-surface-variant mb-1';
     div.innerHTML = '[' + new Date().toLocaleTimeString() + '] ' + msg;
     el.prepend(div);
+  }
+
+  // ── History ──
+  function addHistory(action, result, type = 'success') {
+    const entry = {
+      action, result, type,
+      time: new Date().toLocaleTimeString(),
+      date: new Date().toLocaleDateString()
+    };
+    actionHistory.unshift(entry);
+    if (actionHistory.length > 50) actionHistory.pop();
+    localStorage.setItem('action_history', JSON.stringify(actionHistory));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const el = document.getElementById('historyList');
+    if (!actionHistory.length) {
+      el.innerHTML = '<div class="text-center text-[11px] text-on-surface-variant/40 py-8">No activity yet.</div>';
+      return;
+    }
+    el.innerHTML = actionHistory.map(h => `
+      <div class="history-item">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-semibold ${h.type === 'error' ? 'text-error' : 'text-primary'}">${h.action}</span>
+          <span class="text-[10px] text-on-surface-variant/50">${h.date} ${h.time}</span>
+        </div>
+        <div class="text-[10px] text-on-surface-variant">${h.result}</div>
+      </div>
+    `).join('');
+  }
+
+  function clearHistory() {
+    actionHistory = [];
+    localStorage.removeItem('action_history');
+    renderHistory();
+    showToast('History cleared');
   }
 
   // ── Server ──
@@ -266,8 +480,8 @@
     document.getElementById('stepLabel').textContent = 'Step 1 — Select Server';
   }
 
-  // ── Tabs ──
-  function switchTab(tab) {
+  // ── Login Tabs ──
+  function switchLoginTab(tab) {
     ['lua','lib','platform'].forEach(t => {
       const el = document.getElementById('loginTab-' + t);
       el.classList.toggle('hidden', t !== tab);
@@ -301,6 +515,7 @@
 
     const btnId = method === 'platform' ? 'btn-plat-submit' : 'btn-' + method + '-submit';
     const btn = document.getElementById(btnId);
+    const origText = btn.textContent;
     btn.innerHTML = '<span class="spinner"></span>Connecting...';
     btn.disabled = true;
 
@@ -310,61 +525,165 @@
       const res = await fetch(API_BASE + '/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-        body: JSON.stringify({
-          telegram_id: TELEGRAM_ID,
-          method,
-          server: selectedServer,
-          platform: selectedPlatform,
-          code
-        })
+        body: JSON.stringify({ telegram_id: TELEGRAM_ID, method, server: selectedServer, platform: selectedPlatform, code })
       });
       const data = await res.json();
 
       if (data.ok) {
         addLog('LOGIN SUCCESS: ' + data.message);
-        showToast('Connected!');
-        setLoggedIn(method, selectedServer);
+        addHistory('Login', `${method.toUpperCase()} on ${selectedServer.toUpperCase()}`, 'success');
+        showToast('Connected!', 'success');
+        setLoggedIn(method, selectedServer, data.user_id);
       } else {
         addLog('ERROR: ' + data.error, 'error');
+        addHistory('Login Failed', data.error, 'error');
         showToast(data.error, 'error');
-        btn.innerHTML = 'CONNECT WITH ' + method.toUpperCase();
+        btn.innerHTML = origText;
         btn.disabled = false;
       }
     } catch (e) {
       addLog('ERROR: Cannot reach API — ' + e.message, 'error');
       showToast('API unreachable', 'error');
-      btn.innerHTML = method === 'platform' ? 'CONNECT' : 'CONNECT WITH ' + method.toUpperCase();
+      btn.innerHTML = origText;
       btn.disabled = false;
     }
   }
 
-  function setLoggedIn(method, server) {
+  function setLoggedIn(method, server, userId) {
+    isLoggedIn = true;
+    const name = tg.initDataUnsafe?.user?.first_name || 'User';
+
     document.getElementById('loginSection').classList.add('hidden');
     const dash = document.getElementById('dashSection');
-    dash.classList.remove('hidden');
-    dash.classList.add('flex');
-    document.getElementById('dashUsername').textContent = tg.initDataUnsafe?.user?.first_name || 'User';
+    dash.classList.remove('hidden'); dash.classList.add('flex');
+    document.getElementById('dashUsername').textContent = name;
     document.getElementById('dashServer').textContent = server.toUpperCase() + ' server · ' + method.toUpperCase() + ' login';
     document.getElementById('statusBadge').textContent = 'CONNECTED';
     document.getElementById('statusBadge').style.color = '#98cbff';
-    if (server === 'beta') {
-      document.getElementById('betaSection').classList.remove('hidden');
-    }
+
+    // Account page
+    document.getElementById('accountNotLoggedIn').classList.add('hidden');
+    const acc = document.getElementById('accountLoggedIn');
+    acc.classList.remove('hidden'); acc.classList.add('flex');
+    document.getElementById('accUsername').textContent = name;
+    document.getElementById('accServer').textContent = server.toUpperCase() + ' · ' + method.toUpperCase();
+    document.getElementById('accUserId').textContent = userId || '—';
+    document.getElementById('accStatusBadge').textContent = server.toUpperCase();
+    document.getElementById('accStatusBadge').className = 'text-[10px] px-2 py-1 rounded-full ' + (server === 'live' ? 'badge-online' : 'badge-offline');
+
+    if (server === 'beta') document.getElementById('betaSection').classList.remove('hidden');
   }
 
   function logout() {
+    isLoggedIn = false;
+    if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+    document.getElementById('autoRefreshToggle').checked = false;
+
     document.getElementById('dashSection').classList.add('hidden');
     document.getElementById('dashSection').classList.remove('flex');
     document.getElementById('loginSection').classList.remove('hidden');
     document.getElementById('statusBadge').textContent = 'NOT LOGGED IN';
     document.getElementById('statusBadge').style.color = '';
     document.getElementById('betaSection').classList.add('hidden');
+
+    // Account page reset
+    document.getElementById('accountNotLoggedIn').classList.remove('hidden');
+    document.getElementById('accountLoggedIn').classList.add('hidden');
+    document.getElementById('accountLoggedIn').classList.remove('flex');
+    document.getElementById('currencyGrid').innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>';
+
     selectedServer = null; selectedPlatform = null;
     goStep1();
     addLog('Logged out.');
+    addHistory('Logout', 'Session ended', 'info');
   }
 
-  // ── Run feature ──
+  // ── Account / Currency ──
+  async function refreshAccount() {
+    if (!TELEGRAM_ID || !isLoggedIn) return;
+    const btn = document.getElementById('refreshBtn');
+    btn.innerHTML = '<span class="spinner"></span>Loading...';
+    btn.disabled = true;
+    document.getElementById('currencyLoading').classList.remove('hidden');
+    document.getElementById('currencyLoading').classList.add('flex');
+
+    try {
+      const res = await fetch(API_BASE + '/api/account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+        body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+      });
+      const data = await res.json();
+
+      document.getElementById('currencyLoading').classList.add('hidden');
+      document.getElementById('currencyLoading').classList.remove('flex');
+
+      if (data.ok) {
+        renderCurrency(data.currency);
+        showToast('Balance updated', 'success');
+      } else {
+        showToast(data.error, 'error');
+      }
+    } catch (e) {
+      document.getElementById('currencyLoading').classList.add('hidden');
+      document.getElementById('currencyLoading').classList.remove('flex');
+      showToast('API unreachable', 'error');
+    }
+
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm" style="font-size:14px">refresh</span>Refresh';
+    btn.disabled = false;
+  }
+
+  const CURRENCY_LABELS = {
+    candles: { label: 'Candles', icon: 'candle' },
+    wax: { label: 'Wax', icon: 'opacity' },
+    hearts: { label: 'Hearts', icon: 'favorite' },
+    seasonal_candles: { label: 'Seasonal', icon: 'auto_awesome' },
+    ascended_candles: { label: 'Ascended', icon: 'star' },
+    gift_candles: { label: 'Gift CDL', icon: 'redeem' },
+    rebirths: { label: 'Rebirths', icon: 'autorenew' },
+  };
+
+  function renderCurrency(items) {
+    const grid = document.getElementById('currencyGrid');
+    if (!items || !Object.keys(items).length) {
+      grid.innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">No currency data.</div>';
+      return;
+    }
+
+    // Ordered known keys first
+    const ordered = Object.keys(CURRENCY_LABELS).filter(k => items[k] !== undefined);
+    const rest = Object.keys(items).filter(k => !CURRENCY_LABELS[k]);
+    const allKeys = [...ordered, ...rest];
+
+    grid.innerHTML = allKeys.map(key => {
+      const info = CURRENCY_LABELS[key] || { label: key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), icon: 'toll' };
+      return `
+        <div class="currency-row">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary/70" style="font-size:16px">${info.icon}</span>
+            <span class="text-xs text-on-surface-variant">${info.label}</span>
+          </div>
+          <span class="text-sm font-bold text-primary font-mono">${Number(items[key]).toLocaleString()}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleAutoRefresh() {
+    const on = document.getElementById('autoRefreshToggle').checked;
+    if (on) {
+      refreshAccount();
+      autoRefreshInterval = setInterval(refreshAccount, 30000);
+      showToast('Auto refresh ON (30s)', 'success');
+    } else {
+      clearInterval(autoRefreshInterval);
+      autoRefreshInterval = null;
+      showToast('Auto refresh OFF');
+    }
+  }
+
+  // ── Run Feature ──
   async function runFeature(name) {
     if (!TELEGRAM_ID) { showToast('No Telegram ID', 'error'); return; }
     addLog('Running: ' + name + '...');
@@ -379,15 +698,71 @@
       const data = await res.json();
       if (data.ok) {
         addLog('DONE: ' + name);
-        showToast(name + ' done!');
+        addHistory(name, 'Executed successfully', 'success');
+        showToast(name + ' done!', 'success');
       } else {
         addLog('ERROR: ' + data.error, 'error');
+        addHistory(name + ' Failed', data.error, 'error');
         showToast(data.error, 'error');
       }
     } catch (e) {
       addLog('ERROR: ' + e.message, 'error');
+      addHistory(name + ' Error', e.message, 'error');
       showToast('API unreachable', 'error');
     }
+  }
+
+  // ── Settings ──
+  function saveApiUrl() {
+    const val = document.getElementById('apiUrlInput').value.trim().replace(/\/$/, '');
+    if (!val) { showToast('URL kosong!', 'error'); return; }
+    API_BASE = val;
+    localStorage.setItem('api_base', val);
+    document.getElementById('currentApiUrl').textContent = val;
+    showToast('API URL saved!', 'success');
+  }
+
+  async function testConnection() {
+    const btn = document.getElementById('testConnBtn');
+    const result = document.getElementById('connTestResult');
+    btn.innerHTML = '<span class="spinner"></span>Testing...';
+    btn.disabled = true;
+    result.classList.add('hidden');
+
+    try {
+      const res = await fetch(API_BASE + '/api/health', {
+        headers: { 'ngrok-skip-browser-warning': '1' }
+      });
+      const data = await res.json();
+      result.classList.remove('hidden');
+      if (data.status === 'ok') {
+        result.className = 'text-[11px] text-center py-2 rounded-xl bg-green-900/20 text-green-400 border border-green-400/20';
+        result.textContent = '✓ Connected! API is online.';
+        showToast('API online!', 'success');
+      } else {
+        result.className = 'text-[11px] text-center py-2 rounded-xl bg-error/10 text-error border border-error/20';
+        result.textContent = '✗ API returned unexpected response.';
+      }
+    } catch (e) {
+      result.classList.remove('hidden');
+      result.className = 'text-[11px] text-center py-2 rounded-xl bg-error/10 text-error border border-error/20';
+      result.textContent = '✗ Cannot reach API: ' + e.message;
+      showToast('Connection failed', 'error');
+    }
+
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm" style="font-size:16px">wifi_tethering</span>Test Connection';
+    btn.disabled = false;
+  }
+
+  function clearAllData() {
+    if (!confirm('Clear all local data? This will reset API URL and history.')) return;
+    localStorage.clear();
+    API_BASE = DEFAULT_API;
+    actionHistory = [];
+    document.getElementById('apiUrlInput').value = API_BASE;
+    document.getElementById('currentApiUrl').textContent = API_BASE;
+    renderHistory();
+    showToast('All data cleared');
   }
 </script>
 </body>
