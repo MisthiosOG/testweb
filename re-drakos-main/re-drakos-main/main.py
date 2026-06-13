@@ -10,6 +10,7 @@ from telebot.async_telebot import AsyncTeleBot
 from telebot.asyncio_storage import StateMemoryStorage
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 import bot_context
@@ -20,6 +21,14 @@ from functions.auth import Auth
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 bot_context.bot = AsyncTeleBot(
     os.getenv('MAIN_TOKEN') or os.getenv('BOT_TOKEN_MAIN'),

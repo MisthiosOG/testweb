@@ -16,8 +16,13 @@
         .glass-card {
             background: rgba(25, 25, 25, 0.6);
             backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: transform 0.1s ease-out;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .glass-card:active {
+            transform: scale(0.96);
+            background: rgba(35, 35, 35, 0.8);
         }
         .ghost-border-primary {
             border: 1px solid rgba(0, 163, 255, 0.1);
@@ -162,28 +167,28 @@
     </div>
 
     <!-- Automation Actions Grid -->
-    <div class="grid grid-cols-3 gap-3">
-        <button onclick="runFeature('Farm')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+    <div class="grid grid-cols-3 gap-2.5">
+        <button onclick="runFeature('Farm', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
             <span class="text-[11px] font-medium">Farm</span>
         </button>
-        <button onclick="runFeature('Quest')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+        <button onclick="runFeature('Quest', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-primary text-2xl">Assignment</span>
             <span class="text-[11px] font-medium">Quest</span>
         </button>
-        <button onclick="runFeature('Eden')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+        <button onclick="runFeature('Eden', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-error/80 text-2xl">Local_Fire_Department</span>
             <span class="text-[11px] font-medium">Eden</span>
         </button>
-        <button onclick="runFeature('Wings')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+        <button onclick="runFeature('Wings', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
             <span class="text-[11px] font-medium">Wings</span>
         </button>
-        <button onclick="runFeature('Map')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+        <button onclick="runFeature('Map', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-primary text-2xl">map</span>
             <span class="text-[11px] font-medium">Map</span>
         </button>
-        <button onclick="runFeature('Emotes')" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all active:scale-95">
+        <button onclick="runFeature('Emotes', this)" class="glass-card p-3 rounded-2xl flex flex-col items-center gap-2 hover:bg-white/5 transition-all">
             <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
             <span class="text-[11px] font-medium">Emotes</span>
         </button>
@@ -192,7 +197,7 @@
     <!-- System Console / Logs -->
     <div class="flex-1 flex flex-col gap-2">
         <h3 class="text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest px-1">System Console</h3>
-        <div id="consoleLogs" class="bg-black/30 border border-white/5 rounded-2xl p-4 h-40 overflow-y-auto font-mono text-[10px] hide-scrollbar backdrop-blur-sm">
+        <div id="consoleLogs" class="bg-black/30 border border-white/5 rounded-2xl p-4 h-48 overflow-y-auto font-mono text-[10px] hide-scrollbar backdrop-blur-sm flex flex-col-reverse">
             <div class="text-primary-fixed-dim">[READY] System online... waiting for session.</div>
         </div>
     </div>
@@ -226,6 +231,8 @@
 <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); // Menampilkan Web App secara full screen
+        
+        const BACKEND_URL = window.location.origin; 
 
         // Dashboard Logic
         function addLog(msg, type = 'info') {
@@ -245,11 +252,17 @@
             await runFeature('Login', code);
         }
 
-        async function runFeature(name, session = "") {
+        async function runFeature(name, btn = null, session = "") {
             addLog(`Requesting ${name}...`);
+            if(btn) btn.classList.add('animate-pulse');
+            
             try {
-                const response = await fetch('/api/execute', {
+                // Gunakan URL absolut jika frontend dan backend beda domain
+                const endpoint = `${BACKEND_URL}/api/execute`;
+                
+                const response = await fetch(endpoint, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         user_id: tg.initDataUnsafe.user?.id || "0",
@@ -261,11 +274,16 @@
                 addLog(`Success: ${res.message}`);
             } catch (e) {
                 addLog(`Network Error: ${e.message}`, 'error');
+            } finally {
+                if(btn) btn.classList.remove('animate-pulse');
             }
         }
 
         // Subtle parallax effect for glass cards on mouse move
         const cards = document.querySelectorAll('.glass-card');
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        
+        if (!isTouch) {
         document.addEventListener('mousemove', (e) => {
             const amount = 5;
             const x = (e.clientX / window.innerWidth - 0.5) * amount;
@@ -275,6 +293,7 @@
                 card.style.transform = `translate(${x}px, ${y}px)`;
             });
         });
+        }
     </script>
 
 
