@@ -104,9 +104,15 @@
       START MASS FARMING</button>
   </div>
 
-  <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl">
-    <p class="font-semibold mb-2 text-xs">Progress Log:</p>
-    <div id="massFarmLog" class="font-mono text-[10px] max-h-60 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
+  <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-3">
+    <div class="flex justify-between items-center">
+      <p class="font-semibold text-xs">Progress</p>
+      <span id="massFarmStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
+    </div>
+    <div class="w-full bg-white/5 rounded-full h-1.5">
+      <div id="massFarmProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+    <div id="massFarmLog" class="font-mono text-[10px] max-h-48 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
   </div>
 </div>
 
@@ -387,8 +393,8 @@
 <div id="page-settings" class="page flex-col gap-4 mt-2 fade-in">
   <div class="glass-card p-4 rounded-2xl flex flex-col gap-3">
     <p class="section-title mb-0">About</p>
-    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Developer</span><span class="text-primary font-mono">iPowfu.</span></div>
-    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Project</span><span class="text-primary">TrashGameCompany</span></div>
+    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Developer</span><span class="text-primary font-mono">WaterFlai | iPowfu</span></div>
+    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Project</span><span class="text-primary">ThrashGameCompany</span></div>
     <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Status</span><span class="text-green-400 font-mono">● Online</span></div>
   </div>
 
@@ -785,7 +791,7 @@ function addSessionRow() {
     <div class="flex flex-col gap-1.5">
       <label class="text-[9px] uppercase font-bold text-on-surface-variant/50 ml-1">Session JSON</label>
       <div class="flex gap-2">
-        <input type="text" class="sess-json flex-1 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder='{"session":"...","user":"..."}'>
+        <input type="text" class="sess-json flex-1 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder='Place Session Code Here...'>
         <button onclick="checkRowConnection('${id}')" class="bg-primary/10 text-primary px-3 rounded-lg text-[10px] font-bold border border-primary/20 hover:bg-primary/20 transition-all shrink-0">Check Connect</button>
       </div>
       <div id="check-status-${id}" class="text-[9px] ml-1 mt-1 font-semibold hidden"></div>
@@ -832,48 +838,88 @@ async function checkRowConnection(id) {
 async function startMassFarm() {
   const rows = document.querySelectorAll('#massSessionContainer > div');
   currentSessions = [];
-  
+
   rows.forEach(row => {
     const jsonStr = row.querySelector('.sess-json').value.trim();
     if (jsonStr) {
       try {
         const data = JSON.parse(jsonStr);
-        if (data.user && data.session) {
-          currentSessions.push(data);
-        }
+        if (data.user && data.session) currentSessions.push(data);
       } catch (e) {}
     }
   });
 
   if (currentSessions.length === 0) { showToast('Add at least one account!', 'error'); return; }
 
-  const btn = document.getElementById('btnStartMassFarm');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>EXECUTING';
-  const log = document.getElementById('massFarmLog');
+  const btn       = document.getElementById('btnStartMassFarm');
+  const log       = document.getElementById('massFarmLog');
+  const bar       = document.getElementById('massFarmProgressBar');
+  const statusTxt = document.getElementById('massFarmStatusText');
+
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>FARMING';
   document.getElementById('massFarmResult').classList.remove('hidden');
   log.innerHTML = '';
-  log.innerHTML += `<div class="text-primary py-1 font-bold">Starting Mass Farm (${currentSessions.length} accounts)...</div>`;
+  bar.style.width = '0%';
 
+  // ── Start job ──
+  let jobId = null;
   try {
     const res = await fetch(API_BASE + '/api/massfarm', {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
-      body: JSON.stringify({
-        telegram_id: TELEGRAM_ID,
-        sessions: currentSessions,
-        server: selectedServer || 'live'
-      })
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, sessions: currentSessions })
     });
     const data = await res.json();
-    log.innerHTML += `<div class="text-green-400 font-bold py-1 border-t border-white/10 mt-1">Finished! Success: ${data.success}/${data.total}</div>`;
-    showToast(`Mass Farm completed! ${data.success} success`, 'success');
-    addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
+    if (!data.ok) {
+      log.innerHTML += `<div class="text-red-400 py-1">✗ ${data.error}</div>`;
+      showToast(data.error, 'error');
+      btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
+      return;
+    }
+    jobId = data.job_id;
+    log.innerHTML += `<div class="text-primary font-bold py-1">Mass Farm started — ${data.total} accounts (costs ${data.cost} coins)</div>`;
   } catch(e) {
     log.innerHTML += `<div class="text-red-400 py-1">Connection error: ${e.message}</div>`;
     showToast('Connection error', 'error');
+    btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
+    return;
   }
-  btn.disabled = false; btn.innerHTML = 'START MASS FARM';
+
+  // ── Poll status every 3s ──
+  let rendered = 0;
+  const poll = setInterval(async () => {
+    try {
+      const res  = await fetch(`${API_BASE}/api/massfarm/status?job_id=${jobId}`, {
+        headers: {'ngrok-skip-browser-warning': '1'}
+      });
+      const data = await res.json();
+      if (!data.ok) return;
+
+      // Update progress bar
+      const pct = data.total > 0 ? Math.round((data.current / data.total) * 100) : 0;
+      bar.style.width    = pct + '%';
+      statusTxt.textContent = data.status;
+
+      // Append new result lines
+      const newItems = data.results.slice(rendered);
+      newItems.forEach(r => {
+        const color = r.status === 'success' ? 'text-green-400' : 'text-red-400';
+        log.innerHTML += `<div class="${color} py-0.5">${r.msg}</div>`;
+        rendered++;
+      });
+      log.scrollTop = log.scrollHeight;
+
+      if (data.done) {
+        clearInterval(poll);
+        bar.style.width = '100%';
+        log.innerHTML += `<div class="text-primary font-bold py-1 border-t border-white/10 mt-1">✓ Done! ${data.success}/${data.total} success</div>`;
+        showToast(`Mass Farm done! ${data.success}/${data.total} success`, 'success');
+        addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
+        btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
+      }
+    } catch(e) { /* ignore poll errors */ }
+  }, 3000);
 }
 
 const CURRENCY_META = {
