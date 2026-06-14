@@ -19,8 +19,6 @@
   .glass-card{background:rgba(25,25,25,.6);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.08)}
   .hide-scrollbar::-webkit-scrollbar{display:none}
   @keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.5}}.animate-pulse-slow{animation:pulse-slow 3s cubic-bezier(.4,0,.6,1) infinite}
-  .tab-btn{transition:all .2s;border-bottom:2px solid transparent;color:#bec7d4}
-  .tab-btn.active{border-bottom:2px solid #98cbff;color:#98cbff}
   .step{display:none}.step.active{display:flex}
   .server-btn{transition:all .15s;border:1px solid rgba(255,255,255,.1)}
   .server-btn.selected{border-color:#98cbff;background:rgba(152,203,255,.12);color:#98cbff}
@@ -89,31 +87,21 @@
 
 <main class="pt-16 pb-20 px-4 min-h-screen">
 
-<!-- TAB NAV -->
-<div class="flex border-b border-white/10 mb-6 sticky top-16 bg-background z-40">
-  <button onclick="goPage('home')" class="tab-btn active flex-1 py-3 text-sm font-semibold" id="tab-home">Home</button>
-  <button onclick="goPage('massfarm')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-massfarm">Mass Farm</button>
-  <button onclick="goPage('account')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-account">Account</button>
-  <button onclick="goPage('history')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-history">History</button>
-  <button onclick="goPage('settings')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-settings">Settings</button>
-</div>
-
 <!-- ══════════ MASS FARM ══════════ -->
 <div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
   <div class="glass-card p-5 rounded-2xl">
-    <p class="section-title">🟢 MASS FARM (Max 10 Accounts)</p>
-    <p class="text-xs text-on-surface-variant mb-3">Paste session JSON satu per baris</p>
-    
-    <textarea id="massSessionInput" rows="10" 
-      class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-xs font-mono resize-none focus:border-primary/50 outline-none"
-      placeholder='{"session":"3a3a181...","type":"live","user":"f2895...","version":394009}'></textarea>
-    
-    <div class="flex gap-3 mt-4">
-      <button onclick="validateSessions()" 
-        class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl text-sm font-semibold transition-all">✅ Validate Sessions</button>
-      <button onclick="startMassFarm()" id="btnStartMassFarm"
-        class="flex-1 bg-primary text-on-primary py-3 rounded-xl text-sm font-bold transition-all">🚀 START MASS FARM</button>
+    <div class="flex justify-between items-center mb-4">
+      <p class="section-title mb-0">🟢 MASS FARM (Max 10)</p>
+      <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20 hover:bg-primary/20 transition-all">+ ADD ACCOUNT</button>
     </div>
+    
+    <div id="massSessionContainer" class="flex flex-col gap-3 mb-5">
+      <!-- Session cards will be added here -->
+    </div>
+    
+    <button onclick="startMassFarm()" id="btnStartMassFarm"
+      class="w-full bg-primary text-on-primary py-3.5 rounded-xl text-sm font-black tracking-widest shadow-lg shadow-primary/10 transition-all active:scale-[0.98]">
+      🚀 START MASS FARMING</button>
   </div>
 
   <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl">
@@ -150,13 +138,13 @@
 
     <div id="step2" class="step flex-col glass-card p-4 rounded-2xl gap-3">
       <p class="text-xs text-on-surface-variant">Choose login method:</p>
-      <div class="flex border-b border-white/5">
-        <button onclick="switchLoginTab('lua')" class="tab-btn active flex-1 py-2 text-xs font-semibold" id="tab-lua">Lua Code</button>
-        <button onclick="switchLoginTab('lib')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-lib">Lib Code</button>
-        <button onclick="switchLoginTab('platform')" class="tab-btn flex-1 py-2 text-xs font-semibold" id="tab-platform">Platform</button>
+      <div class="flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5">
+        <button onclick="switchLoginTab('lua')" class="login-tab-btn active flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-lua">LUA</button>
+        <button onclick="switchLoginTab('lib')" class="login-tab-btn flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-lib">LIB</button>
+        <button onclick="switchLoginTab('platform')" class="login-tab-btn flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-platform">PLATFORM</button>
       </div>
       <div id="loginTab-lua" class="flex flex-col gap-2">
-        <p class="text-[10px] text-on-surface-variant">Paste your Lua base64 code:</p>
+        <p class="text-[10px] text-on-surface-variant px-1">Paste your Lua base64 code:</p>
         <textarea id="luaInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lua code here..."></textarea>
         <button onclick="submitLogin('lua')" id="btn-lua-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LUA</button>
       </div>
@@ -493,13 +481,11 @@ function goPage(name) {
     document.getElementById('page-'+p).classList.remove('active');
     document.getElementById('page-'+p).style.display = 'none';
     if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.remove('active');
-    if(document.getElementById('tab-'+p)) document.getElementById('tab-'+p).classList.remove('active');
   });
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('page-'+name).style.display = 'flex';
   
   if(document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
-  if(document.getElementById('tab-'+name)) document.getElementById('tab-'+name).classList.add('active');
   
   if (name === 'account' && isLoggedIn) refreshAccount();
 }
@@ -573,7 +559,8 @@ function switchLoginTab(tab) {
   ['lua','lib','platform'].forEach(t => {
     const el = document.getElementById('loginTab-'+t);
     el.classList.toggle('hidden', t!==tab); el.classList.toggle('flex', t===tab);
-    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    const btn = document.getElementById('tab-'+t);
+    if(btn) btn.style.background = (t===tab) ? 'rgba(152,203,255,0.15)' : '';
   });
 }
 function selectPlatform(p) {
@@ -775,38 +762,50 @@ async function refreshAccount() {
 }
 
 // ── Mass Farm ──
-async function validateSessions() {
-  const text = document.getElementById('massSessionInput').value.trim();
-  const lines = text.split('\n').filter(l => l.trim());
+function addSessionRow() {
+  const container = document.getElementById('massSessionContainer');
+  if (container.children.length >= 10) { showToast('Max 10 accounts!', 'error'); return; }
   
-  currentSessions = [];
-  const log = document.getElementById('massFarmLog');
-  log.innerHTML = '';
-
-  for (let line of lines) {
-    try {
-      const data = JSON.parse(line);
-      if (data.user && data.session) {
-        currentSessions.push(data);
-        log.innerHTML += `<div class="session-item text-green-400">✅ Valid: ${data.user.slice(0,12)}...</div>`;
-      } else {
-        log.innerHTML += `<div class="session-item text-red-400">❌ Invalid format (Missing user/session)</div>`;
-      }
-    } catch(e) {
-      log.innerHTML += `<div class="session-item text-red-400">❌ JSON Error: ${e.message}</div>`;
-    }
-  }
-  document.getElementById('massFarmResult').classList.remove('hidden');
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.id = 'row-' + id;
+  div.className = 'glass-card p-3 rounded-xl border border-white/5 relative flex flex-col gap-2 mb-1 fade-in';
+  div.innerHTML = `
+    <button onclick="document.getElementById('row-${id}').remove()" class="absolute top-2 right-2 text-error/50 hover:text-error transition-colors">
+      <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+    </button>
+    <div class="flex flex-col gap-1.5">
+      <label class="text-[9px] uppercase font-bold text-on-surface-variant/50 ml-1">Account Info</label>
+      <input type="text" class="sess-user bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder="User ID">
+      <input type="text" class="sess-token bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder="Session ID">
+    </div>
+  `;
+  container.appendChild(div);
 }
 
+// Add first row by default
+addSessionRow();
+
 async function startMassFarm() {
-  if (currentSessions.length === 0) { showToast('No valid sessions!', 'error'); return; }
+  const rows = document.querySelectorAll('#massSessionContainer > div');
+  currentSessions = [];
+  
+  rows.forEach(row => {
+    const user = row.querySelector('.sess-user').value.trim();
+    const session = row.querySelector('.sess-token').value.trim();
+    if (user && session) {
+      currentSessions.push({ user, session, version: 394009 });
+    }
+  });
+
+  if (currentSessions.length === 0) { showToast('Add at least one account!', 'error'); return; }
 
   const btn = document.getElementById('btnStartMassFarm');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Farming...';
-
+  btn.innerHTML = '<span class="spinner"></span>EXECUTING...';
   const log = document.getElementById('massFarmLog');
+  document.getElementById('massFarmResult').classList.remove('hidden');
+  log.innerHTML = '';
   log.innerHTML += `<div class="text-primary py-1 font-bold">🚀 Starting Mass Farm (${currentSessions.length} accounts)...</div>`;
 
   try {
