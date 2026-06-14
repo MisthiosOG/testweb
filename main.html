@@ -447,7 +447,7 @@ const API_BASE = "https://bright-toad-brightly.ngrok-free.app";
 const TELEGRAM_ID = tg.initDataUnsafe?.user?.id || null;
 
 let selectedServer = null, selectedPlatform = null;
-let isLoggedIn = false, autoRefreshInterval = null;
+let isLoggedIn = false, autoRefreshInterval = null, lastCurrencyData = null, lastCoinBalance = null;
 let currentSessions = [];
 let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
 
@@ -467,6 +467,12 @@ async function refreshCoins() {
     });
     const data = await res.json();
     if (data.ok) {
+      if (lastCoinBalance !== null && lastCoinBalance !== data.balance) {
+        const diff = data.balance - lastCoinBalance;
+        const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+        addLog(`Coins : ${lastCoinBalance} → (${diffStr})`, 'info');
+      }
+      lastCoinBalance = data.balance;
       document.getElementById('coinBalance').textContent = data.balance;
       FEATURE_COSTS = data.costs || {};
       populateCostBadges();
@@ -499,8 +505,6 @@ function goPage(name) {
   document.getElementById('page-'+name).style.display = 'flex';
   
   if(document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
-  
-  if (name === 'account' && isLoggedIn) refreshAccount();
 }
 
 // ── Toast ──
@@ -651,6 +655,8 @@ function setLoggedIn(method, server, userId) {
 function logout() {
   isLoggedIn = false;
   if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+  lastCurrencyData = null;
+  lastCoinBalance = null;
   document.getElementById('autoRefreshToggle').checked = false;
   document.getElementById('dashSection').classList.add('hidden');
   document.getElementById('dashSection').classList.remove('flex');
@@ -694,41 +700,67 @@ async function runFeature(name, label) {
 
     if (typeof data.balance !== 'undefined') {
       document.getElementById('coinBalance').textContent = data.balance;
+      lastCoinBalance = data.balance;
     }
 
     if (data.ok) {
-      // Farm diff log
-      if (name === 'Farm' && data.diff) {
-        const d = data.diff;
-        const b = data.before || {};
-        const a = data.after || {};
-        const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
+      // Polling logic for background Farm job
+      if (name === 'Farm' && data.status === 'processing' && data.job_id) {
+        addLog(data.message, 'info');
+        let displayedCount = 1;
+        
+        const pollId = setInterval(async () => {
+          try {
+            const sRes = await fetch(`${API_BASE}/api/farm/status?job_id=${data.job_id}`, {
+              headers: {'ngrok-skip-browser-warning': '1'}
+            });
+            const job = await sRes.json();
+            
+            if (job.ok && job.logs) {
+              // Cetak log-log baru yang dikirim dari CMD Python
+              for (let i = displayedCount; i < job.logs.length; i++) {
+                let logText = job.logs[i];
+                let type = "info";
+                if (logText.includes("SUCCESS")) type = "success";
+                if (logText.includes("ERROR")) type = "error";
+                addLog(logText, type);
+              }
+              displayedCount = job.logs.length;
+            }
 
-        // Only show currencies that actually changed
-        const changedKeys = Object.keys(d).filter(k => d[k] !== 0);
+            if (job.ok && job.done) {
+              clearInterval(pollId);
+              if (btn) btn.classList.remove('running');
 
-        if (changedKeys.length) {
-          addLog('DONE: Farm', 'success');
-          changedKeys.forEach(key => {
-            const meta = CURRENCY_META[key] || { label: key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) };
-            const before = b[key] ?? 0;
-            const after = a[key] ?? 0;
-            addLog(`${meta.label}: ${before} → ${after} (${fmtDiff(d[key])})`, 'success');
-          });
-          const summary = changedKeys.map(k => {
-            const meta = CURRENCY_META[k] || { label: k };
-            return `${meta.label} ${fmtDiff(d[k])}`;
-          }).join('  |  ');
-          addHistory('Farm', summary, 'success');
-        } else {
-          addLog('DONE: Farm — no currency change', 'success');
-          addHistory('Farm', 'No currency change', 'success');
-        }
-
-        // Also refresh account if on account page
-        if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
+              if (job.success) {
+                showToast('Farm done!', 'success');
+                const finalMsg = job.logs[job.logs.length - 1];
+                addHistory('Farm', finalMsg, 'success');
+                
+                // Update local tracking
+                if (job.after) lastCurrencyData = job.after;
+                
+                // Update UI log for changes
+                if (job.diff) {
+                  const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
+                  Object.keys(job.diff).filter(k => job.diff[k] !== 0).forEach(key => {
+                    const meta = CURRENCY_META[key] || { label: key };
+                    addLog(`${meta.label}: ${job.before[key]||0} → ${job.after[key]||0} (${fmtDiff(job.diff[key])})`, 'success');
+                  });
+                }
+                if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
+              } else {
+                const finalMsg = job.logs[job.logs.length - 1];
+                addHistory('Farm Failed', finalMsg, 'error');
+                showToast('Farm failed', 'error');
+              }
+            }
+          } catch (err) { /* silent poll fail */ }
+        }, 10000);
+        
+        return; // Exit function but keep button animation
       } else {
-        addLog('DONE: '+label, 'success');
+        addLog('Process.. '+label, 'success');
         addHistory(label, 'Executed successfully', 'success');
       }
       showToast(label+' done!','success');
@@ -740,12 +772,12 @@ async function runFeature(name, label) {
       if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
     }
   } catch(e) {
-    addLog('ERROR: '+e.message,'error');
-    addHistory(label+' Error', e.message,'error');
-    showToast('API unreachable','error');
+    // Network error saat fetch awal ke /api/run
+    addLog('ERROR: Tidak bisa reach server — ' + e.message, 'error');
+    addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
+    showToast('Server tidak bisa dijangkau', 'error');
+    if (btn) btn.classList.remove('running');
   }
-
-  if (btn) btn.classList.remove('running');
 }
 
 // ── Account ──
@@ -764,7 +796,28 @@ async function refreshAccount() {
     const data = await res.json();
     document.getElementById('currencyLoading').classList.add('hidden');
     document.getElementById('currencyLoading').classList.remove('flex');
-    if (data.ok) { renderCurrency(data.currency); showToast('Balance updated','success'); }
+    if (data.ok) {
+      const newCurrency = data.currency;
+      if (lastCurrencyData) {
+        const toMonitor = [
+          { key: 'candles', label: 'Candle' },
+          { key: 'wax',     label: 'Wax   ' },
+          { key: 'hearts',  label: 'Hearts' }
+        ];
+        toMonitor.forEach(item => {
+          const oldVal = lastCurrencyData[item.key] || 0;
+          const newVal = newCurrency[item.key] || 0;
+          if (newVal !== oldVal) {
+            const diff = newVal - oldVal;
+            const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+            addLog(`${item.label}: ${oldVal} → (${diffStr})`, 'info');
+          }
+        });
+      }
+      lastCurrencyData = newCurrency;
+      renderCurrency(newCurrency);
+      showToast('Balance updated','success');
+    }
     else showToast(data.error,'error');
   } catch(e) {
     document.getElementById('currencyLoading').classList.add('hidden');
