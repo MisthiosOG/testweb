@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Shop - TrashGameCompany</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body{background:#050505;background:radial-gradient(circle at top right,#0a192f 0%,#050505 100%);color:#e5e2e1;font-family:'Manrope',sans-serif}
+  .glass-card{background:rgba(25,25,25,.6);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08)}
+  .fade-in{animation:fadeIn .3s ease forwards}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+</style>
+</head>
+<body class="p-4 pt-8">
+
+<!-- Header -->
+<div class="flex items-center justify-between mb-8">
+  <button onclick="window.history.back()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+  <h1 class="text-xl font-black tracking-tight">COIN STORE</h1>
+  <div class="w-10 h-10"></div>
+</div>
+
+<div class="fade-in">
+  <div class="glass-card p-6 rounded-3xl mb-6 bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20 text-center">
+    <p class="text-[10px] text-amber-200/40 uppercase font-black tracking-[0.2em] mb-1">Available Balance</p>
+    <div class="flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-amber-400">monetization_on</span>
+      <span id="currentBalance" class="text-3xl font-black text-white">—</span>
+    </div>
+  </div>
+
+  <p class="text-[10px] text-on-surface-variant font-black uppercase tracking-widest mb-4 px-2">Select Package</p>
+  
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    <!-- Package 1000 -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-white/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-amber-400 text-3xl">toll</span>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-black text-white">1,000</p>
+        <p class="text-[10px] text-on-surface-variant font-bold uppercase">Coins</p>
+      </div>
+      <button onclick="orderPackage('1000')" class="w-full bg-amber-500 text-black py-3 rounded-2xl text-xs font-black text-center shadow-lg active:scale-95 transition-all">Rp 100,000</button>
+    </div>
+
+    <!-- Package 2500 -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-white/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-amber-400 text-3xl">database</span>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-black text-white">2,500</p>
+        <p class="text-[10px] text-on-surface-variant font-bold uppercase">Coins</p>
+      </div>
+      <button onclick="orderPackage('2500')" class="w-full bg-amber-500 text-black py-3 rounded-2xl text-xs font-black text-center shadow-lg active:scale-95 transition-all">Rp 240,000</button>
+    </div>
+
+    <!-- Package 5000 -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-white/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-amber-400 text-3xl">savings</span>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-black text-white">5,000</p>
+        <p class="text-[10px] text-on-surface-variant font-bold uppercase">Coins</p>
+      </div>
+      <button onclick="orderPackage('5000')" class="w-full bg-amber-500 text-black py-3 rounded-2xl text-xs font-black text-center shadow-lg active:scale-95 transition-all">Rp 450,000</button>
+    </div>
+
+    <!-- Package 10000 -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-white/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-amber-400 text-3xl">workspace_premium</span>
+      </div>
+      <div class="text-center">
+        <p class="text-xl font-black text-white">10,000</p>
+        <p class="text-[10px] text-on-surface-variant font-bold uppercase">Coins</p>
+      </div>
+      <button onclick="orderPackage('10000')" class="w-full bg-amber-500 text-black py-3 rounded-2xl text-xs font-black text-center shadow-lg active:scale-95 transition-all">Rp 850,000</button>
+    </div>
+
+    <!-- Weekly VIP -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-purple-500/30 bg-purple-500/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-purple-400 text-3xl">workspace_premium</span>
+      </div>
+      <div class="text-center">
+        <p class="text-lg font-black text-white uppercase tracking-tighter">Weekly VIP</p>
+        <p class="text-[10px] text-purple-200/40 font-bold uppercase">7 Days Pass</p>
+      </div>
+      <button onclick="orderPackage('weekly')" class="w-full bg-purple-500 text-white py-3 rounded-2xl text-xs font-black text-center shadow-lg shadow-purple-500/20 active:scale-95 transition-all">Rp 100,000</button>
+    </div>
+
+    <!-- Monthly VIP -->
+    <div class="glass-card p-5 rounded-3xl flex flex-col items-center gap-3 border-indigo-500/30 bg-indigo-500/5 active:scale-95 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-indigo-400 text-3xl">stars</span>
+      </div>
+      <div class="text-center">
+        <p class="text-lg font-black text-white uppercase tracking-tighter">Monthly VIP</p>
+        <p class="text-[10px] text-indigo-200/40 font-bold uppercase">30 Days Pass</p>
+      </div>
+      <button onclick="orderPackage('monthly')" class="w-full bg-indigo-600 text-white py-3 rounded-2xl text-xs font-black text-center shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">Rp 350,000</button>
+    </div>
+
+    <!-- Custom Topup -->
+    <div class="glass-card p-6 rounded-3xl col-span-2 border-primary/30 bg-primary/5 flex flex-col gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary text-2xl">edit_square</span>
+        </div>
+        <div>
+          <p class="text-sm font-black text-white uppercase">Custom Nominal</p>
+          <p class="text-[10px] text-primary/60 font-bold uppercase tracking-tight">Rate: Rp 100 per 1 Coin</p>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="text-[10px] text-on-surface-variant font-bold uppercase ml-1">Input Coin Amount</label>
+        <input type="number" id="customCoinInput" oninput="calcCustomPrice(this.value)" placeholder="e.g. 1500" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-primary/50 transition-all font-mono">
+      </div>
+      <div class="flex items-center justify-between p-4 bg-black/20 rounded-2xl border border-white/5">
+        <span class="text-xs font-bold text-on-surface-variant">Total Price:</span>
+        <span id="customPriceLabel" class="text-lg font-black text-primary">Rp 0</span>
+      </div>
+      <button onclick="orderPackage('custom')" class="w-full bg-primary text-on-primary py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all">Order Sekarang</button>
+    </div>
+  </div>
+
+  <div class="glass-card p-5 rounded-3xl border-white/5">
+    <h3 class="text-sm font-bold mb-2">Informasi Top Up</h3>
+    <ul class="text-[11px] text-on-surface-variant space-y-2">
+      <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary" style="font-size:14px">check_circle</span> Pembayaran via QRIS, DANA, OVO, atau GoPay.</li>
+      <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary" style="font-size:14px">check_circle</span> Proses instan setelah konfirmasi pembayaran.</li>
+      <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary" style="font-size:14px">check_circle</span> Koin tidak dapat dipindah tangankan antar akun.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+const API_BASE = "https://bright-toad-brightly.ngrok-free.app";
+const TELEGRAM_ID = tg.initDataUnsafe?.user?.id;
+
+// ── Helpers ──
+function showToast(msg, type='info') {
+  const colors = { info:'#3b82f6', success:'#22c55e', error:'#ef4444' };
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:${colors[type]||colors.info};color:#fff;padding:10px 20px;border-radius:99px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s`;
+  document.body.appendChild(t);
+  setTimeout(() => t.style.opacity = 1, 10);
+  setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.remove(), 300); }, 2800);
+}
+
+function showModal(title, body, onConfirm) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  document.getElementById('modalConfirm').onclick = () => {
+    document.getElementById('modalOverlay').classList.add('hidden');
+    onConfirm();
+  };
+  document.getElementById('modalCancel').onclick = () => {
+    document.getElementById('modalOverlay').classList.add('hidden');
+  };
+}
+
+function calcCustomPrice(val) {
+  const amount = parseInt(val) || 0;
+  document.getElementById('customPriceLabel').textContent = 'Rp ' + (amount * 100).toLocaleString('id-ID');
+}
+
+async function orderPackage(pkg) {
+  if (!TELEGRAM_ID) { showToast('Buka via Telegram Bot', 'error'); return; }
+
+  let coins = 0, price = 0, label = '';
+
+  if (pkg === 'custom') {
+    coins = parseInt(document.getElementById('customCoinInput').value) || 0;
+    if (coins < 100) { showToast('Minimum 100 coins', 'error'); return; }
+    price = coins * 100;
+    label = `Custom ${coins.toLocaleString('id-ID')} Coins`;
+  } else {
+    const map = {
+      '1000':   { coins: 1000,  price: 100000,  label: '1,000 Coins' },
+      '2500':   { coins: 2500,  price: 240000,  label: '2,500 Coins' },
+      '5000':   { coins: 5000,  price: 450000,  label: '5,000 Coins' },
+      '10000':  { coins: 10000, price: 850000,  label: '10,000 Coins' },
+      'weekly': { coins: 0,     price: 100000,  label: 'Weekly VIP' },
+      'monthly':{ coins: 0,     price: 350000,  label: 'Monthly VIP' },
+    };
+    ({ coins, price, label } = map[pkg] || {});
+  }
+
+  showModal(
+    'Konfirmasi Order',
+    `<p class="text-sm text-center">Paket: <b>${label}</b></p>
+     <p class="text-xl font-black text-center text-amber-400 mt-2">Rp ${price.toLocaleString('id-ID')}</p>
+     <p class="text-[11px] text-center text-white/40 mt-3">Admin akan mengirim info pembayaran via Telegram setelah kamu konfirmasi.</p>`,
+    async () => {
+      try {
+        const body = { telegram_id: TELEGRAM_ID, package: pkg };
+        if (pkg === 'custom') body.custom_coins = coins;
+
+        const res  = await fetch(API_BASE + '/api/topup/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          showToast(`Order #${data.req_id} dikirim! Tunggu konfirmasi admin.`, 'success');
+          tg.showAlert(`Order berhasil dikirim!\nAdmin akan segera membalas via Telegram setelah pembayaran dikonfirmasi.`);
+        } else {
+          showToast(data.error || 'Gagal mengirim order', 'error');
+        }
+      } catch (e) {
+        showToast('Server error: ' + e.message, 'error');
+      }
+    }
+  );
+}
+
+async function getBalance() {
+  if (!TELEGRAM_ID) return;
+  try {
+    const res  = await fetch(API_BASE + '/api/coins', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (data.ok) document.getElementById('currentBalance').textContent = data.balance.toLocaleString('id-ID');
+  } catch (e) {
+    document.getElementById('currentBalance').textContent = '—';
+  }
+}
+getBalance();
+</script>
+
+<!-- Confirm Modal -->
+<div id="modalOverlay" class="hidden fixed inset-0 bg-black/70 z-50 flex items-end justify-center p-4">
+  <div class="glass-card w-full max-w-sm rounded-3xl p-6 flex flex-col gap-4 fade-in">
+    <h2 id="modalTitle" class="text-base font-black text-center"></h2>
+    <div id="modalBody" class="text-white/70"></div>
+    <button id="modalConfirm" class="w-full bg-amber-500 text-black py-3 rounded-2xl text-sm font-black">Konfirmasi Order</button>
+    <button id="modalCancel" class="w-full border border-white/10 text-white/60 py-3 rounded-2xl text-sm font-semibold">Batal</button>
+  </div>
+</div>
+
+</body>
+</html>
