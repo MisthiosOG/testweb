@@ -687,9 +687,10 @@ async function runFeature(name, label) {
       }
       showToast(label+' done!','success');
     } else {
-      addLog('ERROR: '+data.error,'error');
-      addHistory(label+' Failed', data.error,'error');
-      showToast(data.error,'error');
+      const errMsg = data.error || 'Unknown error (empty response from server)';
+      addLog('ERROR: '+errMsg,'error');
+      addHistory(label+' Failed', errMsg,'error');
+      showToast(errMsg,'error');
       if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
     }
   } catch(e) {
