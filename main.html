@@ -3,331 +3,423 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-<title>SkyNet Bot</title>
+<title>TrashGameCompany Bot Interface</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{background:#0a0a0f;color:#e5e2e1;font-family:'Manrope',sans-serif;overflow-x:hidden;min-height:100vh}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,120,255,.15),transparent);pointer-events:none;z-index:0}
-
-  .glass{background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07)}
-  .glass-strong{background:rgba(20,20,35,.7);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.09)}
-
-  /* Tab nav */
-  .tab-page{display:none}.tab-page.active{display:flex;flex-direction:column}
-  .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;color:#6b7280;transition:color .2s}
-  .nav-btn.active{color:#60a5fa}
-  .nav-btn .nav-icon{font-size:22px;transition:transform .15s}
-  .nav-btn.active .nav-icon{transform:scale(1.1)}
-  .nav-indicator{width:4px;height:4px;border-radius:99px;background:transparent;margin:0 auto;transition:background .2s}
-  .nav-btn.active .nav-indicator{background:#60a5fa}
-
-  /* Login steps */
-  .step{display:none}.step.active{display:flex;flex-direction:column}
-  .server-opt{border:1.5px solid rgba(255,255,255,.08);transition:all .15s;cursor:pointer}
-  .server-opt.sel{border-color:#3b82f6;background:rgba(59,130,246,.1)}
-  .method-tab{border-bottom:2px solid transparent;color:#6b7280;transition:all .2s;font-size:12px;font-weight:600;padding:8px 0}
-  .method-tab.active{border-color:#3b82f6;color:#60a5fa}
-  .plat-btn{border:1.5px solid rgba(255,255,255,.08);transition:all .15s;font-size:11px;font-weight:600}
-  .plat-btn.sel{border-color:#3b82f6;color:#60a5fa;background:rgba(59,130,246,.1)}
-
-  /* Feature buttons */
-  .feat{border:1px solid rgba(255,255,255,.07);transition:all .15s;cursor:pointer;position:relative;overflow:hidden}
-  .feat:active{transform:scale(.95);border-color:rgba(96,165,250,.4)}
-  .feat::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(96,165,250,.08),transparent 70%);opacity:0;transition:opacity .3s}
-  .feat:active::before{opacity:1}
-
-  /* Currency cards */
-  .cur-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px}
-  .cur-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-
-  /* History items */
-  .hist-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-  .hist-item:last-child{border-bottom:none}
-
-  /* Toast */
-  .toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(8px);padding:9px 18px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.04em;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-  /* Spinner */
-  .spin{width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:rot .55s linear infinite;display:inline-block;vertical-align:middle;margin-right:5px}
-  @keyframes rot{to{transform:rotate(360deg)}}
-
-  /* Pulse dot */
-  @keyframes pdot{0%,100%{opacity:1}50%{opacity:.4}}
-  .pdot{animation:pdot 2.5s ease-in-out infinite}
-
-  /* Scrollbar */
+  body{background:#050505;background:radial-gradient(circle at top right,#0a192f 0%,#050505 100%);color:#e5e2e1;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+  /* Custom scrollbar */
   ::-webkit-scrollbar{width:3px}
   ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:99px}
-
-  /* Textarea */
-  textarea{background:rgba(0,0,0,.35);border:1.5px solid rgba(255,255,255,.07);border-radius:12px;color:#e5e2e1;font-family:'Geist',monospace;font-size:11px;resize:none;outline:none;transition:border-color .2s;width:100%;padding:10px 12px}
-  textarea:focus{border-color:rgba(96,165,250,.4)}
-
-  /* Btn */
-  .btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;padding:12px;font-size:12px;font-weight:700;letter-spacing:.05em;cursor:pointer;transition:all .15s;width:100%}
-  .btn-primary:active{transform:scale(.98);opacity:.9}
-  .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-  .btn-danger{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer}
+  ::-webkit-scrollbar-thumb{background:rgba(152,203,255,.2);border-radius:99px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(152,203,255,.4)}
+  * { scrollbar-width:thin; scrollbar-color:rgba(152,203,255,.2) transparent }
+  .glass-card{background:rgba(25,25,25,.6);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.08)}
+  .hide-scrollbar::-webkit-scrollbar{display:none}
+  @keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.5}}.animate-pulse-slow{animation:pulse-slow 3s cubic-bezier(.4,0,.6,1) infinite}
+  .step{display:none}.step.active{display:flex}
+  .server-btn{transition:all .15s;border:1px solid rgba(255,255,255,.1)}
+  .server-btn.selected{border-color:#98cbff;background:rgba(152,203,255,.12);color:#98cbff}
+  .feat-btn{transition:transform .12s,background .15s;cursor:pointer;position:relative}
+  .feat-btn:active{transform:scale(.93)}
+  .feat-btn:hover{background:rgba(255,255,255,.05)}
+  .feat-btn.running{animation:pulse-slow 1s ease infinite;pointer-events:none;opacity:.7}
+  .cost-badge{position:absolute;top:6px;right:6px;font-size:9px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:99px;padding:1px 6px;line-height:1.4;display:flex;align-items:center;gap:2px}
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:8px 18px;border-radius:12px;font-size:11px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1}
+  .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;margin-right:6px;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .nav-btn{transition:all .2s;flex:1;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .nav-btn.active .nav-icon,.nav-btn.active .nav-label{color:#98cbff}
+  .nav-btn:not(.active) .nav-icon,.nav-btn:not(.active) .nav-label{color:#6b7a8a}
+  .page{display:none}.page.active{display:flex}
+  .currency-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .currency-row:last-child{border-bottom:none}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .session-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:8px;border-radius:8px;margin-bottom:6px;font-size:11px}
+  .fade-in{animation:fadeIn .22s ease forwards}
+  .history-item{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:8px}
+  .toggle-switch{position:relative;display:inline-block;width:42px;height:24px}
+  .toggle-switch input{opacity:0;width:0;height:0}
+  .toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#2a2a2a;border-radius:24px;transition:.3s;border:1px solid rgba(255,255,255,.1)}
+  .toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:#7a8a9a;border-radius:50%;transition:.3s}
+  input:checked+.toggle-slider{background:rgba(152,203,255,.2);border-color:#98cbff}
+  input:checked+.toggle-slider:before{transform:translateX(18px);background:#98cbff}
+  .badge-live{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.25)}
+  .badge-beta{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+  .section-title{font-size:10px;color:rgba(190,199,212,.5);font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:0 2px;margin-bottom:8px}
+  .diff-gain{color:#4ade80}.diff-loss{color:#f87171}.diff-zero{color:#6b7a8a}
+  .feat-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .feat-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 </style>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#98cbff","on-primary":"#003354","surface":"#131313","surface-variant":"#353534","surface-container":"#201f1f","surface-container-high":"#2a2a2a","on-surface":"#e5e2e1","on-surface-variant":"#bec7d4","outline-variant":"#3f4852","error":"#ffb4ab","background":"#131313"}}}}</script>
 </head>
-<body>
+<body class="bg-background text-on-surface font-sans select-none">
 
-<!-- Toast -->
 <div id="toast" class="toast"></div>
 
-<!-- HEADER -->
-<header class="fixed top-0 w-full z-50 glass-strong border-b border-white/5 flex items-center justify-between px-4 py-3">
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-4 py-3">
   <div class="flex items-center gap-3">
     <div class="relative">
-      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPPxbxaxhpJPwenL0LNXeI1JPnaDOsSQJ7DQYj0hQRfjF0HzIcD9IwXTZ38ymLwC8ZxxtzVupqJbrg8SNfTSVKxYH6ULI_KTRIT-dX-JJoW_la1BSSiOwp0tstg4dMijBEz-wqxS-q5TTkT1gUyHZai2F8V4LFNgjAGM_nlFZmO_cTi51OeQYI4oCNSz1gGql_OlxtlUnwKkRpYdlOs2G8-3T8KWnI1ETGCq83m_iWOW8NIxw2usx4dHTSYkCcdbXv95oU1IV42xI" class="w-8 h-8 rounded-full border border-white/10" alt="bot">
-      <div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-blue-400 rounded-full border-2 border-[#0a0a0f] pdot"></div>
+      <img alt="TrashGameCompany" class="w-9 h-9 rounded-full border border-white/10" src="images/icon.jpg">
+      <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-surface rounded-full"></div>
     </div>
     <div>
-      <div class="text-sm font-bold text-blue-300 leading-tight" style="font-family:'Geist',sans-serif">SkyNet Bot</div>
-      <div class="text-[10px] text-blue-400/70 pdot">System Operational</div>
+      <div class="text-sm font-bold text-primary tracking-tight">TrashGameCompany Bot</div>
+      <div class="text-[10px] text-primary animate-pulse-slow">System Operational</div>
     </div>
   </div>
-  <div id="statusBadge" class="text-[10px] px-3 py-1 rounded-full glass border-white/5 text-gray-400 font-semibold">NOT LOGGED IN</div>
+  <div class="flex items-center gap-2">
+    <div id="coinBadge" class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 font-bold text-amber-300">
+      <span class="material-symbols-outlined" style="font-size:14px">monetization_on</span>
+      <span id="coinBalance">—</span>
+    </div>
+    <a href="https://t.me/dieforcringes" target="_blank" rel="noopener" class="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-primary/15 border border-primary/30 font-bold text-primary hover:bg-primary/25 transition-all">
+      <span class="material-symbols-outlined" style="font-size:13px">add_circle</span>
+      Top Up
+    </a>
+    <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
+  </div>
 </header>
 
-<!-- MAIN -->
-<main class="pt-16 pb-[68px] min-h-screen relative z-10">
+<main class="pt-16 pb-20 px-4 min-h-screen">
 
-  <!-- ══════════ LOGIN SECTION ══════════ -->
-  <div id="loginSection" class="flex flex-col gap-4 px-4 pt-4">
-    <div class="text-[10px] font-bold uppercase tracking-[.18em] text-blue-400 px-1" id="stepLabel">Step 1 — Select Server</div>
-
-    <!-- Step 1 -->
-    <div id="step1" class="step active gap-3">
-      <div class="glass rounded-2xl p-4 flex flex-col gap-3">
-        <p class="text-xs text-gray-400">Choose which Sky server to connect to:</p>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="selServer('live')" id="srv-live" class="server-opt rounded-xl p-4 flex flex-col items-center gap-2 bg-white/2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">public</span>
-            <span class="text-xs font-bold">Live</span>
-            <span class="text-[10px] text-gray-500">Stable server</span>
-          </button>
-          <button onclick="selServer('beta')" id="srv-beta" class="server-opt rounded-xl p-4 flex flex-col items-center gap-2 bg-white/2">
-            <span class="material-symbols-outlined text-gray-500 text-2xl">science</span>
-            <span class="text-xs font-bold">Beta</span>
-            <span class="text-[10px] text-gray-500">Test server</span>
-          </button>
-        </div>
-        <button onclick="goStep2()" id="btnNext" class="btn-primary opacity-40" disabled>NEXT →</button>
-      </div>
+<!-- ══════════ MASS FARM ══════════ -->
+<div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
+  <div class="glass-card p-5 rounded-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <p class="section-title mb-0">MASS FARM (Max 10)</p>
+      <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20 hover:bg-primary/20 transition-all">ADD ACCOUNT</button>
     </div>
-
-    <!-- Step 2 -->
-    <div id="step2" class="step gap-3">
-      <div class="glass rounded-2xl p-4 flex flex-col gap-4">
-        <p class="text-xs text-gray-400">Choose login method:</p>
-        <div class="flex border-b border-white/5">
-          <button onclick="swTab('lua')" class="method-tab active flex-1" id="mtab-lua">Lua Code</button>
-          <button onclick="swTab('lib')" class="method-tab flex-1" id="mtab-lib">Lib Code</button>
-          <button onclick="swTab('platform')" class="method-tab flex-1" id="mtab-platform">Platform</button>
-        </div>
-
-        <!-- Lua -->
-        <div id="ltab-lua" class="flex flex-col gap-3">
-          <p class="text-[10px] text-gray-500">Paste your base64 Lua session code:</p>
-          <textarea id="luaInput" rows="4" placeholder="Paste Lua code here..."></textarea>
-          <button onclick="doLogin('lua')" id="btnLua" class="btn-primary">CONNECT WITH LUA</button>
-        </div>
-        <!-- Lib -->
-        <div id="ltab-lib" class="hidden flex-col gap-3">
-          <p class="text-[10px] text-gray-500">Paste your Lib session JSON:</p>
-          <textarea id="libInput" rows="4" placeholder='{"session":"...","type":"live","user":"...","version":...}'></textarea>
-          <button onclick="doLogin('lib')" id="btnLib" class="btn-primary">CONNECT WITH LIB</button>
-        </div>
-        <!-- Platform -->
-        <div id="ltab-platform" class="hidden flex-col gap-3">
-          <p class="text-[10px] text-gray-500">Select your platform:</p>
-          <div class="grid grid-cols-3 gap-2">
-            <button onclick="selPlat('Nintendo')" id="plat-Nintendo" class="plat-btn rounded-xl py-2.5 bg-white/3">Nintendo</button>
-            <button onclick="selPlat('Google')" id="plat-Google" class="plat-btn rounded-xl py-2.5 bg-white/3">Google</button>
-            <button onclick="selPlat('Steam')" id="plat-Steam" class="plat-btn rounded-xl py-2.5 bg-white/3">Steam</button>
-            <button onclick="selPlat('Sony')" id="plat-Sony" class="plat-btn rounded-xl py-2.5 bg-white/3">Sony</button>
-            <button onclick="selPlat('Facebook')" id="plat-Facebook" class="plat-btn rounded-xl py-2.5 bg-white/3">Facebook</button>
-            <button onclick="selPlat('Huawei')" id="plat-Huawei" class="plat-btn rounded-xl py-2.5 bg-white/3">Huawei</button>
-          </div>
-          <div id="platCodeWrap" class="hidden flex-col gap-2">
-            <textarea id="platInput" rows="3" placeholder='{"id":"...","token":"..."}'></textarea>
-            <button onclick="doLogin('platform')" id="btnPlat" class="btn-primary">CONNECT</button>
-          </div>
-        </div>
-
-        <button onclick="goStep1()" class="text-[11px] text-gray-500 text-center">← Back</button>
-      </div>
+    
+    <div id="massSessionContainer" class="flex flex-col gap-3 mb-5">
+      <!-- Session cards will be added here -->
     </div>
+    
+    <button onclick="startMassFarm()" id="btnStartMassFarm"
+      class="w-full bg-primary text-on-primary py-3.5 rounded-xl text-sm font-black tracking-widest shadow-lg shadow-primary/10 transition-all active:scale-[0.98]">
+      START MASS FARMING</button>
   </div>
 
-  <!-- ══════════ DASHBOARD ══════════ -->
-  <div id="dashSection" class="hidden flex-col">
+  <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl">
+    <p class="font-semibold mb-2 text-xs">Progress Log:</p>
+    <div id="massFarmLog" class="font-mono text-[10px] max-h-60 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
+  </div>
+</div>
 
-    <!-- HOME TAB -->
-    <div id="page-home" class="tab-page active px-4 pt-4 gap-4">
-      <!-- User card -->
-      <div class="glass rounded-2xl p-4 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-          <span class="material-symbols-outlined text-blue-400" style="font-size:20px">person</span>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-bold truncate" id="dName" style="font-family:'Geist',sans-serif">—</div>
-          <div class="text-[10px] text-gray-500" id="dSrv">—</div>
-        </div>
-        <button onclick="logout()" class="btn-danger flex-shrink-0">LOGOUT</button>
-      </div>
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active flex-col gap-4 mt-2 fade-in">
 
-      <!-- Automation grid -->
-      <div>
-        <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500 mb-3 px-1">Automation</div>
-        <div class="grid grid-cols-3 gap-3">
-          <button onclick="runFeat('Farm')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">agriculture</span>
-            <span class="text-[11px] font-semibold">Farm</span>
-          </button>
-          <button onclick="runFeat('Quest')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">assignment</span>
-            <span class="text-[11px] font-semibold">Quest</span>
-          </button>
-          <button onclick="runFeat('Eden')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-red-400 text-2xl">local_fire_department</span>
-            <span class="text-[11px] font-semibold">Eden</span>
-          </button>
-          <button onclick="runFeat('Wings')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">flight</span>
-            <span class="text-[11px] font-semibold">Wings</span>
-          </button>
-          <button onclick="runFeat('Map')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">map</span>
-            <span class="text-[11px] font-semibold">Map</span>
-          </button>
-          <button onclick="runFeat('Emotes')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400 text-2xl">emoji_emotions</span>
-            <span class="text-[11px] font-semibold">Emotes</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Beta section -->
-      <div id="betaGrid" class="hidden">
-        <div class="text-[10px] font-bold uppercase tracking-[.18em] text-yellow-500/80 mb-3 px-1">⚡ Beta Only</div>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="runFeat('IAPs')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-yellow-400 text-2xl">redeem</span>
-            <span class="text-[11px] font-semibold">Unlock IAPs</span>
-          </button>
-          <button onclick="runFeat('Candles')" class="feat glass rounded-2xl p-3 flex flex-col items-center gap-2">
-            <span class="material-symbols-outlined text-yellow-400 text-2xl">candle</span>
-            <span class="text-[11px] font-semibold">300 Candles</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Console -->
-      <div>
-        <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500 mb-2 px-1">Console</div>
-        <div id="console" class="glass rounded-xl p-3 h-28 overflow-y-auto font-mono text-[10px] text-gray-400">
-          <div class="text-blue-400">[READY] System online.</div>
-        </div>
-      </div>
+  <!-- LOGIN -->
+  <div id="loginSection" class="flex flex-col gap-3">
+    <div class="flex items-center gap-2 text-[10px] text-on-surface-variant px-1">
+      <span id="stepLabel" class="uppercase tracking-widest font-bold text-primary">Step 1 — Select Server</span>
     </div>
 
-    <!-- ACCOUNT TAB -->
-    <div id="page-account" class="tab-page px-4 pt-4 gap-4">
-      <div class="flex items-center justify-between px-1">
-        <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500">Balance</div>
-        <button onclick="refreshBalance()" id="btnRefresh" class="flex items-center gap-1 text-[11px] text-blue-400 font-semibold">
-          <span class="material-symbols-outlined" style="font-size:14px">refresh</span>Refresh
+    <div id="step1" class="step active flex-col glass-card p-4 rounded-2xl gap-3">
+      <p class="text-xs text-on-surface-variant">Choose which Sky server to connect to:</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="selectServer('live')" id="btn-live" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
+          <span class="material-symbols-outlined text-primary text-2xl">public</span>
+          <span class="text-xs font-semibold">Live</span>
+          <span class="text-[10px] text-on-surface-variant">Stable server</span>
+        </button>
+        <button onclick="selectServer('beta')" id="btn-beta" class="server-btn rounded-xl p-3 flex flex-col items-center gap-1.5 bg-surface-container">
+          <span class="material-symbols-outlined text-on-surface-variant text-2xl">science</span>
+          <span class="text-xs font-semibold">Beta</span>
+          <span class="text-[10px] text-on-surface-variant">Test server</span>
         </button>
       </div>
+        <button onclick="goStep2()" id="nextStep1" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold opacity-50 cursor-not-allowed" disabled>NEXT</button>
+    </div>
 
-      <!-- Currency cards -->
-      <div class="flex flex-col gap-2" id="balanceGrid">
-        <!-- filled by JS -->
-        <div class="text-[11px] text-gray-600 text-center py-8">Login first to see your balance</div>
+    <div id="step2" class="step flex-col glass-card p-4 rounded-2xl gap-3">
+      <p class="text-xs text-on-surface-variant">Choose login method:</p>
+      <div class="flex gap-1 bg-black/20 p-1 rounded-xl border border-white/5">
+        <button onclick="switchLoginTab('lua')" class="login-tab-btn active flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-lua">LUA</button>
+        <button onclick="switchLoginTab('lib')" class="login-tab-btn flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-lib">LIB</button>
+        <button onclick="switchLoginTab('platform')" class="login-tab-btn flex-1 py-2 text-[10px] font-bold rounded-lg transition-all" id="tab-platform">PLATFORM</button>
       </div>
-
-      <!-- User info -->
-      <div class="glass rounded-2xl p-4 flex flex-col gap-3">
-        <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500">Account Info</div>
-        <div class="flex flex-col gap-2" id="acctInfo">
-          <div class="flex justify-between text-xs"><span class="text-gray-500">User ID</span><span class="font-mono text-gray-300" id="infoUid">—</span></div>
-          <div class="flex justify-between text-xs"><span class="text-gray-500">Server</span><span class="font-semibold text-blue-300" id="infoSrv">—</span></div>
-          <div class="flex justify-between text-xs"><span class="text-gray-500">Login Method</span><span class="font-semibold text-gray-300" id="infoMethod">—</span></div>
-          <div class="flex justify-between text-xs"><span class="text-gray-500">Last Refresh</span><span class="text-gray-400" id="infoRefresh">—</span></div>
+      <div id="loginTab-lua" class="flex flex-col gap-2">
+        <p class="text-[10px] text-on-surface-variant px-1">Paste your Lua base64 code:</p>
+        <textarea id="luaInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lua code here..."></textarea>
+        <button onclick="submitLogin('lua')" id="btn-lua-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LUA</button>
+      </div>
+      <div id="loginTab-lib" class="hidden flex-col gap-2">
+        <p class="text-[10px] text-on-surface-variant">Paste your Lib session code:</p>
+        <textarea id="libInput" rows="4" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder="Paste Lib code here..."></textarea>
+        <button onclick="submitLogin('lib')" id="btn-lib-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT WITH LIB</button>
+      </div>
+      <div id="loginTab-platform" class="hidden flex-col gap-2">
+        <p class="text-[10px] text-on-surface-variant">Select your platform:</p>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="selectPlatform('Nintendo')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Nintendo">Nintendo</button>
+          <button onclick="selectPlatform('Google')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Google">Google</button>
+          <button onclick="selectPlatform('Steam')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Steam">Steam</button>
+          <button onclick="selectPlatform('Sony')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Sony">Sony</button>
+          <button onclick="selectPlatform('Facebook')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Facebook">Facebook</button>
+          <button onclick="selectPlatform('Huawei')" class="server-btn rounded-xl py-2.5 px-1 text-[11px] font-semibold bg-surface-container" id="plat-Huawei">Huawei</button>
+        </div>
+        <div id="platformCodeWrap" class="hidden flex-col gap-2">
+          <p class="text-[10px] text-on-surface-variant">Paste OAuth JSON code:</p>
+          <textarea id="platformInput" rows="3" class="w-full bg-black/40 border border-white/5 rounded-xl p-3 text-xs outline-none resize-none font-mono focus:border-primary/40 transition-colors" placeholder='{"id":"...","token":"..."}'></textarea>
+          <button onclick="submitLogin('platform')" id="btn-plat-submit" class="w-full bg-primary text-on-primary py-2.5 rounded-xl text-xs font-bold">CONNECT</button>
         </div>
       </div>
+        <button onclick="goStep1()" class="text-[11px] text-on-surface-variant text-center mt-1">Back</button>
     </div>
-
-    <!-- HISTORY TAB -->
-    <div id="page-history" class="tab-page px-4 pt-4 gap-4">
-      <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500 px-1">Activity Log</div>
-      <div class="glass rounded-2xl px-4 py-2" id="histList">
-        <div class="text-[11px] text-gray-600 text-center py-8">No activity yet</div>
-      </div>
-    </div>
-
-    <!-- SETTINGS TAB -->
-    <div id="page-settings" class="tab-page px-4 pt-4 gap-4">
-      <div class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-500 px-1">Settings</div>
-
-      <!-- Switch server -->
-      <div class="glass rounded-2xl p-4 flex flex-col gap-3">
-        <div class="text-xs font-semibold text-gray-300">Switch Server</div>
-        <p class="text-[11px] text-gray-500">Switch between Live and Beta without logging out. Requires re-login.</p>
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="switchServer('live')" id="swsrv-live" class="server-opt rounded-xl py-3 text-xs font-bold bg-white/2 sel">Live</button>
-          <button onclick="switchServer('beta')" id="swsrv-beta" class="server-opt rounded-xl py-3 text-xs font-bold bg-white/2">Beta</button>
-        </div>
-      </div>
-
-      <!-- Bot info -->
-      <div class="glass rounded-2xl p-4 flex flex-col gap-3">
-        <div class="text-xs font-semibold text-gray-300">Bot Info</div>
-        <div class="flex justify-between text-xs"><span class="text-gray-500">Version</span><span class="text-gray-300">1.0.0</span></div>
-        <div class="flex justify-between text-xs"><span class="text-gray-500">API</span><span class="text-gray-300 font-mono text-[10px]">Flask + ngrok</span></div>
-        <div class="flex justify-between text-xs"><span class="text-gray-500">Game</span><span class="text-gray-300">Sky: CotL</span></div>
-      </div>
-
-      <!-- Danger zone -->
-      <div class="glass rounded-2xl p-4 flex flex-col gap-3 border border-red-500/10">
-        <div class="text-xs font-semibold text-red-400">Danger Zone</div>
-        <button onclick="logout()" class="btn-danger w-full py-3 text-xs font-bold">LOGOUT SESSION</button>
-        <button onclick="clearHistory()" class="btn-danger w-full py-3 text-xs font-bold" style="background:rgba(255,255,255,.03);color:#6b7280;border-color:rgba(255,255,255,.08)">CLEAR HISTORY</button>
-      </div>
-    </div>
-
   </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashSection" class="hidden flex-col gap-4">
+    <!-- User card -->
+    <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary">person</span>
+      </div>
+      <div class="flex-1">
+        <div class="text-sm font-bold" id="dashUsername">—</div>
+        <div class="text-[10px] text-on-surface-variant" id="dashServer">—</div>
+      </div>
+      <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-lg px-2 py-1 font-semibold">LOGOUT</button>
+    </div>
+
+    <!-- Daily / All-in-One -->
+    <div>
+      <p class="section-title">Quick Actions</p>
+      <div class="feat-grid-2">
+        <button onclick="runFeature('DailyFunction','Daily Function')" id="feat-DailyFunction" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">bolt</span>
+          <span class="text-[11px] font-semibold text-center leading-tight">Daily Function</span>
+          <span class="text-[9px] text-on-surface-variant text-center">Farm+Quest+Lit</span>
+        </button>
+        <button onclick="runFeature('All','Run All')" id="feat-All" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">rocket_launch</span>
+          <span class="text-[11px] font-semibold text-center leading-tight">Run All</span>
+          <span class="text-[9px] text-on-surface-variant text-center">Everything</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Automation -->
+    <div>
+      <p class="section-title">Automation</p>
+      <div class="feat-grid-3">
+        <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
+          <span class="text-[11px] font-medium">Farm</span>
+        </button>
+        <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">Assignment</span>
+          <span class="text-[11px] font-medium">Daily Quest</span>
+        </button>
+        <button onclick="runFeature('WorldQuest','World Quest')" id="feat-WorldQuest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="WorldQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">public</span>
+          <span class="text-[11px] font-medium">World Quest</span>
+        </button>
+        <button onclick="runFeature('SeasonalQuest','Seasonal Quest')" id="feat-SeasonalQuest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="SeasonalQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
+          <span class="text-[11px] font-medium">Seasonal</span>
+        </button>
+        <button onclick="runFeature('Eden','Eden')" id="feat-Eden" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Eden"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-error/80 text-2xl">local_fire_department</span>
+          <span class="text-[11px] font-medium">Eden</span>
+        </button>
+        <button onclick="runFeature('Wings','Wings')" id="feat-Wings" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Wings"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
+          <span class="text-[11px] font-medium">Wings</span>
+        </button>
+        <button onclick="runFeature('Map','Map')" id="feat-Map" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">map</span>
+          <span class="text-[11px] font-medium">Map</span>
+        </button>
+        <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
+          <span class="text-[11px] font-medium">Emotes</span>
+        </button>
+        <button onclick="runFeature('LitCollect','Lit &amp; Collect')" id="feat-LitCollect" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="LitCollect"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">wb_sunny</span>
+          <span class="text-[11px] font-medium">Lit Collect</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Elder -->
+    <div>
+      <p class="section-title">Elder Cosmetics</p>
+      <div class="feat-grid-2">
+        <button onclick="runFeature('ElderHairs','Elder Hairs')" id="feat-ElderHairs" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="ElderHairs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">face_retouching_natural</span>
+          <span class="text-[11px] font-medium">Elder Hairs</span>
+        </button>
+        <button onclick="runFeature('ElderMask','Elder Mask')" id="feat-ElderMask" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="ElderMask"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">theater_comedy</span>
+          <span class="text-[11px] font-medium">Elder Mask</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Beta Only -->
+    <div id="betaSection" class="hidden">
+      <p class="section-title">Beta Only</p>
+      <div class="feat-grid-2">
+        <button onclick="runFeature('IAPs','Unlock IAPs')" id="feat-IAPs" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="IAPs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">redeem</span>
+          <span class="text-[11px] font-medium">Unlock IAPs</span>
+        </button>
+        <button onclick="runFeature('Candles','300 Candles')" id="feat-Candles" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Candles"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-2xl">candle</span>
+          <span class="text-[11px] font-medium">300 Candles</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Console -->
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <p class="section-title mb-0">System Console</p>
+        <button onclick="clearConsole()" class="text-[10px] text-on-surface-variant/60 border border-white/5 rounded-lg px-2 py-1 hover:text-error hover:border-error/20 transition-all">Clear</button>
+      </div>
+      <div id="consoleLogs" class="bg-black/30 border border-white/5 rounded-2xl p-4 h-44 overflow-y-auto font-mono text-[10px] hide-scrollbar flex flex-col gap-0.5">
+        <div class="text-primary">[READY] System online... waiting for session.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ACCOUNT ══════════ -->
+<div id="page-account" class="page flex-col gap-4 mt-2 fade-in">
+  <div id="accountNotLoggedIn" class="flex flex-col items-center justify-center gap-3 py-16">
+    <span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">person_off</span>
+    <p class="text-xs text-on-surface-variant/60 text-center">Login first to see your account info.</p>
+  </div>
+  <div id="accountLoggedIn" class="hidden flex-col gap-4">
+    <div class="glass-card p-4 rounded-2xl">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">manage_accounts</span>
+        </div>
+        <div class="flex-1">
+          <div class="text-sm font-bold" id="accUsername">—</div>
+          <div class="text-[10px] text-on-surface-variant" id="accServer">—</div>
+        </div>
+        <span id="accStatusBadge" class="text-[10px] px-2 py-1 rounded-full badge-live font-semibold">LIVE</span>
+      </div>
+      <div class="text-[10px] text-on-surface-variant/50 font-mono">User ID: <span id="accUserId" class="text-primary">—</span></div>
+    </div>
+
+    <div class="glass-card p-4 rounded-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <p class="section-title mb-0">Balance</p>
+        <button onclick="refreshAccount()" id="refreshBtn" class="flex items-center gap-1 text-[10px] text-primary border border-primary/30 rounded-lg px-2 py-1 hover:bg-primary/10 transition-all font-semibold">
+          <span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh
+        </button>
+      </div>
+      <div id="currencyLoading" class="hidden items-center justify-center py-4 gap-2">
+        <div class="spinner"></div><span class="text-[11px] text-on-surface-variant">Fetching balance...</span>
+      </div>
+      <div id="currencyGrid">
+        <div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 rounded-2xl flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold">Auto Refresh</p>
+        <p class="text-[10px] text-on-surface-variant">Update every 30 seconds</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HISTORY ══════════ -->
+<div id="page-history" class="page flex-col gap-3 mt-2 fade-in">
+  <div class="flex items-center justify-between px-1">
+    <p class="section-title mb-0">Activity Log</p>
+    <button onclick="clearHistory()" class="text-[10px] text-error/70 border border-error/20 rounded-lg px-2 py-1 hover:text-error transition-all">Clear</button>
+  </div>
+  <div id="historyList">
+    <div class="text-center text-[11px] text-on-surface-variant/40 py-10">No activity yet.</div>
+  </div>
+</div>
+
+<!-- ══════════ SETTINGS ══════════ -->
+<div id="page-settings" class="page flex-col gap-4 mt-2 fade-in">
+  <div class="glass-card p-4 rounded-2xl flex flex-col gap-3">
+    <p class="section-title mb-0">API Configuration</p>
+    <div class="flex flex-col gap-1">
+      <label class="text-[11px] text-on-surface-variant">Ngrok / API Base URL</label>
+      <div class="flex gap-2">
+        <input type="text" id="apiUrlInput" class="flex-1 bg-black/40 border border-white/5 rounded-xl p-2.5 text-xs outline-none font-mono focus:border-primary/40 transition-colors" placeholder="https://xxxx.ngrok-free.app">
+        <button onclick="saveApiUrl()" class="bg-primary text-on-primary px-3 rounded-xl text-xs font-bold shrink-0">Save</button>
+      </div>
+      <p class="text-[10px] text-on-surface-variant/40">Current: <span id="currentApiUrl" class="text-primary/80 font-mono break-all"></span></p>
+    </div>
+    <button onclick="testConnection()" id="testConnBtn" class="w-full border border-white/10 py-2.5 rounded-xl text-xs font-semibold text-on-surface-variant hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined" style="font-size:16px">wifi_tethering</span>Test Connection
+    </button>
+    <div id="connTestResult" class="hidden text-[11px] text-center py-2 rounded-xl"></div>
+  </div>
+
+  <div class="glass-card p-4 rounded-2xl flex flex-col gap-2.5">
+    <p class="section-title mb-0">App Info</p>
+    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Version</span><span class="text-primary font-mono">1.2.0</span></div>
+    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Bot</span><span class="text-primary">TrashGameCompany Bot</span></div>
+    <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Telegram ID</span><span id="settingsTgId" class="text-primary font-mono">—</span></div>
+  </div>
+
+  <div class="glass-card p-4 rounded-2xl flex flex-col gap-3 border border-error/10">
+    <p class="section-title mb-0" style="color:rgba(255,180,171,.6)">Danger Zone</p>
+    <button onclick="logout()" class="w-full border border-error/30 text-error py-2.5 rounded-xl text-xs font-semibold hover:bg-error/10 transition-all">Logout Current Session</button>
+    <button onclick="clearAllData()" class="w-full border border-error/15 text-error/50 py-2.5 rounded-xl text-xs font-semibold hover:bg-error/5 transition-all">Clear All Local Data</button>
+  </div>
+</div>
+
 </main>
 
-<!-- BOTTOM NAV -->
-<nav class="fixed bottom-0 w-full glass-strong border-t border-white/5 flex z-50" style="height:60px">
-  <button onclick="goPage('home')" class="nav-btn active" id="nav-home">
-    <span class="material-symbols-outlined nav-icon" style="font-variation-settings:'FILL' 1">home</span>
-    <span style="font-size:10px;font-weight:600">Home</span>
-    <div class="nav-indicator"></div>
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 w-full bg-surface/80 backdrop-blur-md border-t border-white/5 flex h-16 z-50">
+  <button onclick="goPage('home')" id="nav-home" class="nav-btn active">
+    <span class="nav-icon material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">home</span>
+    <span class="nav-label text-[10px] font-semibold">Home</span>
   </button>
-  <button onclick="goPage('account')" class="nav-btn" id="nav-account">
-    <span class="material-symbols-outlined nav-icon">account_circle</span>
-    <span style="font-size:10px">Account</span>
-    <div class="nav-indicator"></div>
+  <button onclick="goPage('massfarm')" id="nav-massfarm" class="nav-btn">
+    <span class="nav-icon material-symbols-outlined text-xl">group</span>
+    <span class="nav-label text-[10px]">Mass Farm</span>
   </button>
-  <button onclick="goPage('history')" class="nav-btn" id="nav-history">
-    <span class="material-symbols-outlined nav-icon">history</span>
-    <span style="font-size:10px">History</span>
-    <div class="nav-indicator"></div>
+  <button onclick="goPage('account')" id="nav-account" class="nav-btn">
+    <span class="nav-icon material-symbols-outlined text-xl">person</span>
+    <span class="nav-label text-[10px]">Account</span>
   </button>
-  <button onclick="goPage('settings')" class="nav-btn" id="nav-settings">
-    <span class="material-symbols-outlined nav-icon">settings</span>
-    <span style="font-size:10px">Settings</span>
-    <div class="nav-indicator"></div>
+  <button onclick="goPage('history')" id="nav-history" class="nav-btn">
+    <span class="nav-icon material-symbols-outlined text-xl">history</span>
+    <span class="nav-label text-[10px]">History</span>
+  </button>
+  <button onclick="goPage('settings')" id="nav-settings" class="nav-btn">
+    <span class="nav-icon material-symbols-outlined text-xl">settings</span>
+    <span class="nav-label text-[10px]">Settings</span>
   </button>
 </nav>
 
@@ -335,261 +427,520 @@
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-const API = "http://165.232.169.72:5000";
-const TG_ID = tg.initDataUnsafe?.user?.id || null;
-const TG_NAME = tg.initDataUnsafe?.user?.first_name || 'User';
+const DEFAULT_API = "https://aids-cargo-recordings-lanes.trycloudflare.com";
+let API_BASE = localStorage.getItem('api_base') || DEFAULT_API;
+const TELEGRAM_ID = tg.initDataUnsafe?.user?.id || null;
 
-let curServer = null, curMethod = null, curPlatform = null;
-let historyLog = [];
+let selectedServer = null, selectedPlatform = null;
+let isLoggedIn = false, autoRefreshInterval = null;
+let currentSessions = [];
+let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
 
-// ── Toast ──────────────────────────────────────────────────────────────────
-function toast(msg, ok = true) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.background = ok ? 'rgba(37,99,235,.85)' : 'rgba(185,28,28,.85)';
-  el.style.border = '1px solid ' + (ok ? 'rgba(96,165,250,.3)' : 'rgba(248,113,113,.3)');
-  el.style.color = '#fff';
-  el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 2600);
+// Init
+document.getElementById('apiUrlInput').value = API_BASE;
+document.getElementById('currentApiUrl').textContent = API_BASE;
+document.getElementById('settingsTgId').textContent = TELEGRAM_ID || 'N/A';
+renderHistory();
+refreshCoins();
+
+// ── Coins ──
+let FEATURE_COSTS = {};
+async function refreshCoins() {
+  if (!TELEGRAM_ID) { document.getElementById('coinBalance').textContent = 'N/A'; return; }
+  try {
+    const res = await fetch(API_BASE+'/api/coins', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('coinBalance').textContent = data.balance;
+      FEATURE_COSTS = data.costs || {};
+      populateCostBadges();
+    } else {
+      document.getElementById('coinBalance').textContent = '0';
+    }
+  } catch(e) {
+    document.getElementById('coinBalance').textContent = '?';
+  }
 }
 
-// ── Console log ────────────────────────────────────────────────────────────
-function clog(msg, err = false) {
-  const el = document.getElementById('console');
-  const d = document.createElement('div');
-  d.className = err ? 'text-red-400 mb-0.5' : 'text-gray-400 mb-0.5';
-  d.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
-  el.prepend(d);
+function populateCostBadges() {
+  document.querySelectorAll('[data-cost-for]').forEach(el => {
+    const feature = el.getAttribute('data-cost-for');
+    const cost = FEATURE_COSTS[feature];
+    if (cost !== undefined) {
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>${cost}`;
+    }
+  });
 }
 
-// ── History ────────────────────────────────────────────────────────────────
-const featIcons = {Farm:'agriculture',Quest:'assignment',Eden:'local_fire_department',Wings:'flight',Map:'map',Emotes:'emoji_emotions',IAPs:'redeem',Candles:'candle'};
-const featColors = {Eden:'text-red-400',IAPs:'text-yellow-400',Candles:'text-yellow-400'};
+// ── Navigation ──
+function goPage(name) {
+  ['home','massfarm','account','history','settings'].forEach(p => {
+    document.getElementById('page-'+p).classList.remove('active');
+    document.getElementById('page-'+p).style.display = 'none';
+    if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.remove('active');
+  });
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('page-'+name).style.display = 'flex';
+  
+  if(document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
+  
+  if (name === 'account' && isLoggedIn) refreshAccount();
+}
 
-function addHistory(feat, ok, detail='') {
-  const item = {feat, ok, detail, time: new Date().toLocaleTimeString()};
-  historyLog.unshift(item);
+// ── Toast ──
+function showToast(msg, type='primary') {
+  const t = document.getElementById('toast');
+  const styles = {
+    error:   ['#93000a','#ffb4ab','rgba(255,180,171,.3)'],
+    success: ['rgba(74,222,128,.12)','#4ade80','rgba(74,222,128,.3)'],
+    primary: ['rgba(0,100,200,.2)','#98cbff','rgba(152,203,255,.3)'],
+  };
+  const [bg,fg,br] = styles[type] || styles.primary;
+  Object.assign(t.style,{background:bg,color:fg,border:`1px solid ${br}`});
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Log ──
+function addLog(msg, type='info') {
+  const el = document.getElementById('consoleLogs');
+  const div = document.createElement('div');
+  const colors = { error:'#f87171', success:'#4ade80', warn:'#fbbf24', info:'#bec7d4' };
+  div.style.color = colors[type] || colors.info;
+  div.textContent = '['+new Date().toLocaleTimeString()+'] '+msg;
+  el.prepend(div);
+}
+
+function clearConsole() {
+  const el = document.getElementById('consoleLogs');
+  el.innerHTML = '<div style="color:#98cbff">[CLEARED] Console cleared.</div>';
+}
+
+// ── History ──
+function addHistory(action, result, type='success') {
+  actionHistory.unshift({ action, result, type, time: new Date().toLocaleTimeString(), date: new Date().toLocaleDateString() });
+  if (actionHistory.length > 60) actionHistory.pop();
+  localStorage.setItem('action_history', JSON.stringify(actionHistory));
   renderHistory();
 }
 
 function renderHistory() {
-  const el = document.getElementById('histList');
-  if (!historyLog.length) { el.innerHTML = '<div class="text-[11px] text-gray-600 text-center py-8">No activity yet</div>'; return; }
-  el.innerHTML = historyLog.map(h => `
-    <div class="hist-item">
-      <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,.04)">
-        <span class="material-symbols-outlined ${featColors[h.feat]||'text-blue-400'}" style="font-size:16px">${featIcons[h.feat]||'check'}</span>
+  const el = document.getElementById('historyList');
+  if (!actionHistory.length) { el.innerHTML='<div class="text-center text-[11px] text-on-surface-variant/40 py-10">No activity yet.</div>'; return; }
+  const colorMap = { success:'#98cbff', error:'#f87171', info:'#bec7d4', warn:'#fbbf24' };
+  el.innerHTML = actionHistory.map(h => `
+    <div class="history-item">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-semibold" style="color:${colorMap[h.type]||colorMap.info}">${h.action}</span>
+        <span class="text-[10px] text-on-surface-variant/40">${h.date} ${h.time}</span>
       </div>
-      <div class="flex-1 min-w-0">
-        <div class="text-xs font-semibold">${h.feat}</div>
-        <div class="text-[10px] text-gray-500">${h.detail||''}</div>
-      </div>
-      <div class="flex flex-col items-end gap-1">
-        <span class="${h.ok?'text-green-400':'text-red-400'}" style="font-size:10px;font-weight:700">${h.ok?'DONE':'FAIL'}</span>
-        <span class="text-gray-600" style="font-size:10px">${h.time}</span>
-      </div>
+      <div class="text-[10px] text-on-surface-variant/70">${h.result}</div>
     </div>`).join('');
 }
 
-function clearHistory() { historyLog=[]; renderHistory(); toast('History cleared'); }
-
-// ── Nav ────────────────────────────────────────────────────────────────────
-function goPage(p) {
-  document.querySelectorAll('.tab-page').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
-  document.getElementById('nav-' + p).classList.add('active');
-  if (p === 'account' && TG_ID) refreshBalance();
+function clearHistory() {
+  actionHistory = []; localStorage.removeItem('action_history'); renderHistory(); showToast('History cleared');
 }
 
-// ── Server select ──────────────────────────────────────────────────────────
-function selServer(s) {
-  curServer = s;
-  ['live','beta'].forEach(x => {
-    const el = document.getElementById('srv-' + x);
-    el.classList.toggle('sel', x === s);
-    el.querySelector('.material-symbols-outlined').style.color = x === s ? '#60a5fa' : '';
-  });
-  const btn = document.getElementById('btnNext');
-  btn.disabled = false; btn.style.opacity = '1';
+// ── Server select ──
+function selectServer(s) {
+  selectedServer = s;
+  ['live','beta'].forEach(x => document.getElementById('btn-'+x).classList.toggle('selected', x===s));
+  const btn = document.getElementById('nextStep1');
+  btn.disabled = false; btn.classList.remove('opacity-50','cursor-not-allowed');
 }
-
-function goStep2() {
-  if (!curServer) return;
-  document.getElementById('step1').classList.remove('active');
-  document.getElementById('step2').classList.add('active');
-  document.getElementById('stepLabel').textContent = 'Step 2 — Login Method';
-}
-function goStep1() {
-  document.getElementById('step2').classList.remove('active');
-  document.getElementById('step1').classList.add('active');
-  document.getElementById('stepLabel').textContent = 'Step 1 — Select Server';
-}
-
-// ── Method tabs ────────────────────────────────────────────────────────────
-function swTab(t) {
-  ['lua','lib','platform'].forEach(x => {
-    const tab = document.getElementById('ltab-' + x);
-    tab.classList.toggle('hidden', x !== t);
-    tab.classList.toggle('flex', x === t);
-    document.getElementById('mtab-' + x).classList.toggle('active', x === t);
+function goStep2() { if(!selectedServer) return; document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); document.getElementById('stepLabel').textContent='Step 2 — Login Method'; }
+function goStep1() { document.getElementById('step2').classList.remove('active'); document.getElementById('step1').classList.add('active'); document.getElementById('stepLabel').textContent='Step 1 — Select Server'; }
+function switchLoginTab(tab) {
+  ['lua','lib','platform'].forEach(t => {
+    const el = document.getElementById('loginTab-'+t);
+    el.classList.toggle('hidden', t!==tab); el.classList.toggle('flex', t===tab);
+    const btn = document.getElementById('tab-'+t);
+    if(btn) btn.style.background = (t===tab) ? 'rgba(152,203,255,0.15)' : '';
   });
 }
-
-// ── Platform ───────────────────────────────────────────────────────────────
-function selPlat(p) {
-  curPlatform = p;
-  ['Nintendo','Google','Steam','Sony','Facebook','Huawei'].forEach(x =>
-    document.getElementById('plat-' + x).classList.toggle('sel', x === p)
-  );
-  const w = document.getElementById('platCodeWrap');
-  w.classList.remove('hidden'); w.classList.add('flex');
+function selectPlatform(p) {
+  selectedPlatform = p;
+  ['Nintendo','Google','Steam','Sony','Facebook','Huawei'].forEach(x => document.getElementById('plat-'+x).classList.toggle('selected',x===p));
+  const w = document.getElementById('platformCodeWrap'); w.classList.remove('hidden'); w.classList.add('flex');
 }
 
-// ── Login ──────────────────────────────────────────────────────────────────
-async function doLogin(method) {
-  if (!TG_ID) { toast('Cannot get Telegram ID', false); return; }
-  let code = '';
-  const btnMap = {lua:'btnLua', lib:'btnLib', platform:'btnPlat'};
-  if (method === 'lua') code = document.getElementById('luaInput').value.trim();
-  else if (method === 'lib') code = document.getElementById('libInput').value.trim();
-  else code = document.getElementById('platInput').value.trim();
-  if (!code) { toast('Code is empty!', false); return; }
+// ── Login ──
+async function submitLogin(method) {
+  if (!TELEGRAM_ID) { showToast('Cannot get Telegram ID','error'); return; }
+  let code = method==='lua' ? document.getElementById('luaInput').value.trim()
+           : method==='lib' ? document.getElementById('libInput').value.trim()
+           : document.getElementById('platformInput').value.trim();
+  if (!code) { showToast('Code is empty!','error'); return; }
 
-  const btn = document.getElementById(btnMap[method]);
+  const btnId = method==='platform' ? 'btn-plat-submit' : 'btn-'+method+'-submit';
+  const btn = document.getElementById(btnId);
   const orig = btn.textContent;
-  btn.innerHTML = '<span class="spin"></span>Connecting...';
-  btn.disabled = true;
-  clog('Connecting via ' + method.toUpperCase() + ' on ' + curServer.toUpperCase() + '...');
+  btn.innerHTML = '<span class="spinner"></span>Connecting...'; btn.disabled = true;
+  addLog('Connecting via '+method.toUpperCase()+' on '+selectedServer.toUpperCase()+'...');
 
   try {
-    const res = await fetch(API + '/api/login', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({telegram_id: TG_ID, method, server: curServer, platform: curPlatform, code})
+    const res = await fetch(API_BASE+'/api/login', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID, method, server:selectedServer, platform:selectedPlatform, code })
     });
     const data = await res.json();
     if (data.ok) {
-      curMethod = method;
-      clog('LOGIN OK — ' + (data.user_id || ''));
-      toast('Connected!');
-      setLoggedIn();
+      addLog('LOGIN SUCCESS: '+data.message, 'success');
+      addHistory('Login', method.toUpperCase()+' on '+selectedServer.toUpperCase(), 'success');
+      showToast('Connected!', 'success');
+      setLoggedIn(method, selectedServer, data.user_id);
     } else {
-      clog('ERROR: ' + data.error, true);
-      toast(data.error, false);
+      addLog('ERROR: '+data.error, 'error');
+      addHistory('Login Failed', data.error, 'error');
+      showToast(data.error, 'error');
       btn.textContent = orig; btn.disabled = false;
     }
   } catch(e) {
-    clog('API unreachable: ' + e.message, true);
-    toast('API unreachable', false);
+    addLog('ERROR: API unreachable — '+e.message, 'error');
+    showToast('API unreachable','error');
     btn.textContent = orig; btn.disabled = false;
   }
 }
 
-function setLoggedIn() {
+function setLoggedIn(method, server, userId) {
+  isLoggedIn = true;
+  const name = tg.initDataUnsafe?.user?.first_name || 'User';
+
   document.getElementById('loginSection').classList.add('hidden');
-  const d = document.getElementById('dashSection');
-  d.classList.remove('hidden'); d.classList.add('flex'); d.style.flexDirection='column';
-  document.getElementById('dName').textContent = TG_NAME;
-  document.getElementById('dSrv').textContent = curServer.toUpperCase() + ' server · ' + curMethod.toUpperCase() + ' login';
+  const dash = document.getElementById('dashSection');
+  dash.classList.remove('hidden'); dash.classList.add('flex');
+  document.getElementById('dashUsername').textContent = name;
+  document.getElementById('dashServer').textContent = server.toUpperCase()+' server · '+method.toUpperCase()+' login';
   document.getElementById('statusBadge').textContent = 'CONNECTED';
-  document.getElementById('statusBadge').style.color = '#60a5fa';
-  document.getElementById('infoUid').textContent = TG_ID;
-  document.getElementById('infoSrv').textContent = curServer.toUpperCase();
-  document.getElementById('infoMethod').textContent = curMethod.toUpperCase();
-  if (curServer === 'beta') document.getElementById('betaGrid').classList.remove('hidden');
-  // Sync settings server pill
-  ['live','beta'].forEach(x => document.getElementById('swsrv-' + x).classList.toggle('sel', x === curServer));
-  refreshBalance();
+  document.getElementById('statusBadge').style.color = '#98cbff';
+
+  // Account page
+  document.getElementById('accountNotLoggedIn').classList.add('hidden');
+  const acc = document.getElementById('accountLoggedIn');
+  acc.classList.remove('hidden'); acc.classList.add('flex');
+  document.getElementById('accUsername').textContent = name;
+  document.getElementById('accServer').textContent = server.toUpperCase()+' · '+method.toUpperCase();
+  document.getElementById('accUserId').textContent = userId || '—';
+  const badge = document.getElementById('accStatusBadge');
+  badge.textContent = server.toUpperCase();
+  badge.className = 'text-[10px] px-2 py-1 rounded-full font-semibold '+(server==='live'?'badge-live':'badge-beta');
+
+  if (server==='beta') document.getElementById('betaSection').classList.remove('hidden');
+  refreshCoins();
 }
 
 function logout() {
-  curServer = null; curMethod = null; curPlatform = null;
+  isLoggedIn = false;
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+  document.getElementById('autoRefreshToggle').checked = false;
   document.getElementById('dashSection').classList.add('hidden');
   document.getElementById('dashSection').classList.remove('flex');
   document.getElementById('loginSection').classList.remove('hidden');
   document.getElementById('statusBadge').textContent = 'NOT LOGGED IN';
   document.getElementById('statusBadge').style.color = '';
-  document.getElementById('betaGrid').classList.add('hidden');
-  document.getElementById('balanceGrid').innerHTML = '<div class="text-[11px] text-gray-600 text-center py-8">Login first to see your balance</div>';
-  goStep1(); goPage('home');
-  clog('Logged out.');
+  document.getElementById('betaSection').classList.add('hidden');
+  document.getElementById('accountNotLoggedIn').classList.remove('hidden');
+  document.getElementById('accountLoggedIn').classList.add('hidden');
+  document.getElementById('accountLoggedIn').classList.remove('flex');
+  document.getElementById('currencyGrid').innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>';
+  selectedServer = null; selectedPlatform = null;
+  goStep1(); addLog('Logged out.'); addHistory('Logout','Session ended','info');
 }
 
-// ── Balance ────────────────────────────────────────────────────────────────
-const curIcons = {candles:'🕯',wax:'🪵',hearts:'💙',seasonal_candles:'⭐',ascended_candles:'✨',gift_candles:'🎁',rebirths:'🔄'};
-const curLabels = {candles:'Candles',wax:'Wax',hearts:'Hearts',seasonal_candles:'Seasonal CDL',ascended_candles:'Ascended CDL',gift_candles:'Gift CDL',rebirths:'Rebirths'};
-const curBg = {candles:'background:rgba(251,191,36,.08)',wax:'background:rgba(161,99,48,.1)',hearts:'background:rgba(59,130,246,.08)',seasonal_candles:'background:rgba(167,139,250,.1)',ascended_candles:'background:rgba(255,255,255,.05)',gift_candles:'background:rgba(52,211,153,.08)',rebirths:'background:rgba(239,68,68,.08)'};
+// ── Run Feature ──
+async function runFeature(name, label) {
+  if (!TELEGRAM_ID) { showToast('No Telegram ID','error'); return; }
 
-async function refreshBalance() {
-  if (!TG_ID) return;
-  const btn = document.getElementById('btnRefresh');
-  btn.innerHTML = '<span class="spin"></span>Loading...';
+  // Pre-check balance client-side for instant feedback
+  const cost = FEATURE_COSTS[name] ?? 1;
+  const curBalance = parseInt(document.getElementById('coinBalance').textContent, 10);
+  if (!isNaN(curBalance) && curBalance < cost) {
+    addLog(`ERROR: Not enough coins for ${label} (needs ${cost}, you have ${curBalance})`, 'error');
+    addHistory(label+' Failed', `Need ${cost} coins, have ${curBalance}`, 'error');
+    showToast(`Need ${cost} coins, you have ${curBalance}`,'error');
+    return;
+  }
+
+  const btn = document.getElementById('feat-'+name);
+  if (btn) btn.classList.add('running');
+  addLog(`Running: ${label}... (-${cost} coin${cost>1?'s':''})`);
+  showToast('Running '+label+'...');
+
   try {
-    const res = await fetch(API + '/api/balance?telegram_id=' + TG_ID, {headers:{'ngrok-skip-browser-warning':'1'}});
+    const res = await fetch(API_BASE+'/api/run', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID, feature:name, server:selectedServer })
+    });
     const data = await res.json();
-    if (data.ok && data.currency) {
-      const grid = document.getElementById('balanceGrid');
-      const items = data.currency;
-      grid.innerHTML = Object.entries(items).map(([k,v]) => `
-        <div class="cur-card">
-          <div class="cur-icon" style="${curBg[k]||'background:rgba(255,255,255,.05)'}">
-            <span style="font-size:18px">${curIcons[k]||'💎'}</span>
-          </div>
-          <div class="flex-1">
-            <div class="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">${curLabels[k]||k}</div>
-            <div class="text-lg font-bold" style="font-family:'Geist',sans-serif;color:#e5e2e1">${Number(v).toLocaleString()}</div>
-          </div>
-        </div>`).join('');
-      document.getElementById('infoRefresh').textContent = new Date().toLocaleTimeString();
+
+    if (typeof data.balance !== 'undefined') {
+      document.getElementById('coinBalance').textContent = data.balance;
+    }
+
+    if (data.ok) {
+      // Farm diff log
+      if (name === 'Farm' && data.diff) {
+        const d = data.diff;
+        const b = data.before || {};
+        const a = data.after || {};
+        const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
+
+        // Only show currencies that actually changed
+        const changedKeys = Object.keys(d).filter(k => d[k] !== 0);
+
+        if (changedKeys.length) {
+          addLog('DONE: Farm', 'success');
+          changedKeys.forEach(key => {
+            const meta = CURRENCY_META[key] || { label: key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) };
+            const before = b[key] ?? 0;
+            const after = a[key] ?? 0;
+            addLog(`${meta.label}: ${before} → ${after} (${fmtDiff(d[key])})`, 'success');
+          });
+          const summary = changedKeys.map(k => {
+            const meta = CURRENCY_META[k] || { label: k };
+            return `${meta.label} ${fmtDiff(d[k])}`;
+          }).join('  |  ');
+          addHistory('Farm', summary, 'success');
+        } else {
+          addLog('DONE: Farm — no currency change', 'success');
+          addHistory('Farm', 'No currency change', 'success');
+        }
+
+        // Also refresh account if on account page
+        if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
+      } else {
+        addLog('DONE: '+label, 'success');
+        addHistory(label, 'Executed successfully', 'success');
+      }
+      showToast(label+' done!','success');
     } else {
-      toast(data.error || 'Failed to load balance', false);
+      const errMsg = data.error || 'Unknown error (empty response from server)';
+      addLog('ERROR: '+errMsg,'error');
+      addHistory(label+' Failed', errMsg,'error');
+      showToast(errMsg,'error');
+      if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
     }
   } catch(e) {
-    toast('API unreachable', false);
+    addLog('ERROR: '+e.message,'error');
+    addHistory(label+' Error', e.message,'error');
+    showToast('API unreachable','error');
   }
-  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px">refresh</span>Refresh';
+
+  if (btn) btn.classList.remove('running');
 }
 
-// ── Run feature ────────────────────────────────────────────────────────────
-async function runFeat(name) {
-  if (!TG_ID) { toast('Not connected', false); return; }
-  clog('Running ' + name + '...');
-  toast('Running ' + name + '...');
+// ── Account ──
+async function refreshAccount() {
+  if (!TELEGRAM_ID || !isLoggedIn) return;
+  const btn = document.getElementById('refreshBtn');
+  btn.innerHTML = '<span class="spinner"></span>Loading...'; btn.disabled = true;
+  document.getElementById('currencyLoading').classList.remove('hidden');
+  document.getElementById('currencyLoading').classList.add('flex');
+
   try {
-    const res = await fetch(API + '/api/run', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({telegram_id: TG_ID, feature: name, server: curServer})
+    const res = await fetch(API_BASE+'/api/account', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID })
+    });
+    const data = await res.json();
+    document.getElementById('currencyLoading').classList.add('hidden');
+    document.getElementById('currencyLoading').classList.remove('flex');
+    if (data.ok) { renderCurrency(data.currency); showToast('Balance updated','success'); }
+    else showToast(data.error,'error');
+  } catch(e) {
+    document.getElementById('currencyLoading').classList.add('hidden');
+    document.getElementById('currencyLoading').classList.remove('flex');
+    showToast('API unreachable','error');
+  }
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh';
+  btn.disabled = false;
+}
+
+// ── Mass Farm ──
+function addSessionRow() {
+  const container = document.getElementById('massSessionContainer');
+  if (container.children.length >= 10) { showToast('Max 10 accounts!', 'error'); return; }
+  
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.id = 'row-' + id;
+  div.className = 'glass-card p-3 rounded-xl border border-white/5 relative flex flex-col gap-2 mb-1 fade-in';
+  div.innerHTML = `
+    <button onclick="document.getElementById('row-${id}').remove()" class="absolute top-2 right-2 text-error/50 hover:text-error transition-colors">
+      <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+    </button>
+    <div class="flex flex-col gap-1.5">
+      <label class="text-[9px] uppercase font-bold text-on-surface-variant/50 ml-1">Session JSON</label>
+      <div class="flex gap-2">
+        <input type="text" class="sess-json flex-1 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder='{"session":"...","user":"..."}'>
+        <button onclick="checkRowConnection('${id}')" class="bg-primary/10 text-primary px-3 rounded-lg text-[10px] font-bold border border-primary/20 hover:bg-primary/20 transition-all shrink-0">Check Connect</button>
+      </div>
+      <div id="check-status-${id}" class="text-[9px] ml-1 mt-1 font-semibold hidden"></div>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+// Add first row by default
+addSessionRow();
+
+async function checkRowConnection(id) {
+  const row = document.getElementById('row-'+id);
+  const jsonStr = row.querySelector('.sess-json').value.trim();
+  const statusEl = document.getElementById('check-status-'+id);
+  
+  if (!jsonStr) { showToast('JSON is empty','error'); return; }
+  
+  statusEl.classList.remove('hidden');
+  statusEl.textContent = 'Checking...';
+  statusEl.className = 'text-[9px] ml-1 mt-1 text-on-surface-variant';
+  
+  try {
+    const sessionData = JSON.parse(jsonStr);
+    const res = await fetch(API_BASE+'/api/check_session', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ session_data: sessionData })
     });
     const data = await res.json();
     if (data.ok) {
-      clog(name + ' — DONE');
-      toast(name + ' done! ✓');
-      addHistory(name, true, data.message || '');
-      if (['Farm','Quest','Eden','Candles'].includes(name)) refreshBalance();
+      statusEl.textContent = 'Session Connected';
+      statusEl.className = 'text-[9px] ml-1 mt-1 text-green-400';
     } else {
-      clog('ERROR: ' + data.error, true);
-      toast(data.error, false);
-      addHistory(name, false, data.error);
+      statusEl.textContent = 'Session Expired/Invalid: ' + (data.error || 'Unknown');
+      statusEl.className = 'text-[9px] ml-1 mt-1 text-error';
     }
   } catch(e) {
-    clog('ERROR: ' + e.message, true);
-    toast('API unreachable', false);
-    addHistory(name, false, 'API unreachable');
+    statusEl.textContent = 'JSON Error: ' + e.message;
+    statusEl.className = 'text-[9px] ml-1 mt-1 text-error';
   }
 }
 
-// ── Switch server (settings) ───────────────────────────────────────────────
-function switchServer(s) {
-  ['live','beta'].forEach(x => document.getElementById('swsrv-' + x).classList.toggle('sel', x === s));
-  if (s !== curServer) {
-    toast('Re-login required to switch server', false);
-    logout();
-    selServer(s);
-    goStep2();
+async function startMassFarm() {
+  const rows = document.querySelectorAll('#massSessionContainer > div');
+  currentSessions = [];
+  
+  rows.forEach(row => {
+    const jsonStr = row.querySelector('.sess-json').value.trim();
+    if (jsonStr) {
+      try {
+        const data = JSON.parse(jsonStr);
+        if (data.user && data.session) {
+          currentSessions.push(data);
+        }
+      } catch (e) {}
+    }
+  });
+
+  if (currentSessions.length === 0) { showToast('Add at least one account!', 'error'); return; }
+
+  const btn = document.getElementById('btnStartMassFarm');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>EXECUTING';
+  const log = document.getElementById('massFarmLog');
+  document.getElementById('massFarmResult').classList.remove('hidden');
+  log.innerHTML = '';
+  log.innerHTML += `<div class="text-primary py-1 font-bold">Starting Mass Farm (${currentSessions.length} accounts)...</div>`;
+
+  try {
+    const res = await fetch(API_BASE + '/api/massfarm', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
+      body: JSON.stringify({
+        telegram_id: TELEGRAM_ID,
+        sessions: currentSessions,
+        server: selectedServer || 'live'
+      })
+    });
+    const data = await res.json();
+    log.innerHTML += `<div class="text-green-400 font-bold py-1 border-t border-white/10 mt-1">Finished! Success: ${data.success}/${data.total}</div>`;
+    showToast(`Mass Farm completed! ${data.success} success`, 'success');
+    addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
+  } catch(e) {
+    log.innerHTML += `<div class="text-red-400 py-1">Connection error: ${e.message}</div>`;
+    showToast('Connection error', 'error');
   }
+  btn.disabled = false; btn.innerHTML = 'START MASS FARM';
+}
+
+const CURRENCY_META = {
+  candles:          { label:'Candles',    icon:'candle',          color:'#fbbf24' },
+  wax:              { label:'Wax',        icon:'opacity',         color:'#98cbff' },
+  hearts:           { label:'Hearts',     icon:'favorite',        color:'#f87171' },
+  seasonal_candles: { label:'Seasonal',   icon:'auto_awesome',    color:'#a78bfa' },
+  ascended_candles: { label:'Ascended',   icon:'star',            color:'#34d399' },
+  gift_candles:     { label:'Gift CDL',   icon:'redeem',          color:'#fb923c' },
+  rebirths:         { label:'Rebirths',   icon:'autorenew',       color:'#60a5fa' },
+};
+
+function renderCurrency(items) {
+  const grid = document.getElementById('currencyGrid');
+  if (!items || !Object.keys(items).length) { grid.innerHTML='<div class="text-[11px] text-on-surface-variant/40 text-center py-4">No currency data.</div>'; return; }
+  const ordered = Object.keys(CURRENCY_META).filter(k => items[k] !== undefined);
+  const rest = Object.keys(items).filter(k => !CURRENCY_META[k]);
+  grid.innerHTML = [...ordered, ...rest].map(key => {
+    const m = CURRENCY_META[key] || { label: key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), icon:'toll', color:'#98cbff' };
+    return `<div class="currency-row">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined" style="font-size:16px;color:${m.color}">${m.icon}</span>
+        <span class="text-xs text-on-surface-variant">${m.label}</span>
+      </div>
+      <span class="text-sm font-bold font-mono" style="color:${m.color}">${Number(items[key]).toLocaleString()}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleAutoRefresh() {
+  const on = document.getElementById('autoRefreshToggle').checked;
+  if (on) { refreshAccount(); autoRefreshInterval = setInterval(refreshAccount,30000); showToast('Auto refresh ON','success'); }
+  else { clearInterval(autoRefreshInterval); autoRefreshInterval=null; showToast('Auto refresh OFF'); }
+}
+
+// ── Settings ──
+function saveApiUrl() {
+  const val = document.getElementById('apiUrlInput').value.trim().replace(/\/$/,'');
+  if (!val) { showToast('URL kosong!','error'); return; }
+  API_BASE = val; localStorage.setItem('api_base',val);
+  document.getElementById('currentApiUrl').textContent = val;
+  showToast('API URL saved!','success');
+}
+
+async function testConnection() {
+  const btn = document.getElementById('testConnBtn');
+  const result = document.getElementById('connTestResult');
+  btn.innerHTML = '<span class="spinner"></span>Testing...'; btn.disabled = true;
+  result.classList.add('hidden');
+  try {
+    const res = await fetch(API_BASE+'/api/health',{headers:{'ngrok-skip-browser-warning':'1'}});
+    const data = await res.json();
+    result.classList.remove('hidden');
+    if (data.status==='ok') {
+      result.className='text-[11px] text-center py-2 rounded-xl bg-green-900/20 text-green-400 border border-green-400/10';
+      result.textContent='Connected! API is online.'; showToast('API online!','success');
+    } else {
+      result.className='text-[11px] text-center py-2 rounded-xl bg-error/10 text-error border border-error/10';
+      result.textContent='Unexpected response.';
+    }
+  } catch(e) {
+    result.classList.remove('hidden');
+    result.className='text-[11px] text-center py-2 rounded-xl bg-error/10 text-error border border-error/10';
+    result.textContent=e.message; showToast('Connection failed','error');
+  }
+  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px">wifi_tethering</span>Test Connection';
+  btn.disabled=false;
+}
+
+function clearAllData() {
+  if (!confirm('Reset all local data?')) return;
+  localStorage.clear(); API_BASE=DEFAULT_API; actionHistory=[];
+  document.getElementById('apiUrlInput').value=API_BASE;
+  document.getElementById('currentApiUrl').textContent=API_BASE;
+  renderHistory(); showToast('All data cleared');
 }
 </script>
 </body>
