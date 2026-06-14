@@ -40,6 +40,7 @@
   .currency-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
   .currency-row:last-child{border-bottom:none}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .session-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:8px;border-radius:8px;margin-bottom:6px;font-size:11px}
   .fade-in{animation:fadeIn .22s ease forwards}
   .history-item{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:8px}
   .toggle-switch{position:relative;display:inline-block;width:42px;height:24px}
@@ -87,6 +88,39 @@
 </header>
 
 <main class="pt-16 pb-20 px-4 min-h-screen">
+
+<!-- TAB NAV -->
+<div class="flex border-b border-white/10 mb-6 sticky top-16 bg-background z-40">
+  <button onclick="goPage('home')" class="tab-btn active flex-1 py-3 text-sm font-semibold" id="tab-home">Home</button>
+  <button onclick="goPage('massfarm')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-massfarm">Mass Farm</button>
+  <button onclick="goPage('account')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-account">Account</button>
+  <button onclick="goPage('history')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-history">History</button>
+  <button onclick="goPage('settings')" class="tab-btn flex-1 py-3 text-sm font-semibold" id="tab-settings">Settings</button>
+</div>
+
+<!-- ══════════ MASS FARM ══════════ -->
+<div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
+  <div class="glass-card p-5 rounded-2xl">
+    <p class="section-title">🟢 MASS FARM (Max 10 Accounts)</p>
+    <p class="text-xs text-on-surface-variant mb-3">Paste session JSON satu per baris</p>
+    
+    <textarea id="massSessionInput" rows="10" 
+      class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-xs font-mono resize-none focus:border-primary/50 outline-none"
+      placeholder='{"session":"3a3a181...","type":"live","user":"f2895...","version":394009}'></textarea>
+    
+    <div class="flex gap-3 mt-4">
+      <button onclick="validateSessions()" 
+        class="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl text-sm font-semibold transition-all">✅ Validate Sessions</button>
+      <button onclick="startMassFarm()" id="btnStartMassFarm"
+        class="flex-1 bg-primary text-on-primary py-3 rounded-xl text-sm font-bold transition-all">🚀 START MASS FARM</button>
+    </div>
+  </div>
+
+  <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl">
+    <p class="font-semibold mb-2 text-xs">Progress Log:</p>
+    <div id="massFarmLog" class="font-mono text-[10px] max-h-60 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
+  </div>
+</div>
 
 <!-- ══════════ HOME ══════════ -->
 <div id="page-home" class="page active flex-col gap-4 mt-2 fade-in">
@@ -383,6 +417,10 @@
     <span class="nav-icon material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">home</span>
     <span class="nav-label text-[10px] font-semibold">Home</span>
   </button>
+  <button onclick="goPage('massfarm')" id="nav-massfarm" class="nav-btn">
+    <span class="nav-icon material-symbols-outlined text-xl">group</span>
+    <span class="nav-label text-[10px]">Mass Farm</span>
+  </button>
   <button onclick="goPage('account')" id="nav-account" class="nav-btn">
     <span class="nav-icon material-symbols-outlined text-xl">person</span>
     <span class="nav-label text-[10px]">Account</span>
@@ -407,6 +445,7 @@ const TELEGRAM_ID = tg.initDataUnsafe?.user?.id || null;
 
 let selectedServer = null, selectedPlatform = null;
 let isLoggedIn = false, autoRefreshInterval = null;
+let currentSessions = [];
 let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
 
 // Init
@@ -450,12 +489,18 @@ function populateCostBadges() {
 
 // ── Navigation ──
 function goPage(name) {
-  ['home','account','history','settings'].forEach(p => {
+  ['home','massfarm','account','history','settings'].forEach(p => {
     document.getElementById('page-'+p).classList.remove('active');
-    document.getElementById('nav-'+p).classList.remove('active');
+    document.getElementById('page-'+p).style.display = 'none';
+    if(document.getElementById('nav-'+p)) document.getElementById('nav-'+p).classList.remove('active');
+    if(document.getElementById('tab-'+p)) document.getElementById('tab-'+p).classList.remove('active');
   });
   document.getElementById('page-'+name).classList.add('active');
-  document.getElementById('nav-'+name).classList.add('active');
+  document.getElementById('page-'+name).style.display = 'flex';
+  
+  if(document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
+  if(document.getElementById('tab-'+name)) document.getElementById('tab-'+name).classList.add('active');
+  
   if (name === 'account' && isLoggedIn) refreshAccount();
 }
 
@@ -727,6 +772,62 @@ async function refreshAccount() {
   }
   btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh';
   btn.disabled = false;
+}
+
+// ── Mass Farm ──
+async function validateSessions() {
+  const text = document.getElementById('massSessionInput').value.trim();
+  const lines = text.split('\n').filter(l => l.trim());
+  
+  currentSessions = [];
+  const log = document.getElementById('massFarmLog');
+  log.innerHTML = '';
+
+  for (let line of lines) {
+    try {
+      const data = JSON.parse(line);
+      if (data.user && data.session) {
+        currentSessions.push(data);
+        log.innerHTML += `<div class="session-item text-green-400">✅ Valid: ${data.user.slice(0,12)}...</div>`;
+      } else {
+        log.innerHTML += `<div class="session-item text-red-400">❌ Invalid format (Missing user/session)</div>`;
+      }
+    } catch(e) {
+      log.innerHTML += `<div class="session-item text-red-400">❌ JSON Error: ${e.message}</div>`;
+    }
+  }
+  document.getElementById('massFarmResult').classList.remove('hidden');
+}
+
+async function startMassFarm() {
+  if (currentSessions.length === 0) { showToast('No valid sessions!', 'error'); return; }
+
+  const btn = document.getElementById('btnStartMassFarm');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Farming...';
+
+  const log = document.getElementById('massFarmLog');
+  log.innerHTML += `<div class="text-primary py-1 font-bold">🚀 Starting Mass Farm (${currentSessions.length} accounts)...</div>`;
+
+  try {
+    const res = await fetch(API_BASE + '/api/massfarm', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
+      body: JSON.stringify({
+        telegram_id: TELEGRAM_ID,
+        sessions: currentSessions,
+        server: selectedServer || 'live'
+      })
+    });
+    const data = await res.json();
+    log.innerHTML += `<div class="text-green-400 font-bold py-1 border-t border-white/10 mt-1">🏁 Finished! Success: ${data.success}/${data.total}</div>`;
+    showToast(`Mass Farm completed! ${data.success} success`, 'success');
+    addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
+  } catch(e) {
+    log.innerHTML += `<div class="text-red-400 py-1">❌ Connection error: ${e.message}</div>`;
+    showToast('Connection error', 'error');
+  }
+  btn.disabled = false; btn.innerHTML = '🚀 START MASS FARM';
 }
 
 const CURRENCY_META = {
