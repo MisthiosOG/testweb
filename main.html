@@ -623,10 +623,31 @@ async function runFeature(name, label) {
       // Farm diff log
       if (name === 'Farm' && data.diff) {
         const d = data.diff;
-        const fmt = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
-        const candleStr = `Candles ${fmt(d.candles)}  |  Wax ${fmt(d.wax)}  |  Hearts ${fmt(d.hearts)}`;
-        addLog('DONE Farm — '+candleStr, 'success');
-        addHistory('Farm', candleStr, 'success');
+        const b = data.before || {};
+        const a = data.after || {};
+        const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
+
+        // Only show currencies that actually changed
+        const changedKeys = Object.keys(d).filter(k => d[k] !== 0);
+
+        if (changedKeys.length) {
+          addLog('DONE: Farm', 'success');
+          changedKeys.forEach(key => {
+            const meta = CURRENCY_META[key] || { label: key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) };
+            const before = b[key] ?? 0;
+            const after = a[key] ?? 0;
+            addLog(`${meta.label}: ${before} → ${after} (${fmtDiff(d[key])})`, 'success');
+          });
+          const summary = changedKeys.map(k => {
+            const meta = CURRENCY_META[k] || { label: k };
+            return `${meta.label} ${fmtDiff(d[k])}`;
+          }).join('  |  ');
+          addHistory('Farm', summary, 'success');
+        } else {
+          addLog('DONE: Farm — no currency change', 'success');
+          addHistory('Farm', 'No currency change', 'success');
+        }
+
         // Also refresh account if on account page
         if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
       } else {
