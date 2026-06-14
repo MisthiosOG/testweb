@@ -171,6 +171,24 @@
       </div>
         <button onclick="goStep1()" class="text-[11px] text-on-surface-variant text-center mt-1">Back</button>
     </div>
+
+    <!-- Request Access Card (shown when ACCESS DENIED) -->
+    <div id="reqAccessCard" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-3 border border-error/20">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-error" style="font-size:20px">lock</span>
+        <span class="text-sm font-bold text-error">Access Denied</span>
+      </div>
+      <p class="text-[11px] text-on-surface-variant">Your Telegram ID is not in the authorized list. Request access from the bot owner.</p>
+      <div class="bg-black/30 rounded-xl p-3 flex items-center justify-between">
+        <span class="text-[10px] text-on-surface-variant">Your Telegram ID</span>
+        <span class="text-xs font-mono text-primary" id="reqTgId">—</span>
+      </div>
+      <button onclick="requestAccess()" id="btnReqAccess" class="w-full bg-error/20 text-error border border-error/30 py-2.5 rounded-xl text-xs font-bold hover:bg-error/30 transition-all">
+        REQUEST ACCESS
+      </button>
+      <div id="reqAccessResult" class="hidden text-[11px] text-center py-2 rounded-xl"></div>
+      <button onclick="hideReqAccess()" class="text-[11px] text-on-surface-variant text-center">← Back to Login</button>
+    </div>
   </div>
 
   <!-- DASHBOARD -->
@@ -599,6 +617,7 @@ async function submitLogin(method) {
       addHistory('Login Failed', data.error, 'error');
       showToast(data.error, 'error');
       btn.textContent = orig; btn.disabled = false;
+      if (res.status === 403) { showReqAccess(); }
     }
   } catch(e) {
     addLog('ERROR: API unreachable — '+e.message, 'error');
@@ -941,6 +960,57 @@ function clearAllData() {
   document.getElementById('apiUrlInput').value=API_BASE;
   document.getElementById('currentApiUrl').textContent=API_BASE;
   renderHistory(); showToast('All data cleared');
+}
+
+// ── Request Access ──────────────────────────────────────────────────────────
+function showReqAccess() {
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('reqAccessCard').classList.remove('hidden');
+  document.getElementById('reqTgId').textContent = TELEGRAM_ID || '—';
+  document.getElementById('stepLabel').textContent = 'Access Required';
+}
+
+function hideReqAccess() {
+  document.getElementById('reqAccessCard').classList.add('hidden');
+  goStep1();
+}
+
+async function requestAccess() {
+  if (!TELEGRAM_ID) { showToast('Cannot get Telegram ID', 'error'); return; }
+  const btn = document.getElementById('btnReqAccess');
+  const result = document.getElementById('reqAccessResult');
+  btn.innerHTML = '<span class="spin"></span>Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(API_BASE + '/api/request_access', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, name: tg.initDataUnsafe?.user?.first_name || 'Unknown' })
+    });
+    const data = await res.json();
+    result.classList.remove('hidden');
+    if (data.ok) {
+      result.textContent = '✓ Request sent! Wait for admin approval.';
+      result.style.background = 'rgba(74,222,128,.1)';
+      result.style.color = '#4ade80';
+      btn.textContent = 'REQUEST SENT';
+    } else {
+      result.textContent = data.error || 'Failed to send request';
+      result.style.background = 'rgba(255,180,171,.1)';
+      result.style.color = '#ffb4ab';
+      btn.textContent = 'REQUEST ACCESS';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    result.classList.remove('hidden');
+    result.textContent = 'API unreachable';
+    result.style.background = 'rgba(255,180,171,.1)';
+    result.style.color = '#ffb4ab';
+    btn.textContent = 'REQUEST ACCESS';
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
