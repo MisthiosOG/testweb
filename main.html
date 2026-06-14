@@ -24,10 +24,11 @@
   .step{display:none}.step.active{display:flex}
   .server-btn{transition:all .15s;border:1px solid rgba(255,255,255,.1)}
   .server-btn.selected{border-color:#98cbff;background:rgba(152,203,255,.12);color:#98cbff}
-  .feat-btn{transition:transform .12s,background .15s;cursor:pointer}
+  .feat-btn{transition:transform .12s,background .15s;cursor:pointer;position:relative}
   .feat-btn:active{transform:scale(.93)}
   .feat-btn:hover{background:rgba(255,255,255,.05)}
   .feat-btn.running{animation:pulse-slow 1s ease infinite;pointer-events:none;opacity:.7}
+  .cost-badge{position:absolute;top:6px;right:6px;font-size:9px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:99px;padding:1px 6px;line-height:1.4;display:flex;align-items:center;gap:2px}
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:8px 18px;border-radius:12px;font-size:11px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
   .toast.show{opacity:1}
   .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;margin-right:6px;vertical-align:middle}
@@ -77,6 +78,10 @@
       <span class="material-symbols-outlined" style="font-size:14px">monetization_on</span>
       <span id="coinBalance">—</span>
     </div>
+    <a href="https://t.me/diesforcringes" target="_blank" rel="noopener" class="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-primary/15 border border-primary/30 font-bold text-primary hover:bg-primary/25 transition-all">
+      <span class="material-symbols-outlined" style="font-size:13px">add_circle</span>
+      Top Up
+    </a>
     <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
   </div>
 </header>
@@ -165,11 +170,13 @@
       <p class="section-title">Quick Actions</p>
       <div class="feat-grid-2">
         <button onclick="runFeature('DailyFunction','Daily Function')" id="feat-DailyFunction" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">bolt</span>
           <span class="text-[11px] font-semibold text-center leading-tight">Daily Function</span>
           <span class="text-[9px] text-on-surface-variant text-center">Farm+Quest+Lit</span>
         </button>
         <button onclick="runFeature('All','Run All')" id="feat-All" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">rocket_launch</span>
           <span class="text-[11px] font-semibold text-center leading-tight">Run All</span>
           <span class="text-[9px] text-on-surface-variant text-center">Everything</span>
@@ -182,38 +189,47 @@
       <p class="section-title">Automation</p>
       <div class="feat-grid-3">
         <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
           <span class="text-[11px] font-medium">Farm</span>
         </button>
         <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">Assignment</span>
           <span class="text-[11px] font-medium">Daily Quest</span>
         </button>
         <button onclick="runFeature('WorldQuest','World Quest')" id="feat-WorldQuest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="WorldQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">public</span>
           <span class="text-[11px] font-medium">World Quest</span>
         </button>
         <button onclick="runFeature('SeasonalQuest','Seasonal Quest')" id="feat-SeasonalQuest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="SeasonalQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
           <span class="text-[11px] font-medium">Seasonal</span>
         </button>
         <button onclick="runFeature('Eden','Eden')" id="feat-Eden" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Eden"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-error/80 text-2xl">local_fire_department</span>
           <span class="text-[11px] font-medium">Eden</span>
         </button>
         <button onclick="runFeature('Wings','Wings')" id="feat-Wings" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Wings"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
           <span class="text-[11px] font-medium">Wings</span>
         </button>
         <button onclick="runFeature('Map','Map')" id="feat-Map" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">map</span>
           <span class="text-[11px] font-medium">Map</span>
         </button>
         <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
           <span class="text-[11px] font-medium">Emotes</span>
         </button>
         <button onclick="runFeature('LitCollect','Lit &amp; Collect')" id="feat-LitCollect" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="LitCollect"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">wb_sunny</span>
           <span class="text-[11px] font-medium">Lit Collect</span>
         </button>
@@ -225,10 +241,12 @@
       <p class="section-title">Elder Cosmetics</p>
       <div class="feat-grid-2">
         <button onclick="runFeature('ElderHairs','Elder Hairs')" id="feat-ElderHairs" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="ElderHairs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">face_retouching_natural</span>
           <span class="text-[11px] font-medium">Elder Hairs</span>
         </button>
         <button onclick="runFeature('ElderMask','Elder Mask')" id="feat-ElderMask" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="ElderMask"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">theater_comedy</span>
           <span class="text-[11px] font-medium">Elder Mask</span>
         </button>
@@ -240,10 +258,12 @@
       <p class="section-title">Beta Only</p>
       <div class="feat-grid-2">
         <button onclick="runFeature('IAPs','Unlock IAPs')" id="feat-IAPs" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="IAPs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">redeem</span>
           <span class="text-[11px] font-medium">Unlock IAPs</span>
         </button>
         <button onclick="runFeature('Candles','300 Candles')" id="feat-Candles" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
+          <span class="cost-badge" data-cost-for="Candles"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">candle</span>
           <span class="text-[11px] font-medium">300 Candles</span>
         </button>
@@ -409,12 +429,23 @@ async function refreshCoins() {
     if (data.ok) {
       document.getElementById('coinBalance').textContent = data.balance;
       FEATURE_COSTS = data.costs || {};
+      populateCostBadges();
     } else {
       document.getElementById('coinBalance').textContent = '0';
     }
   } catch(e) {
     document.getElementById('coinBalance').textContent = '?';
   }
+}
+
+function populateCostBadges() {
+  document.querySelectorAll('[data-cost-for]').forEach(el => {
+    const feature = el.getAttribute('data-cost-for');
+    const cost = FEATURE_COSTS[feature];
+    if (cost !== undefined) {
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>${cost}`;
+    }
+  });
 }
 
 // ── Navigation ──
