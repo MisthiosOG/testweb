@@ -26,7 +26,14 @@
   .feat-btn:active{transform:scale(.93)}
   .feat-btn:hover{background:rgba(255,255,255,.05)}
   .feat-btn.running{animation:pulse-slow 1s ease infinite;pointer-events:none;opacity:.7}
+  .feat-btn.locked{opacity:.4;filter:grayscale(.6)}
+  .feat-btn.locked .cost-badge{display:none}
+  .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border-radius:1rem;backdrop-filter:blur(1px)}
+  .lock-overlay .material-symbols-outlined{font-size:20px;color:#fbbf24}
   .cost-badge{position:absolute;top:6px;right:6px;font-size:9px;font-weight:700;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);border-radius:99px;padding:1px 6px;line-height:1.4;display:flex;align-items:center;gap:2px}
+  .role-free{background:rgba(190,199,212,.08);color:#bec7d4;border-color:rgba(190,199,212,.2)}
+  .role-vip_weekly{background:rgba(251,191,36,.1);color:#fbbf24;border-color:rgba(251,191,36,.3)}
+  .role-vip_monthly{background:rgba(167,139,250,.12);color:#a78bfa;border-color:rgba(167,139,250,.35)}
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:8px 18px;border-radius:12px;font-size:11px;font-weight:600;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
   .toast.show{opacity:1}
   .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;margin-right:6px;vertical-align:middle}
@@ -74,7 +81,11 @@
       <div class="text-[10px] text-primary animate-pulse-slow">System Operational</div>
     </div>
   </div>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-1.5 flex-wrap justify-end">
+    <div id="roleBadge" class="hidden items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-bold border">
+      <span class="material-symbols-outlined" style="font-size:13px">military_tech</span>
+      <span id="roleLabel">—</span>
+    </div>
     <div id="coinBadge" class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 font-bold text-amber-300">
       <span class="material-symbols-outlined" style="font-size:14px">monetization_on</span>
       <span id="coinBalance">—</span>
@@ -558,6 +569,58 @@ let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
 document.getElementById('settingsTgId').textContent = TELEGRAM_ID || 'N/A';
 renderHistory();
 refreshCoins();
+refreshRole();
+
+// ── Role / Membership ──
+let CURRENT_ROLE = 'free';
+let ALLOWED_FEATURES = new Set();
+let MAX_MASSFARM_SESSIONS = 3;
+
+async function refreshRole() {
+  if (!TELEGRAM_ID) return;
+  try {
+    const res = await fetch(API_BASE+'/api/role', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      CURRENT_ROLE = data.role;
+      ALLOWED_FEATURES = new Set(data.features);
+      MAX_MASSFARM_SESSIONS = data.max_sessions;
+
+      const badge = document.getElementById('roleBadge');
+      const label = document.getElementById('roleLabel');
+      badge.classList.remove('hidden','role-free','role-vip_weekly','role-vip_monthly');
+      badge.classList.add('flex','role-'+data.role);
+      label.textContent = data.label.toUpperCase();
+
+      applyFeatureLocks();
+    }
+  } catch(e) { /* silent */ }
+}
+
+function applyFeatureLocks() {
+  document.querySelectorAll('[data-cost-for]').forEach(badgeEl => {
+    const feature = badgeEl.getAttribute('data-cost-for');
+    const btn = badgeEl.closest('.feat-btn');
+    if (!btn) return;
+
+    const existingOverlay = btn.querySelector('.lock-overlay');
+    if (ALLOWED_FEATURES.has(feature)) {
+      btn.classList.remove('locked');
+      if (existingOverlay) existingOverlay.remove();
+    } else {
+      btn.classList.add('locked');
+      if (!existingOverlay) {
+        const overlay = document.createElement('div');
+        overlay.className = 'lock-overlay';
+        overlay.innerHTML = '<span class="material-symbols-outlined">lock</span>';
+        btn.appendChild(overlay);
+      }
+    }
+  });
+}
 
 // ── Coins ──
 let FEATURE_COSTS = {};
@@ -765,6 +828,7 @@ function setLoggedIn(method, server, userId) {
 
   if (server==='beta') document.getElementById('betaSection').classList.remove('hidden');
   refreshCoins();
+  refreshRole();
 }
 
 function logout() {
@@ -790,6 +854,14 @@ function logout() {
 // ── Run Feature ──
 async function runFeature(name, label) {
   if (!TELEGRAM_ID) { showToast('No Telegram ID','error'); return; }
+
+  // Role/feature lock check
+  if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
+    addLog(`LOCKED: ${label} is a VIP-only feature.`, 'error');
+    addHistory(label+' Failed', 'VIP-only feature. Upgrade to unlock.', 'error');
+    showToast(`${label} is VIP-only. Tap Top Up to upgrade.`,'error');
+    return;
+  }
 
   // Pre-check balance client-side for instant feedback
   const cost = FEATURE_COSTS[name] ?? 1;
@@ -885,6 +957,9 @@ async function runFeature(name, label) {
       addHistory(label+' Failed', errMsg,'error');
       showToast(errMsg,'error');
       if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
+      if (data.locked) {
+        refreshRole(); // re-sync lock state in case it changed
+      }
     }
   } catch(e) {
     // Network error saat fetch awal ke /api/run
@@ -946,7 +1021,10 @@ async function refreshAccount() {
 // ── Mass Farm ──
 function addSessionRow() {
   const container = document.getElementById('massSessionContainer');
-  if (container.children.length >= 10) { showToast('Max 10 accounts!', 'error'); return; }
+  if (container.children.length >= MAX_MASSFARM_SESSIONS) {
+    showToast(`Max ${MAX_MASSFARM_SESSIONS} accounts for your role (${CURRENT_ROLE.toUpperCase()}). Upgrade for more.`, 'error');
+    return;
+  }
   
   const id = Date.now();
   const div = document.createElement('div');
