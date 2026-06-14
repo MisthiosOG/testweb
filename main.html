@@ -72,7 +72,13 @@
       <div class="text-[10px] text-primary animate-pulse-slow">System Operational</div>
     </div>
   </div>
-  <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
+  <div class="flex items-center gap-2">
+    <div id="coinBadge" class="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 font-bold text-amber-300">
+      <span class="material-symbols-outlined" style="font-size:14px">monetization_on</span>
+      <span id="coinBalance">—</span>
+    </div>
+    <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
+  </div>
 </header>
 
 <main class="pt-16 pb-20 px-4 min-h-screen">
@@ -388,6 +394,28 @@ document.getElementById('apiUrlInput').value = API_BASE;
 document.getElementById('currentApiUrl').textContent = API_BASE;
 document.getElementById('settingsTgId').textContent = TELEGRAM_ID || 'N/A';
 renderHistory();
+refreshCoins();
+
+// ── Coins ──
+let FEATURE_COSTS = {};
+async function refreshCoins() {
+  if (!TELEGRAM_ID) { document.getElementById('coinBalance').textContent = 'N/A'; return; }
+  try {
+    const res = await fetch(API_BASE+'/api/coins', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ telegram_id:TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('coinBalance').textContent = data.balance;
+      FEATURE_COSTS = data.costs || {};
+    } else {
+      document.getElementById('coinBalance').textContent = '0';
+    }
+  } catch(e) {
+    document.getElementById('coinBalance').textContent = '?';
+  }
+}
 
 // ── Navigation ──
 function goPage(name) {
@@ -540,6 +568,7 @@ function setLoggedIn(method, server, userId) {
   badge.className = 'text-[10px] px-2 py-1 rounded-full font-semibold '+(server==='live'?'badge-live':'badge-beta');
 
   if (server==='beta') document.getElementById('betaSection').classList.remove('hidden');
+  refreshCoins();
 }
 
 function logout() {
@@ -563,9 +592,20 @@ function logout() {
 // ── Run Feature ──
 async function runFeature(name, label) {
   if (!TELEGRAM_ID) { showToast('No Telegram ID','error'); return; }
+
+  // Pre-check balance client-side for instant feedback
+  const cost = FEATURE_COSTS[name] ?? 1;
+  const curBalance = parseInt(document.getElementById('coinBalance').textContent, 10);
+  if (!isNaN(curBalance) && curBalance < cost) {
+    addLog(`ERROR: Not enough coins for ${label} (needs ${cost}, you have ${curBalance})`, 'error');
+    addHistory(label+' Failed', `Need ${cost} coins, have ${curBalance}`, 'error');
+    showToast(`Need ${cost} coins, you have ${curBalance}`,'error');
+    return;
+  }
+
   const btn = document.getElementById('feat-'+name);
   if (btn) btn.classList.add('running');
-  addLog('Running: '+label+'...');
+  addLog(`Running: ${label}... (-${cost} coin${cost>1?'s':''})`);
   showToast('Running '+label+'...');
 
   try {
@@ -574,6 +614,10 @@ async function runFeature(name, label) {
       body: JSON.stringify({ telegram_id:TELEGRAM_ID, feature:name, server:selectedServer })
     });
     const data = await res.json();
+
+    if (typeof data.balance !== 'undefined') {
+      document.getElementById('coinBalance').textContent = data.balance;
+    }
 
     if (data.ok) {
       // Farm diff log
@@ -594,6 +638,7 @@ async function runFeature(name, label) {
       addLog('ERROR: '+data.error,'error');
       addHistory(label+' Failed', data.error,'error');
       showToast(data.error,'error');
+      if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
     }
   } catch(e) {
     addLog('ERROR: '+e.message,'error');
