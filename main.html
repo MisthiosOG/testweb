@@ -922,6 +922,8 @@ function logout() {
 function openHeartModal() {
     document.getElementById('heartModal').classList.remove('hidden');
     document.getElementById('heartModal').classList.add('flex');
+    console.log('Heart modal opened. Display style:', document.getElementById('heartModal').style.display);
+    console.log('Heart modal visibility:', document.getElementById('heartModal').classList.contains('hidden') ? 'hidden' : 'visible');
 }
 
 function closeHeartModal() {
@@ -1007,8 +1009,9 @@ async function runFeatureWithTarget(name, label, targetId) {
         addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
         showToast('Server tidak bisa dijangkau', 'error');
     }
-
-    if (btn) btn.classList.remove('running');
+    finally {
+        if (btn) btn.classList.remove('running'); // Pastikan tombol berhenti berkedip
+    }
 }
 
 // ============================================================
@@ -1402,6 +1405,123 @@ async function requestAccess() {
     btn.textContent = 'REQUEST ACCESS';
     btn.disabled = false;
   }
+}
+// ============================================================
+// SEND HEART FUNCTIONS - LENGKAP
+// ============================================================
+
+function openHeartModal() {
+    console.log("openHeartModal called");
+    const modal = document.getElementById('heartModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        console.log("Modal opened, classList:", modal.classList);
+    } else {
+        console.error("Modal element not found!");
+        showToast("Error: Modal not found", "error");
+    }
+}
+
+function closeHeartModal() {
+    console.log("closeHeartModal called");
+    const modal = document.getElementById('heartModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+}
+
+async function confirmSendHeart() {
+    console.log("confirmSendHeart called");
+    const targetId = document.getElementById('heartTargetId').value.trim();
+    
+    if (!targetId) {
+        showToast('Masukkan Target User ID!', 'error');
+        return;
+    }
+    
+    console.log("Target ID:", targetId);
+    closeHeartModal();
+    
+    // Panggil runFeature dengan parameter target_id
+    await runFeatureWithTarget('SendHeart', 'Send Heart', targetId);
+}
+
+async function runFeatureWithTarget(name, label, targetId) {
+    console.log("runFeatureWithTarget called:", name, label, targetId);
+    
+    if (!TELEGRAM_ID) { 
+        showToast('No Telegram ID', 'error'); 
+        return; 
+    }
+
+    // Role check
+    if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
+        addLog(`LOCKED: ${label} is a VIP-only feature.`, 'error');
+        showToast(`${label} is VIP-only. Upgrade to unlock.`, 'error');
+        return;
+    }
+
+    const cost = FEATURE_COSTS[name] ?? 5;
+    const curBalance = parseInt(document.getElementById('coinBalance').textContent, 10);
+    
+    if (!isNaN(curBalance) && curBalance < cost) {
+        addLog(`ERROR: Not enough coins for ${label} (needs ${cost}, you have ${curBalance})`, 'error');
+        showToast(`Need ${cost} coins, you have ${curBalance}`, 'error');
+        return;
+    }
+
+    const btn = document.getElementById('feat-' + name);
+    if (btn) btn.classList.add('running');
+    
+    addLog(`Running: ${label} to ${targetId}... (-${cost} coin${cost > 1 ? 's' : ''})`);
+    showToast('Sending heart...');
+
+    try {
+        console.log("Sending request to:", API_BASE + '/api/run');
+        const res = await fetch(API_BASE + '/api/run', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': '1'
+            },
+            body: JSON.stringify({ 
+                telegram_id: TELEGRAM_ID, 
+                feature: name, 
+                server: selectedServer, 
+                target_id: targetId 
+            })
+        });
+        
+        const data = await res.json();
+        console.log("Response:", data);
+
+        if (typeof data.balance !== 'undefined') {
+            document.getElementById('coinBalance').textContent = data.balance;
+            lastCoinBalance = data.balance;
+        }
+
+        if (data.ok) {
+            addLog('SUCCESS: ' + label + ' sent to ' + targetId, 'success');
+            addHistory(label + ' to ' + targetId, 'Heart sent successfully', 'success');
+            showToast('Heart sent!', 'success');
+        } else {
+            const errMsg = data.error || 'Unknown error';
+            addLog('ERROR: ' + errMsg, 'error');
+            addHistory(label + ' Failed', errMsg, 'error');
+            showToast(errMsg, 'error');
+            if (data.refunded) addLog('Coin refunded.', 'warn');
+            if (data.locked) refreshRole();
+        }
+    } catch (e) {
+        console.error("Fetch error:", e);
+        addLog('ERROR: Server unreachable — ' + e.message, 'error');
+        addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
+        showToast('Server tidak bisa dijangkau', 'error');
+    }
+
+    if (btn) btn.classList.remove('running');
 }
 </script>
 </body>
