@@ -251,12 +251,6 @@
           <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">Agriculture</span>
           <span class="text-[11px] font-medium">Farm</span>
-          <div id="farm-progress-wrap" class="hidden w-full flex flex-col gap-1 mt-1">
-            <div class="w-full bg-white/10 rounded-full h-1 overflow-hidden">
-              <div id="farm-progress-bar" class="bg-primary h-1 rounded-full transition-all duration-500" style="width:0%"></div>
-            </div>
-            <span id="farm-progress-label" class="text-[9px] text-on-surface-variant/60 text-center font-mono"></span>
-          </div>
         </button>
         <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
           <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
@@ -958,14 +952,6 @@ async function runFeature(name, label) {
         addLog(data.message, 'info');
         let displayedCount = 1;
 
-        // Tampilkan progress bar di button Farm
-        const farmWrap = document.getElementById('farm-progress-wrap');
-        const farmBar  = document.getElementById('farm-progress-bar');
-        const farmLbl  = document.getElementById('farm-progress-label');
-        if (farmWrap) farmWrap.classList.remove('hidden');
-        if (farmBar)  farmBar.style.width = '0%';
-        if (farmLbl)  farmLbl.textContent = 'Starting...';
-
         const pollId = setInterval(async () => {
           try {
             const sRes = await fetch(`${API_BASE}/api/farm/status?job_id=${data.job_id}`, {
@@ -976,23 +962,25 @@ async function runFeature(name, label) {
             if (job.ok && job.logs) {
               for (let i = displayedCount; i < job.logs.length; i++) {
                 let logText = job.logs[i];
-                let type = "info";
-                if (logText.includes("SUCCESS")) type = "success";
-                if (logText.includes("ERROR"))   type = "error";
 
-                // Parse progress: "[FARM] Progress: 40/69 levels (58%)"
+                // Parse "[FARM] Progress: 40/69 levels (58%)" → tampil di console sebagai progress
                 const progMatch = logText.match(/Progress:\s*(\d+)\/(\d+)\s*levels?\s*\((\d+)%\)/i);
                 if (progMatch) {
-                  const cur = parseInt(progMatch[1]);
-                  const tot = parseInt(progMatch[2]);
-                  const pct = parseInt(progMatch[3]);
-                  if (farmBar)  farmBar.style.width = pct + '%';
-                  if (farmLbl)  farmLbl.textContent  = `${cur}/${tot} levels (${pct}%)`;
-                  // Jangan tampilkan raw progress line ke console — sudah keliatan di bar
+                  const cur = progMatch[1], tot = progMatch[2], pct = progMatch[3];
+                  addLog(`Farm: ${cur}/${tot} levels (${pct}%)`, 'info');
                   displayedCount++;
                   continue;
                 }
 
+                // Filter log internal yang tidak perlu ditampilkan
+                if (logText.startsWith('[FARM] Starting') || logText.includes('Forge wax')) {
+                  displayedCount++;
+                  continue;
+                }
+
+                let type = 'info';
+                if (logText.includes('SUCCESS')) type = 'success';
+                if (logText.includes('ERROR'))   type = 'error';
                 addLog(logText, type);
               }
               displayedCount = job.logs.length;
@@ -1002,32 +990,39 @@ async function runFeature(name, label) {
               clearInterval(pollId);
               if (btn) btn.classList.remove('running');
 
-              // Sembunyikan progress bar setelah selesai
-              if (farmBar)  farmBar.style.width = '100%';
-              if (farmLbl)  farmLbl.textContent  = 'Done!';
-              setTimeout(() => { if (farmWrap) farmWrap.classList.add('hidden'); }, 2500);
-
               if (job.success) {
                 showToast('Farm done!', 'success');
+                addLog('Farm selesai!', 'success');
+
+                // Tampilkan currency yang nambah di console
+                if (job.diff) {
+                  const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? String(v) : '±0');
+                  const changed = Object.keys(job.diff).filter(k => job.diff[k] !== 0);
+                  if (changed.length > 0) {
+                    addLog('── Currency gained ──', 'info');
+                    changed.forEach(key => {
+                      const meta = CURRENCY_META[key] || { label: key.replace(/_/g,' ') };
+                      const before = job.before[key] || 0;
+                      const after  = job.after[key]  || 0;
+                      const diff   = job.diff[key];
+                      addLog(`${meta.label}: ${before} → ${after} (${fmtDiff(diff)})`, diff > 0 ? 'success' : 'info');
+                    });
+                  }
+                }
+
                 const finalMsg = job.logs[job.logs.length - 1];
                 addHistory('Farm', finalMsg, 'success');
                 if (job.after) lastCurrencyData = job.after;
-                if (job.diff) {
-                  const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
-                  Object.keys(job.diff).filter(k => job.diff[k] !== 0).forEach(key => {
-                    const meta = CURRENCY_META[key] || { label: key };
-                    addLog(`${meta.label}: ${job.before[key]||0} → ${job.after[key]||0} (${fmtDiff(job.diff[key])})`, 'success');
-                  });
-                }
                 if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
               } else {
                 const finalMsg = job.logs[job.logs.length - 1];
+                addLog('Farm gagal: ' + finalMsg, 'error');
                 addHistory('Farm Failed', finalMsg, 'error');
                 showToast('Farm failed', 'error');
               }
             }
           } catch (err) { /* silent poll fail */ }
-        }, 3000); // Poll tiap 3s biar progress lebih real-time (sebelumnya 10s)
+        }, 3000);
 
         return;
       } else {
