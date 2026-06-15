@@ -102,9 +102,17 @@
 
 <!-- ══════════ MASS FARM ══════════ -->
 <div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
+  <div id="massfarmLockOverlay" class="hidden glass-card p-6 rounded-2xl flex-col items-center text-center gap-3">
+    <span class="material-symbols-outlined text-amber-300" style="font-size:40px">lock</span>
+    <p class="text-sm font-bold">Mass Farm is VIP-only</p>
+    <p class="text-[11px] text-on-surface-variant">Upgrade to Weekly or Monthly VIP to unlock multi-account farming.</p>
+    <button onclick="goPage('topup')" class="mt-1 bg-primary text-on-primary px-4 py-2 rounded-xl text-xs font-bold">Top Up / Upgrade</button>
+  </div>
+
+  <div id="massfarmContent" class="flex-col gap-4">
   <div class="glass-card p-5 rounded-2xl">
     <div class="flex justify-between items-center mb-4">
-      <p class="section-title mb-0">MASS FARM (Max 10)</p>
+      <p class="section-title mb-0" id="massfarmTitle">MASS FARM (Max 10)</p>
       <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20 hover:bg-primary/20 transition-all">ADD ACCOUNT</button>
     </div>
     
@@ -126,6 +134,7 @@
       <div id="massFarmProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
     </div>
     <div id="massFarmLog" class="font-mono text-[10px] max-h-48 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
+  </div>
   </div>
 </div>
 
@@ -620,6 +629,23 @@ function applyFeatureLocks() {
       }
     }
   });
+
+  // Mass Farm page lock
+  const lockOverlay = document.getElementById('massfarmLockOverlay');
+  const content = document.getElementById('massfarmContent');
+  const title = document.getElementById('massfarmTitle');
+  if (ALLOWED_FEATURES.has('MassFarm')) {
+    lockOverlay.classList.add('hidden');
+    lockOverlay.classList.remove('flex');
+    content.classList.remove('hidden');
+    content.classList.add('flex');
+    if (title) title.textContent = `MASS FARM (Max ${MAX_MASSFARM_SESSIONS})`;
+  } else {
+    lockOverlay.classList.remove('hidden');
+    lockOverlay.classList.add('flex');
+    content.classList.add('hidden');
+    content.classList.remove('flex');
+  }
 }
 
 // ── Coins ──
@@ -895,8 +921,11 @@ async function runFeature(name, label) {
       if (name === 'Farm' && data.status === 'processing' && data.job_id) {
         addLog(data.message, 'info');
         let displayedCount = 1;
-        
+        let pollAttempts = 0;
+        const MAX_POLL_ATTEMPTS = 30; // 30 * 10s = 5 minutes
+
         const pollId = setInterval(async () => {
+          pollAttempts++;
           try {
             const sRes = await fetch(`${API_BASE}/api/farm/status?job_id=${data.job_id}`, {
               headers: {'ngrok-skip-browser-warning': '1'}
@@ -941,14 +970,34 @@ async function runFeature(name, label) {
                 addHistory('Farm Failed', finalMsg, 'error');
                 showToast('Farm failed', 'error');
               }
+              return;
             }
-          } catch (err) { /* silent poll fail */ }
+
+            // Stop the failed/stale response from polling forever
+            if (!job.ok || pollAttempts >= MAX_POLL_ATTEMPTS) {
+              clearInterval(pollId);
+              if (btn) btn.classList.remove('running');
+              addLog('ERROR: Farm status check timed out or failed.', 'error');
+              addHistory('Farm Failed', 'Status check timed out', 'error');
+              showToast('Farm status timeout', 'error');
+            }
+          } catch (err) {
+            // Network error during poll — stop after max attempts to avoid stuck "running" state
+            if (pollAttempts >= MAX_POLL_ATTEMPTS) {
+              clearInterval(pollId);
+              if (btn) btn.classList.remove('running');
+              addLog('ERROR: Lost connection while polling Farm status.', 'error');
+              addHistory('Farm Failed', 'Lost connection while polling', 'error');
+              showToast('Connection lost', 'error');
+            }
+          }
         }, 10000);
         
         return; // Exit function but keep button animation
       } else {
         addLog('SUCCESS: '+label, 'success');
         addHistory(label, 'Executed successfully', 'success');
+        if (btn) btn.classList.remove('running');
       }
       showToast(label+' done!','success');
     } else {
@@ -960,6 +1009,7 @@ async function runFeature(name, label) {
       if (data.locked) {
         refreshRole(); // re-sync lock state in case it changed
       }
+      if (btn) btn.classList.remove('running');
     }
   } catch(e) {
     // Network error saat fetch awal ke /api/run
