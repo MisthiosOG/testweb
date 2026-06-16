@@ -325,6 +325,21 @@
       </div>
     </div>
 
+    <!-- Account Tools -->
+    <div>
+      <p class="section-title">Account Tools</p>
+      <div class="feat-grid-1" style="display:grid;grid-template-columns:1fr;gap:10px">
+        <button onclick="runFeature('ClosetUnlock','Closet Unlock')" id="feat-ClosetUnlock" class="feat-btn glass-card p-4 rounded-2xl flex items-center gap-3">
+          <span class="cost-badge" data-cost-for="ClosetUnlock"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-3xl">lock_open</span>
+          <div class="flex flex-col items-start gap-0.5">
+            <span class="text-[12px] font-bold">Closet Unlock</span>
+            <span class="text-[10px] text-on-surface-variant">Unlock closet → Candlespace → All realm → Valley → Season scene</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
     <div id="betaSection" class="hidden">
       <p class="section-title">Beta Only</p>
       <div class="feat-grid-2">
@@ -1122,6 +1137,11 @@ async function runFeature(name, label) {
         }, 10000);
         
         return;
+      } else if (name === 'ClosetUnlock' && data.logs && data.logs.length) {
+        addLog('DONE: '+label, 'success');
+        data.logs.forEach(l => addLog(l, l.startsWith('✅') ? 'success' : 'warn'));
+        addHistory(label, data.logs[data.logs.length-1], 'success');
+        if (btn) btn.classList.remove('running');
       } else {
         addLog('SUCCESS: '+label, 'success');
         addHistory(label, 'Executed successfully', 'success');
