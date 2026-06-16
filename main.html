@@ -276,16 +276,6 @@
           <span class="material-symbols-outlined text-primary text-2xl">Flight</span>
           <span class="text-[11px] font-medium">Wings</span>
         </button>
-        <button onclick="runFeature('Map','Map')" id="feat-Map" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">map</span>
-          <span class="text-[11px] font-medium">Map</span>
-        </button>
-        <button onclick="runFeature('SkipIntro','Skip Intro')" id="feat-SkipIntro" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="SkipIntro"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">fast_forward</span>
-          <span class="text-[11px] font-medium">Skip Intro</span>
-        </button>
         <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
           <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
@@ -300,11 +290,6 @@
           <span class="cost-badge" data-cost-for="SendHeart"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">favorite</span>
           <span class="text-[11px] font-medium">Send Heart</span>
-        </button>
-        <button onclick="runFeature('Inventory','Snapshot')" id="feat-Inventory" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="Inventory"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
-          <span class="text-[11px] font-medium">Snapshot</span>
         </button>
       </div>
     </div>
@@ -325,20 +310,6 @@
       </div>
     </div>
 
-    <!-- Account Tools -->
-    <div>
-      <p class="section-title">Account Tools</p>
-      <div class="feat-grid-1" style="display:grid;grid-template-columns:1fr;gap:10px">
-        <button onclick="runFeature('ClosetUnlock','Closet Unlock')" id="feat-ClosetUnlock" class="feat-btn glass-card p-4 rounded-2xl flex items-center gap-3">
-          <span class="cost-badge" data-cost-for="ClosetUnlock"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-3xl">lock_open</span>
-          <div class="flex flex-col items-start gap-0.5">
-            <span class="text-[12px] font-bold">Closet Unlock</span>
-            <span class="text-[10px] text-on-surface-variant">Unlock closet → Candlespace → All realm → Valley → Season scene</span>
-          </div>
-        </button>
-      </div>
-    </div>
 
     <div id="betaSection" class="hidden">
       <p class="section-title">Beta Only</p>
@@ -789,10 +760,8 @@ function addLog(msg, type='info') {
   const div = document.createElement('div');
   const colors = { error:'#f87171', success:'#4ade80', warn:'#fbbf24', info:'#bec7d4' };
   div.style.color = colors[type] || colors.info;
-  div.id = 'log_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
   div.textContent = '['+new Date().toLocaleTimeString()+'] '+msg;
   el.prepend(div);
-  return div;
 }
 
 function clearConsole() {
@@ -1075,62 +1044,36 @@ async function runFeature(name, label) {
       if (name === 'Farm' && data.status === 'processing' && data.job_id) {
         addLog(data.message, 'info');
         let displayedCount = 1;
-        const farmStartTime = Date.now();
-        let lastPct = 0;
-        let progressEl = null; // simpan direct reference, bukan ID
-
-        const fmtElapsed = () => {
-          const sec = Math.floor((Date.now() - farmStartTime) / 1000);
-          return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
-        };
-        const fmtETA = (pct) => {
-          if (pct <= 0) return '--:--';
-          const elapsed = (Date.now() - farmStartTime) / 1000;
-          const remain = Math.max(0, Math.round((elapsed / (pct/100)) - elapsed));
-          return `${String(Math.floor(remain/60)).padStart(2,'0')}:${String(remain%60).padStart(2,'0')}`;
-        };
-        const updateProgressLine = () => {
-          if (!progressEl) return;
-          const console = document.getElementById('consoleLogs');
-          progressEl.textContent = `[${new Date().toLocaleTimeString()}] Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`;
-          // Selalu di paling atas supaya tidak ketimbun log lain
-          if (console && console.firstChild !== progressEl) console.prepend(progressEl);
-        };
-
-        // Timer update tiap detik
-        const timerId = setInterval(updateProgressLine, 1000);
-
+        
         const pollId = setInterval(async () => {
           try {
             const sRes = await fetch(`${API_BASE}/api/farm/status?job_id=${data.job_id}`, {
               headers: {'ngrok-skip-browser-warning': '1'}
             });
             const job = await sRes.json();
-
+            
+            console.log("DEBUG_FARM_FRONTEND: Job Status:", job); // Tambahkan ini untuk debugging
             if (job.ok && job.logs) {
               for (let i = displayedCount; i < job.logs.length; i++) {
-                let logText = job.logs[i].trim();
+                let logText = job.logs[i];
 
-                // Parse "[FARM] Progress: 40/69 levels (58%)" → update satu baris di console
+                // Parse "[FARM] Progress: 40/69 levels (58%)" → tampil di console sebagai progress
                 const progMatch = logText.match(/Progress:\s*(\d+)\/(\d+)\s*levels?\s*\((\d+)%\)/i);
                 if (progMatch) {
-                  lastPct = parseInt(progMatch[3]);
-                  if (!progressEl) {
-                    // Buat baris progress pertama kali — simpan direct reference
-                    progressEl = addLog(`Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`, 'info');
-                  } else {
-                    updateProgressLine();
-                  }
+                  const cur = progMatch[1], tot = progMatch[2], pct = progMatch[3];
+                  addLog(`Farm: ${cur}/${tot} levels (${pct}%)`, 'info');
+                  displayedCount++;
                   continue;
                 }
 
-                // Filter log internal
-                if (logText.startsWith('[FARM] Starting') || logText.includes('Forge wax') || logText.startsWith('Initializing')) {
+                // Filter log internal yang tidak perlu ditampilkan
+                if (logText.startsWith('[FARM] Starting') || logText.includes('Forge wax')) {
+                  displayedCount++;
                   continue;
                 }
-                let type = 'info';
-                if (logText.includes('SUCCESS')) type = 'success';
-                if (logText.includes('ERROR'))   type = 'error';
+                let type = "info"; // Tipe default
+                if (logText.includes("SUCCESS")) type = "success";
+                if (logText.includes("ERROR")) type = "error";
                 addLog(logText, type);
               }
               displayedCount = job.logs.length;
@@ -1138,40 +1081,32 @@ async function runFeature(name, label) {
 
             if (job.ok && job.done) {
               clearInterval(pollId);
-              clearInterval(timerId);
               if (btn) btn.classList.remove('running');
 
               if (job.success) {
                 showToast('Farm done!', 'success');
-                const elapsed = fmtElapsed();
-                addLog(`Farm selesai! (${elapsed})`, 'success');
                 const finalMsg = job.logs[job.logs.length - 1];
                 addHistory('Farm', finalMsg, 'success');
-
+                
                 if (job.after) lastCurrencyData = job.after;
-
+                
                 if (job.diff) {
                   const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
-                  const changed = Object.keys(job.diff).filter(k => job.diff[k] !== 0);
-                  if (changed.length) {
-                    addLog('── Currency gained ──', 'info');
-                    changed.forEach(key => {
-                      const meta = CURRENCY_META[key] || { label: key.replace(/_/g,' ') };
-                      addLog(`${meta.label}: ${job.before[key]||0} → ${job.after[key]||0} (${fmtDiff(job.diff[key])})`, job.diff[key] > 0 ? 'success' : 'info');
-                    });
-                  }
+                  Object.keys(job.diff).filter(k => job.diff[k] !== 0).forEach(key => {
+                    const meta = CURRENCY_META[key] || { label: key };
+                    addLog(`${meta.label}: ${job.before[key]||0} → ${job.after[key]||0} (${fmtDiff(job.diff[key])})`, 'success');
+                  });
                 }
                 if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
               } else {
                 const finalMsg = job.logs[job.logs.length - 1];
                 addHistory('Farm Failed', finalMsg, 'error');
                 showToast('Farm failed', 'error');
-                addLog('Farm gagal: ' + finalMsg, 'error');
               }
             }
           } catch (err) { /* silent poll fail */ }
-        }, 3000);
-
+        }, 10000);
+        
         return;
       } else if (name === 'ClosetUnlock' && data.logs && data.logs.length) {
         addLog('DONE: '+label, 'success');
