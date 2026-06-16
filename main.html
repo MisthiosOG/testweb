@@ -1066,10 +1066,26 @@ async function runFeature(name, label) {
             });
             const job = await sRes.json();
             
+            console.log("DEBUG_FARM_FRONTEND: Job Status:", job); // Tambahkan ini untuk debugging
             if (job.ok && job.logs) {
               for (let i = displayedCount; i < job.logs.length; i++) {
                 let logText = job.logs[i];
-                let type = "info";
+
+                // Parse "[FARM] Progress: 40/69 levels (58%)" → tampil di console sebagai progress
+                const progMatch = logText.match(/Progress:\s*(\d+)\/(\d+)\s*levels?\s*\((\d+)%\)/i);
+                if (progMatch) {
+                  const cur = progMatch[1], tot = progMatch[2], pct = progMatch[3];
+                  addLog(`Farm: ${cur}/${tot} levels (${pct}%)`, 'info');
+                  displayedCount++;
+                  continue;
+                }
+
+                // Filter log internal yang tidak perlu ditampilkan
+                if (logText.startsWith('[FARM] Starting') || logText.includes('Forge wax')) {
+                  displayedCount++;
+                  continue;
+                }
+                let type = "info"; // Tipe default
                 if (logText.includes("SUCCESS")) type = "success";
                 if (logText.includes("ERROR")) type = "error";
                 addLog(logText, type);
