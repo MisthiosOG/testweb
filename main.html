@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
-  body{background:#050505;background:radial-gradient(circle at top right,#0a192f 0%,#050505 100%);color:#e5e2e1;-webkit-tap-highlight-color:transparent;overflow-x:hidden;min-height:100vh}
+  body{background:#050505;background:radial-gradient(circle at top right,#0a192f 0%,#050505 100%);color:#e5e2e1;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+  /* Custom scrollbar */
   ::-webkit-scrollbar{width:3px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:rgba(152,203,255,.2);border-radius:99px}
   ::-webkit-scrollbar-thumb:hover{background:rgba(152,203,255,.4)}
   * { scrollbar-width:thin; scrollbar-color:rgba(152,203,255,.2) transparent }
-  .glass-card{background:rgba(25,25,25,.6);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.08);transition:border-color .2s,background .2s}
-  .glass-card:hover{border-color:rgba(152,203,255,.15)}
+  .glass-card{background:rgba(25,25,25,.6);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.08)}
   .hide-scrollbar::-webkit-scrollbar{display:none}
   @keyframes pulse-slow{0%,100%{opacity:1}50%{opacity:.5}}.animate-pulse-slow{animation:pulse-slow 3s cubic-bezier(.4,0,.6,1) infinite}
   .step{display:none}.step.active{display:flex}
@@ -38,11 +38,10 @@
   .toast.show{opacity:1}
   .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;margin-right:6px;vertical-align:middle}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .nav-btn{transition:all .2s;flex:1;padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .nav-btn{transition:all .2s;flex:1;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:2px}
   .nav-btn.active .nav-icon,.nav-btn.active .nav-label{color:#98cbff}
   .nav-btn:not(.active) .nav-icon,.nav-btn:not(.active) .nav-label{color:#6b7a8a}
   .page{display:none}.page.active{display:flex}
-  .max-w-container { max-width: 500px; margin-left: auto; margin-right: auto; }
   .currency-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
   .currency-row:last-child{border-bottom:none}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -66,13 +65,12 @@
 </style>
 <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#98cbff","on-primary":"#003354","surface":"#131313","surface-variant":"#353534","surface-container":"#201f1f","surface-container-high":"#2a2a2a","on-surface":"#e5e2e1","on-surface-variant":"#bec7d4","outline-variant":"#3f4852","error":"#ffb4ab","background":"#131313"}}}}</script>
 </head>
-<body class="bg-background text-on-surface font-sans select-none pb-24">
+<body class="bg-background text-on-surface font-sans select-none">
 
 <div id="toast" class="toast"></div>
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-center items-center px-4 py-3">
- <div class="w-full max-w-container flex justify-between items-center">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-4 py-3">
   <div class="flex items-center gap-3">
     <div class="relative">
       <img alt="TrashGameCompany" class="w-9 h-9 rounded-full border border-white/10" src="images/icon.jpg">
@@ -98,23 +96,21 @@
     </button>
     <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
   </div>
- </div>
 </header>
 
-<main class="pt-20 px-4 max-w-container min-h-screen">
+<main class="pt-16 pb-20 px-4 min-h-screen">
 
-<!-- MASS FARM -->
+<!-- ══════════ MASS FARM ══════════ -->
 <div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
   <div class="glass-card p-5 rounded-2xl">
     <div class="flex justify-between items-center mb-4">
       <p class="section-title mb-0">MASS FARM (Max 10)</p>
-      <div class="flex gap-2">
-        <button onclick="checkAllSessions()" class="text-[10px] bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-amber-500/20">CHECK ALL</button>
-        <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20">ADD ACC</button>
-      </div>
+      <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20 hover:bg-primary/20 transition-all">ADD ACCOUNT</button>
     </div>
     
-    <div id="massSessionContainer" class="flex flex-col gap-3 mb-5"></div>
+    <div id="massSessionContainer" class="flex flex-col gap-3 mb-5">
+      <!-- Session cards will be added here -->
+    </div>
     
     <button onclick="startMassFarm()" id="btnStartMassFarm"
       class="w-full bg-primary text-on-primary py-3.5 rounded-xl text-sm font-black tracking-widest shadow-lg shadow-primary/10 transition-all active:scale-[0.98]">
@@ -133,9 +129,10 @@
   </div>
 </div>
 
-<!-- HOME -->
+<!-- ══════════ HOME ══════════ -->
 <div id="page-home" class="page active flex-col gap-4 mt-2 fade-in">
 
+  <!-- LOGIN -->
   <div id="loginSection" class="flex flex-col gap-3">
     <div class="flex items-center gap-2 text-[10px] text-on-surface-variant px-1">
       <span id="stepLabel" class="uppercase tracking-widest font-bold text-primary">Step 1 — Select Server</span>
@@ -194,6 +191,7 @@
         <button onclick="goStep1()" class="text-[11px] text-on-surface-variant text-center mt-1">Back</button>
     </div>
 
+    <!-- Request Access Card (shown when ACCESS DENIED) -->
     <div id="reqAccessCard" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-3 border border-error/20">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-error" style="font-size:20px">lock</span>
@@ -205,15 +203,16 @@
         <span class="text-xs font-mono text-primary" id="reqTgId">—</span>
       </div>
       <button onclick="requestAccess()" id="btnReqAccess" class="w-full bg-error/20 text-error border border-error/30 py-2.5 rounded-xl text-xs font-bold hover:bg-error/30 transition-all">
-        TUTUP WEB APP & MINTA AKSES VIA BOT
+        REQUEST ACCESS
       </button>
-      <div id="reqAccessResult" class="text-[11px] text-center py-2 rounded-xl"></div>
+      <div id="reqAccessResult" class="hidden text-[11px] text-center py-2 rounded-xl"></div>
       <button onclick="hideReqAccess()" class="text-[11px] text-on-surface-variant text-center">← Back to Login</button>
     </div>
   </div>
 
   <!-- DASHBOARD -->
   <div id="dashSection" class="hidden flex-col gap-4">
+    <!-- User card -->
     <div class="glass-card p-4 rounded-2xl flex items-center gap-3">
       <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
         <span class="material-symbols-outlined text-primary">person</span>
@@ -225,6 +224,7 @@
       <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-lg px-2 py-1 font-semibold">LOGOUT</button>
     </div>
 
+    <!-- Daily / All-in-One -->
     <div>
       <p class="section-title">Quick Actions</p>
       <div class="feat-grid-2">
@@ -243,6 +243,7 @@
       </div>
     </div>
 
+    <!-- Automation -->
     <div>
       <p class="section-title">Automation</p>
       <div class="feat-grid-3">
@@ -281,11 +282,6 @@
           <span class="material-symbols-outlined text-primary text-2xl">map</span>
           <span class="text-[11px] font-medium">Map</span>
         </button>
-        <button onclick="runFeature('SkipIntro','Skip Intro')" id="feat-SkipIntro" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="SkipIntro"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">fast_forward</span>
-          <span class="text-[11px] font-medium">Skip Intro</span>
-        </button>
         <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
           <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
           <span class="material-symbols-outlined text-primary text-2xl">emoji_emotions</span>
@@ -296,19 +292,10 @@
           <span class="material-symbols-outlined text-primary text-2xl">wb_sunny</span>
           <span class="text-[11px] font-medium">Lit Collect</span>
         </button>
-        <button onclick="openHeartModal()" id="feat-SendHeart" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="SendHeart"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">favorite</span>
-          <span class="text-[11px] font-medium">Send Heart</span>
-        </button>
-        <button onclick="runFeature('Inventory','Snapshot')" id="feat-Inventory" class="feat-btn glass-card p-3 rounded-2xl flex flex-col items-center gap-2">
-          <span class="cost-badge" data-cost-for="Inventory"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-          <span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
-          <span class="text-[11px] font-medium">Snapshot</span>
-        </button>
       </div>
     </div>
 
+    <!-- Elder -->
     <div>
       <p class="section-title">Elder Cosmetics</p>
       <div class="feat-grid-2">
@@ -325,6 +312,22 @@
       </div>
     </div>
 
+    <!-- Closet Unlock -->
+    <div>
+      <p class="section-title">Account Tools</p>
+      <div class="feat-grid-1" style="display:grid;grid-template-columns:1fr;gap:10px">
+        <button onclick="runFeature('ClosetUnlock','Closet Unlock')" id="feat-ClosetUnlock" class="feat-btn glass-card p-4 rounded-2xl flex items-center gap-3">
+          <span class="cost-badge" data-cost-for="ClosetUnlock"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-3xl">lock_open</span>
+          <div class="flex flex-col items-start gap-0.5">
+            <span class="text-[12px] font-bold">Closet Unlock</span>
+            <span class="text-[10px] text-on-surface-variant">Unlock closet → Candlespace → All realm → Valley → Season scene</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Beta Only -->
     <div id="betaSection" class="hidden">
       <p class="section-title">Beta Only</p>
       <div class="feat-grid-2">
@@ -341,6 +344,7 @@
       </div>
     </div>
 
+    <!-- Console -->
     <div>
       <div class="flex items-center justify-between mb-2">
         <p class="section-title mb-0">System Console</p>
@@ -353,7 +357,7 @@
   </div>
 </div>
 
-<!-- TOPUP SHOP -->
+<!-- ══════════ TOPUP SHOP ══════════ -->
 <div id="page-topup" class="page flex-col gap-4 mt-2 fade-in">
   <div class="glass-card p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 to-transparent border-amber-500/20">
     <div class="flex items-center gap-3 mb-4">
@@ -367,6 +371,7 @@
     </div>
 
     <div class="grid grid-cols-2 gap-3">
+      <!-- 1000 Coins -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-white/5 hover:border-amber-500/30 transition-all group">
         <span class="material-symbols-outlined text-amber-400 text-3xl group-hover:scale-110 transition-transform">monetization_on</span>
         <div class="text-center">
@@ -376,6 +381,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-amber-500 text-black py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-amber-500/20">100k</a>
       </div>
       
+      <!-- 2500 Coins -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-white/5 hover:border-amber-500/30 transition-all group">
         <span class="material-symbols-outlined text-amber-400 text-3xl group-hover:scale-110 transition-transform">database</span>
         <div class="text-center">
@@ -385,6 +391,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-amber-500 text-black py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-amber-500/20">240k</a>
       </div>
 
+      <!-- 5000 Coins -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-white/5 hover:border-amber-500/30 transition-all group">
         <span class="material-symbols-outlined text-amber-400 text-3xl group-hover:scale-110 transition-transform">savings</span>
         <div class="text-center">
@@ -394,6 +401,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-amber-500 text-black py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-amber-500/20">450k</a>
       </div>
 
+      <!-- 10000 Coins -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-white/5 hover:border-amber-500/30 transition-all group">
         <span class="material-symbols-outlined text-amber-400 text-3xl group-hover:scale-110 transition-transform">workspace_premium</span>
         <div class="text-center">
@@ -403,6 +411,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-amber-500 text-black py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-amber-500/20">850k</a>
       </div>
 
+      <!-- Weekly VIP -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-purple-500/30 bg-purple-500/5 hover:border-purple-500/50 transition-all group">
         <span class="material-symbols-outlined text-purple-400 text-3xl group-hover:rotate-12 transition-transform">workspace_premium</span>
         <div class="text-center">
@@ -412,6 +421,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-purple-500 text-white py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-purple-500/20">100k</a>
       </div>
 
+      <!-- Monthly VIP -->
       <div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-2 border-indigo-500/30 bg-indigo-500/5 hover:border-indigo-500/50 transition-all group">
         <span class="material-symbols-outlined text-indigo-400 text-3xl group-hover:scale-110 transition-transform">stars</span>
         <div class="text-center">
@@ -421,6 +431,7 @@
         <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-indigo-600 text-white py-2 rounded-xl text-[11px] font-black text-center shadow-lg shadow-indigo-500/20">350k</a>
       </div>
 
+      <!-- Custom Topup -->
       <div class="glass-card p-4 rounded-2xl col-span-2 border-primary/20 bg-primary/5 flex flex-col gap-3">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
@@ -447,7 +458,7 @@
   </div>
 </div>
 
-<!-- ACCOUNT -->
+<!-- ══════════ ACCOUNT ══════════ -->
 <div id="page-account" class="page flex-col gap-4 mt-2 fade-in">
   <div id="accountNotLoggedIn" class="flex flex-col items-center justify-center gap-3 py-16">
     <span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">person_off</span>
@@ -496,7 +507,7 @@
   </div>
 </div>
 
-<!-- HISTORY -->
+<!-- ══════════ HISTORY ══════════ -->
 <div id="page-history" class="page flex-col gap-3 mt-2 fade-in">
   <div class="flex items-center justify-between px-1">
     <p class="section-title mb-0">Activity Log</p>
@@ -507,7 +518,7 @@
   </div>
 </div>
 
-<!-- SETTINGS -->
+<!-- ══════════ SETTINGS ══════════ -->
 <div id="page-settings" class="page flex-col gap-4 mt-2 fade-in">
   <div class="glass-card p-4 rounded-2xl flex flex-col gap-3">
     <p class="section-title mb-0">Membership</p>
@@ -543,28 +554,6 @@
   </div>
 </div>
 
-<!-- Modals -->
-<div id="heartModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-  <div class="glass-card w-full max-w-xs p-5 rounded-3xl flex flex-col gap-4 animate-fadeIn">
-    <div class="flex justify-between items-center">
-      <span class="font-bold text-sm">Send Heart</span>
-      <button onclick="closeHeartModal()" class="material-symbols-outlined text-on-surface-variant">close</button>
-    </div>
-    <input type="text" id="heartTargetId" placeholder="Target User ID (UUID format)..." class="bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs outline-none focus:border-primary">
-    <button onclick="confirmSendHeart()" class="bg-primary text-on-primary py-3 rounded-xl text-xs font-bold shadow-lg shadow-primary/20">SEND HEART (5 Coins)</button>
-  </div>
-</div>
-
-<div id="inventoryModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-  <div class="glass-card w-full max-w-sm p-5 rounded-3xl flex flex-col gap-4 max-h-[80vh]">
-    <div class="flex justify-between items-center">
-      <span class="font-bold text-sm">Account Snapshot</span>
-      <button onclick="closeInventoryModal()" class="material-symbols-outlined text-on-surface-variant">close</button>
-    </div>
-    <div id="inventoryList" class="flex flex-wrap gap-2 overflow-y-auto pr-2 hide-scrollbar"></div>
-  </div>
-</div>
-
 </main>
 
 <!-- Bottom Nav -->
@@ -595,7 +584,7 @@
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 
-// ⚠️ GANTI API_BASE DENGAN IP VPS ANDA ⚠️
+const DEFAULT_API = "https://bright-toad-brightly.ngrok-free.app";
 const API_BASE = "https://bright-toad-brightly.ngrok-free.app";
 const TELEGRAM_ID = tg.initDataUnsafe?.user?.id || null;
 
@@ -610,6 +599,7 @@ renderHistory();
 refreshCoins();
 refreshRole();
 
+// ── Role / Membership ──
 let CURRENT_ROLE = 'free';
 let ALLOWED_FEATURES = new Set();
 let MAX_MASSFARM_SESSIONS = 3;
@@ -633,6 +623,7 @@ async function refreshRole() {
       badge.classList.add('flex','role-'+data.role);
       label.textContent = data.label.toUpperCase();
 
+      // ── Settings page membership info ──
       const sBadge = document.getElementById('settingsRoleBadge');
       const sLabel = document.getElementById('settingsRoleLabel');
       const sSince = document.getElementById('settingsRoleSince');
@@ -647,13 +638,16 @@ async function refreshRole() {
         const expiryDt = new Date(data.expires_at + 'Z');
         const cfg = data.all_roles[data.role];
         const durationDays = cfg ? cfg.duration_days : null;
+
         sExpiry.textContent = expiryDt.toLocaleString();
+
         if (durationDays) {
           const sinceDt = new Date(expiryDt.getTime() - durationDays*24*60*60*1000);
           sSince.textContent = sinceDt.toLocaleString();
         } else {
           sSince.textContent = '—';
         }
+
         const now = new Date();
         const diffMs = expiryDt - now;
         if (diffMs <= 0) {
@@ -669,6 +663,7 @@ async function refreshRole() {
         sSince.textContent = '—';
         sRemaining.textContent = '—';
       }
+
       applyFeatureLocks();
     }
   } catch(e) { /* silent */ }
@@ -679,6 +674,7 @@ function applyFeatureLocks() {
     const feature = badgeEl.getAttribute('data-cost-for');
     const btn = badgeEl.closest('.feat-btn');
     if (!btn) return;
+
     const existingOverlay = btn.querySelector('.lock-overlay');
     if (ALLOWED_FEATURES.has(feature)) {
       btn.classList.remove('locked');
@@ -695,6 +691,7 @@ function applyFeatureLocks() {
   });
 }
 
+// ── Coins ──
 let FEATURE_COSTS = {};
 async function refreshCoins() {
   if (!TELEGRAM_ID) { document.getElementById('coinBalance').textContent = 'N/A'; return; }
@@ -732,6 +729,7 @@ function populateCostBadges() {
   });
 }
 
+// ── Navigation ──
 function goPage(name) {
   ['home','massfarm','account','history','settings','topup'].forEach(p => {
     document.getElementById('page-'+p).classList.remove('active');
@@ -740,10 +738,13 @@ function goPage(name) {
   });
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('page-'+name).style.display = 'flex';
+  
   if(document.getElementById('nav-'+name)) document.getElementById('nav-'+name).classList.add('active');
+
   if (name === 'settings') refreshRole();
 }
 
+// ── Topup Logic ──
 function calcCustomPrice(val) {
   const amount = parseInt(val) || 0;
   const price = amount * 100;
@@ -755,6 +756,7 @@ function orderCustom() {
   window.open(`https://t.me/dieforcringes?text=Halo%20Admin,%20saya%20ingin%20topup%20custom%20${amount}%20koin`, '_blank');
 }
 
+// ── Toast ──
 function showToast(msg, type='primary') {
   const t = document.getElementById('toast');
   const styles = {
@@ -769,6 +771,7 @@ function showToast(msg, type='primary') {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+// ── Log ──
 function addLog(msg, type='info') {
   const el = document.getElementById('consoleLogs');
   const div = document.createElement('div');
@@ -783,6 +786,7 @@ function clearConsole() {
   el.innerHTML = '<div style="color:#98cbff">[CLEARED] Console cleared.</div>';
 }
 
+// ── History ──
 function addHistory(action, result, type='success') {
   actionHistory.unshift({ action, result, type, time: new Date().toLocaleTimeString(), date: new Date().toLocaleDateString() });
   if (actionHistory.length > 60) actionHistory.pop();
@@ -808,6 +812,7 @@ function clearHistory() {
   actionHistory = []; localStorage.removeItem('action_history'); renderHistory(); showToast('History cleared');
 }
 
+// ── Server select ──
 function selectServer(s) {
   selectedServer = s;
   ['live','beta'].forEach(x => document.getElementById('btn-'+x).classList.toggle('selected', x===s));
@@ -830,6 +835,7 @@ function selectPlatform(p) {
   const w = document.getElementById('platformCodeWrap'); w.classList.remove('hidden'); w.classList.add('flex');
 }
 
+// ── Login ──
 async function submitLogin(method) {
   if (!TELEGRAM_ID) { showToast('Cannot get Telegram ID','error'); return; }
   let code = method==='lua' ? document.getElementById('luaInput').value.trim()
@@ -880,6 +886,7 @@ function setLoggedIn(method, server, userId) {
   document.getElementById('statusBadge').textContent = 'CONNECTED';
   document.getElementById('statusBadge').style.color = '#98cbff';
 
+  // Account page
   document.getElementById('accountNotLoggedIn').classList.add('hidden');
   const acc = document.getElementById('accountLoggedIn');
   acc.classList.remove('hidden'); acc.classList.add('flex');
@@ -915,112 +922,11 @@ function logout() {
   goStep1(); addLog('Logged out.'); addHistory('Logout','Session ended','info');
 }
 
-// ============================================================
-// SEND HEART FUNCTIONS - FIXED!
-// ============================================================
-
-function openHeartModal() {
-    document.getElementById('heartModal').classList.remove('hidden');
-    document.getElementById('heartModal').classList.add('flex');
-}
-
-function closeHeartModal() {
-    document.getElementById('heartModal').classList.add('hidden');
-    document.getElementById('heartModal').classList.remove('flex');
-}
-
-async function confirmSendHeart() {
-    const targetId = document.getElementById('heartTargetId').value.trim();
-    
-    // Validasi dasar agar Sky ID tidak kosong atau terlalu pendek
-    if (!targetId || targetId.length < 5) {
-        showToast('Masukkan Sky ID yang valid!', 'error');
-        return;
-    }
-    
-    closeHeartModal();
-    document.getElementById('heartTargetId').value = ''; // Reset input
-    await runFeatureWithTarget('SendHeart', 'Send Heart', targetId);
-}
-
-async function runFeatureWithTarget(name, label, targetId) {
-    if (!TELEGRAM_ID) { 
-        showToast('No Telegram ID', 'error'); 
-        return; 
-    }
-
-    if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
-        addLog(`LOCKED: ${label} is a VIP-only feature.`, 'error');
-        showToast(`${label} is VIP-only. Upgrade to unlock.`, 'error');
-        return;
-    }
-
-    const cost = FEATURE_COSTS[name] ?? 5;
-    const curBalance = parseInt(document.getElementById('coinBalance').textContent, 10);
-    
-    if (!isNaN(curBalance) && curBalance < cost) {
-        addLog(`ERROR: Not enough coins for ${label} (needs ${cost}, you have ${curBalance})`, 'error');
-        showToast(`Need ${cost} coins, you have ${curBalance}`, 'error');
-        return;
-    }
-
-    const btn = document.getElementById('feat-' + name);
-    if (btn) btn.classList.add('running');
-    
-    addLog(`Running: ${label} to ${targetId}... (-${cost} coin${cost > 1 ? 's' : ''})`);
-    showToast('Sending heart...');
-
-    try {
-        const res = await fetch(API_BASE + '/api/run', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'ngrok-skip-browser-warning': '1'
-            },
-            body: JSON.stringify({ 
-                telegram_id: TELEGRAM_ID, 
-                feature: name, 
-                server: selectedServer, 
-                target_id: targetId 
-            })
-        });
-        
-        const data = await res.json();
-
-        if (typeof data.balance !== 'undefined') {
-            document.getElementById('coinBalance').textContent = data.balance;
-            lastCoinBalance = data.balance;
-        }
-
-        if (data.ok) {
-            addLog('SUCCESS: ' + label + ' sent to ' + targetId, 'success');
-            addHistory(label + ' to ' + targetId, 'Heart sent successfully', 'success');
-            showToast('Heart sent!', 'success');
-        } else {
-            const errMsg = data.error || 'Unknown error';
-            addLog('ERROR: ' + errMsg, 'error');
-            addHistory(label + ' Failed', errMsg, 'error');
-            showToast(errMsg, 'error');
-            if (data.refunded) addLog('Coin refunded.', 'warn');
-            if (data.locked) refreshRole();
-        }
-    } catch (e) {
-        addLog('ERROR: Server unreachable — ' + e.message, 'error');
-        addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
-        showToast('Server tidak bisa dijangkau', 'error');
-    }
-    finally {
-        if (btn) btn.classList.remove('running'); // Pastikan tombol berhenti berkedip
-    }
-}
-
-// ============================================================
-// RUN FEATURE (Original)
-// ============================================================
-
+// ── Run Feature ──
 async function runFeature(name, label) {
   if (!TELEGRAM_ID) { showToast('No Telegram ID','error'); return; }
 
+  // Role/feature lock check
   if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
     addLog(`LOCKED: ${label} is a VIP-only feature.`, 'error');
     addHistory(label+' Failed', 'VIP-only feature. Upgrade to unlock.', 'error');
@@ -1028,6 +934,7 @@ async function runFeature(name, label) {
     return;
   }
 
+  // Pre-check balance client-side for instant feedback
   const cost = FEATURE_COSTS[name] ?? 1;
   const curBalance = parseInt(document.getElementById('coinBalance').textContent, 10);
   if (!isNaN(curBalance) && curBalance < cost) {
@@ -1055,6 +962,7 @@ async function runFeature(name, label) {
     }
 
     if (data.ok) {
+      // Polling logic for background Farm job
       if (name === 'Farm' && data.status === 'processing' && data.job_id) {
         addLog(data.message, 'info');
         let displayedCount = 1;
@@ -1066,26 +974,11 @@ async function runFeature(name, label) {
             });
             const job = await sRes.json();
             
-            console.log("DEBUG_FARM_FRONTEND: Job Status:", job); // Tambahkan ini untuk debugging
             if (job.ok && job.logs) {
+              // Cetak log-log baru yang dikirim dari CMD Python
               for (let i = displayedCount; i < job.logs.length; i++) {
                 let logText = job.logs[i];
-
-                // Parse "[FARM] Progress: 40/69 levels (58%)" → tampil di console sebagai progress
-                const progMatch = logText.match(/Progress:\s*(\d+)\/(\d+)\s*levels?\s*\((\d+)%\)/i);
-                if (progMatch) {
-                  const cur = progMatch[1], tot = progMatch[2], pct = progMatch[3];
-                  addLog(`Farm: ${cur}/${tot} levels (${pct}%)`, 'info');
-                  displayedCount++;
-                  continue;
-                }
-
-                // Filter log internal yang tidak perlu ditampilkan
-                if (logText.startsWith('[FARM] Starting') || logText.includes('Forge wax')) {
-                  displayedCount++;
-                  continue;
-                }
-                let type = "info"; // Tipe default
+                let type = "info";
                 if (logText.includes("SUCCESS")) type = "success";
                 if (logText.includes("ERROR")) type = "error";
                 addLog(logText, type);
@@ -1102,8 +995,10 @@ async function runFeature(name, label) {
                 const finalMsg = job.logs[job.logs.length - 1];
                 addHistory('Farm', finalMsg, 'success');
                 
+                // Update local tracking
                 if (job.after) lastCurrencyData = job.after;
                 
+                // Update UI log for changes
                 if (job.diff) {
                   const fmtDiff = v => (v > 0 ? '+'+v : v < 0 ? ''+v : '±0');
                   Object.keys(job.diff).filter(k => job.diff[k] !== 0).forEach(key => {
@@ -1121,10 +1016,16 @@ async function runFeature(name, label) {
           } catch (err) { /* silent poll fail */ }
         }, 10000);
         
-        return;
+        return; // Exit function but keep button animation
+      } else if (name === 'ClosetUnlock' && data.logs && data.logs.length) {
+        addLog('DONE: '+label, 'success');
+        data.logs.forEach(l => addLog(l, l.startsWith('✅') ? 'success' : 'warn'));
+        addHistory(label, data.logs[data.logs.length-1], 'success');
+        if (btn) btn.classList.remove('running');
       } else {
         addLog('SUCCESS: '+label, 'success');
         addHistory(label, 'Executed successfully', 'success');
+        if (btn) btn.classList.remove('running');
       }
       showToast(label+' done!','success');
     } else {
@@ -1133,9 +1034,12 @@ async function runFeature(name, label) {
       addHistory(label+' Failed', errMsg,'error');
       showToast(errMsg,'error');
       if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
-      if (data.locked) refreshRole();
+      if (data.locked) {
+        refreshRole(); // re-sync lock state in case it changed
+      }
     }
   } catch(e) {
+    // Network error saat fetch awal ke /api/run
     addLog('ERROR: Tidak bisa reach server — ' + e.message, 'error');
     addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
     showToast('Server tidak bisa dijangkau', 'error');
@@ -1143,6 +1047,7 @@ async function runFeature(name, label) {
   }
 }
 
+// ── Account ──
 async function refreshAccount() {
   if (!TELEGRAM_ID || !isLoggedIn) return;
   const btn = document.getElementById('refreshBtn');
@@ -1190,6 +1095,7 @@ async function refreshAccount() {
   btn.disabled = false;
 }
 
+// ── Mass Farm ──
 function addSessionRow() {
   const container = document.getElementById('massSessionContainer');
   if (container.children.length >= MAX_MASSFARM_SESSIONS) {
@@ -1217,6 +1123,7 @@ function addSessionRow() {
   container.appendChild(div);
 }
 
+// Add first row by default
 addSessionRow();
 
 async function checkRowConnection(id) {
@@ -1235,31 +1142,8 @@ async function checkRowConnection(id) {
     const res = await fetch(API_BASE+'/api/check_session', {
       method:'POST',
       headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({ session_data: sessionData, server: selectedServer })
+      body: JSON.stringify({ session_data: sessionData })
     });
-async function checkAllSessions() {
-  const rows = document.querySelectorAll('#massSessionContainer > div');
-  let sessions = [];
-  rows.forEach(row => {
-    const jsonStr = row.querySelector('.sess-json').value.trim();
-    if (jsonStr) {
-      try {
-        const data = JSON.parse(jsonStr);
-        if (data.user && data.session) sessions.push(data);
-      } catch (e) {}
-    }
-  });
-  if (!sessions.length) return;
-  showToast('Checking all...');
-  try {
-    const res = await fetch(API_BASE+'/api/masscheck', {
-      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({ sessions, server: selectedServer })
-    });
-    const data = await res.json();
-    if (data.ok) showToast('Check complete', 'success');
-  } catch(e) { showToast('Check failed', 'error'); }
-}
     const data = await res.json();
     if (data.ok) {
       statusEl.textContent = 'Session Connected';
@@ -1301,12 +1185,13 @@ async function startMassFarm() {
   log.innerHTML = '';
   bar.style.width = '0%';
 
+  // ── Start job ──
   let jobId = null;
   try {
     const res = await fetch(API_BASE + '/api/massfarm', {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
-      body: JSON.stringify({ telegram_id: TELEGRAM_ID, sessions: currentSessions, server: selectedServer })
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, sessions: currentSessions })
     });
     const data = await res.json();
     if (!data.ok) {
@@ -1324,6 +1209,7 @@ async function startMassFarm() {
     return;
   }
 
+  // ── Poll status every 3s ──
   let rendered = 0;
   const poll = setInterval(async () => {
     try {
@@ -1333,10 +1219,12 @@ async function startMassFarm() {
       const data = await res.json();
       if (!data.ok) return;
 
+      // Update progress bar
       const pct = data.total > 0 ? Math.round((data.current / data.total) * 100) : 0;
       bar.style.width    = pct + '%';
       statusTxt.textContent = data.status;
 
+      // Append new result lines
       const newItems = data.results.slice(rendered);
       newItems.forEach(r => {
         const color = r.status === 'success' ? 'text-green-400' : 'text-red-400';
@@ -1348,7 +1236,7 @@ async function startMassFarm() {
       if (data.done) {
         clearInterval(poll);
         bar.style.width = '100%';
-        log.innerHTML += `<div class="text-primary font-bold py-1 border-t border-white/10 mt-1">Done! ${data.success}/${data.total} success</div>`;
+        log.innerHTML += `<div class="text-primary font-bold py-1 border-t border-white/10 mt-1">✓ Done! ${data.success}/${data.total} success</div>`;
         showToast(`Mass Farm done! ${data.success}/${data.total} success`, 'success');
         addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
         btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
@@ -1390,12 +1278,15 @@ function toggleAutoRefresh() {
   else { clearInterval(autoRefreshInterval); autoRefreshInterval=null; showToast('Auto refresh OFF'); }
 }
 
+// ── Settings ──
+
 function clearAllData() {
   if (!confirm('Reset all local data?')) return;
   localStorage.clear(); actionHistory=[];
   renderHistory(); showToast('All data cleared');
 }
 
+// ── Request Access ──────────────────────────────────────────────────────────
 function showReqAccess() {
   document.getElementById('step1').classList.remove('active');
   document.getElementById('step2').classList.remove('active');
@@ -1425,7 +1316,7 @@ async function requestAccess() {
     const data = await res.json();
     result.classList.remove('hidden');
     if (data.ok) {
-      result.textContent = 'Request sent! Wait for admin approval.';
+      result.textContent = '✓ Request sent! Wait for admin approval.';
       result.style.background = 'rgba(74,222,128,.1)';
       result.style.color = '#4ade80';
       btn.textContent = 'REQUEST SENT';
