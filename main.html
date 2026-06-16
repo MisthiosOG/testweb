@@ -1077,7 +1077,7 @@ async function runFeature(name, label) {
         let displayedCount = 1;
         const farmStartTime = Date.now();
         let lastPct = 0;
-        let progressLogId = null;
+        let progressEl = null; // simpan direct reference, bukan ID
 
         const fmtElapsed = () => {
           const sec = Math.floor((Date.now() - farmStartTime) / 1000);
@@ -1090,8 +1090,11 @@ async function runFeature(name, label) {
           return `${String(Math.floor(remain/60)).padStart(2,'0')}:${String(remain%60).padStart(2,'0')}`;
         };
         const updateProgressLine = () => {
-          const el = progressLogId ? document.getElementById(progressLogId) : null;
-          if (el) el.textContent = `[${new Date().toLocaleTimeString()}] Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`;
+          if (!progressEl) return;
+          const console = document.getElementById('consoleLogs');
+          progressEl.textContent = `[${new Date().toLocaleTimeString()}] Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`;
+          // Selalu di paling atas supaya tidak ketimbun log lain
+          if (console && console.firstChild !== progressEl) console.prepend(progressEl);
         };
 
         // Timer update tiap detik
@@ -1112,9 +1115,9 @@ async function runFeature(name, label) {
                 const progMatch = logText.match(/Progress:\s*(\d+)\/(\d+)\s*levels?\s*\((\d+)%\)/i);
                 if (progMatch) {
                   lastPct = parseInt(progMatch[3]);
-                  if (!progressLogId) {
-                    const el = addLog(`Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`, 'info');
-                    if (el) progressLogId = el.id;
+                  if (!progressEl) {
+                    // Buat baris progress pertama kali — simpan direct reference
+                    progressEl = addLog(`Process Farm.. ${lastPct}% | elapsed ${fmtElapsed()} | ETA ${fmtETA(lastPct)}`, 'info');
                   } else {
                     updateProgressLine();
                   }
