@@ -1275,10 +1275,13 @@ function mfAddRow() {
       class="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none resize-none"
       placeholder="Paste Lua code here..."></textarea>
     <div class="flex gap-2 items-center">
-      <select id="mfserver-${id}" class="bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] outline-none text-on-surface-variant">
-        <option value="live">Live</option>
-        <option value="beta">Beta</option>
-      </select>
+      <div class="flex gap-1 bg-black/20 p-0.5 rounded-lg border border-white/5">
+        <button onclick="mfSetServer(${id},'live')" id="mfsrv-${id}-live"
+          class="mfsrv text-[9px] font-bold px-2.5 py-1 rounded-md transition-all bg-green-500/20 text-green-400 border border-green-500/30">Live</button>
+        <button onclick="mfSetServer(${id},'beta')" id="mfsrv-${id}-beta"
+          class="mfsrv text-[9px] font-bold px-2.5 py-1 rounded-md transition-all text-on-surface-variant">Beta</button>
+      </div>
+      <input type="hidden" id="mfserver-${id}" value="live">
       <button onclick="mfCheckRow(${id})"
         class="flex-1 bg-primary/10 text-primary text-[10px] font-bold py-1.5 rounded-lg border border-primary/20 hover:bg-primary/20 transition-all">
         Check Connect
@@ -1302,6 +1305,15 @@ function mfSetMethod(id, method) {
   if (method==='lua')  textarea.placeholder = 'Paste Lua code here...';
   if (method==='lib')  textarea.placeholder = 'Paste Lib session code...';
   if (method==='json') textarea.placeholder = '{"user":"...","session":"..."}';
+}
+
+function mfSetServer(id, server) {
+  document.getElementById('mfserver-'+id).value = server;
+  const isLive = server === 'live';
+  const liveBtn = document.getElementById(`mfsrv-${id}-live`);
+  const betaBtn = document.getElementById(`mfsrv-${id}-beta`);
+  liveBtn.className = `mfsrv text-[9px] font-bold px-2.5 py-1 rounded-md transition-all ${isLive ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'text-on-surface-variant'}`;
+  betaBtn.className = `mfsrv text-[9px] font-bold px-2.5 py-1 rounded-md transition-all ${!isLive ? 'bg-amber-400/20 text-amber-400 border border-amber-400/30' : 'text-on-surface-variant'}`;
 }
 
 async function mfCheckRow(id) {
