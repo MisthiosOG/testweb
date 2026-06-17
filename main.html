@@ -90,6 +90,17 @@
 
 <div id="toast" class="toast"></div>
 
+<!-- Confirm Modal -->
+<div id="confirmModal" class="fixed inset-0 z-[99] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+  <div class="glass-card rounded-2xl p-5 mx-4 w-full max-w-xs flex flex-col gap-4 fade-in">
+    <p id="confirmMsg" class="text-sm font-semibold text-center"></p>
+    <div class="flex gap-2">
+      <button id="confirmNo"  class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white/5 border border-white/10 text-on-surface-variant">Cancel</button>
+      <button id="confirmYes" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-primary text-on-primary">Run</button>
+    </div>
+  </div>
+</div>
+
 <!-- Header -->
 <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-center px-4 py-2">
  <div class="w-full max-w-container flex flex-col gap-1.5">
@@ -809,6 +820,19 @@ function showToast(msg, type='primary') {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+function showConfirm(msg) {
+  return new Promise(resolve => {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmMsg').innerHTML = msg;
+    modal.classList.remove('hidden');
+    const yes = document.getElementById('confirmYes');
+    const no  = document.getElementById('confirmNo');
+    const cleanup = (val) => { modal.classList.add('hidden'); yes.onclick = no.onclick = null; resolve(val); };
+    yes.onclick = () => cleanup(true);
+    no.onclick  = () => cleanup(false);
+  });
+}
+
 function addLog(msg, type='info') {
   const el = document.getElementById('consoleLogs');
   const div = document.createElement('div');
@@ -1060,6 +1084,8 @@ async function runFeatureWithTarget(name, label, targetId) {
 
 async function runFeature(name, label) {
   if (!TELEGRAM_ID) { showToast('No Telegram ID','error'); return; }
+  const confirmed = await showConfirm(`Run <b>${label}</b>?`);
+  if (!confirmed) return;
 
   if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
     addLog(`LOCKED: ${label} is a VIP-only feature.`, 'error');
@@ -1320,7 +1346,8 @@ async function mfCheckRow(id) {
   const row    = document.getElementById('mfrow-'+id);
   const code   = document.getElementById('mfinput-'+id).value.trim();
   const server = document.getElementById('mfserver-'+id).value;
-  const method = row.dataset.method || 'lua';
+  let   method = row.dataset.method || 'lua';
+  if (code.startsWith('{')) method = 'json';
   const statusEl   = document.getElementById('mfstatus-'+id);
   const currencyEl = document.getElementById('mfcurrency-'+id);
 
@@ -1467,7 +1494,9 @@ async function mfStart() {
     const id     = row.id.replace('mfrow-','');
     const code   = document.getElementById('mfinput-'+id).value.trim();
     const server = document.getElementById('mfserver-'+id).value;
-    const method = row.dataset.method || 'lua';
+    let   method = row.dataset.method || 'lua';
+    // Auto-detect: if input looks like JSON, override method
+    if (code.startsWith('{')) method = 'json';
     entries.push({ code, method, server });
   });
 
