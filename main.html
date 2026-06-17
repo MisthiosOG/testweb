@@ -205,12 +205,19 @@
 
 <!-- Heart Modal -->
 <div id="heartModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-  <div class="cyber-card w-full max-w-xs p-5 flex flex-col gap-4">
+  <div class="cyber-card w-full max-w-xs p-5 flex flex-col gap-3">
     <div class="flex justify-between items-center">
       <span class="font-bold text-sm text-on-surface">Send Heart</span>
       <button onclick="closeHeartModal()" class="material-symbols-outlined text-on-surface-variant">close</button>
     </div>
-    <input type="text" id="heartTargetId" placeholder="Target User ID (UUID format)..."
+    <!-- Friend list -->
+    <div id="friendListContainer" class="flex flex-col gap-2 max-h-52 overflow-y-auto">
+      <button onclick="loadFriends()" class="w-full py-2.5 rounded-full text-xs font-bold border border-primary/30 text-primary hover:bg-primary/10 transition-all">
+        <span class="material-symbols-outlined align-middle" style="font-size:14px">group</span> Load Friends
+      </button>
+    </div>
+    <!-- Manual fallback -->
+    <input type="text" id="heartTargetId" placeholder="Or enter Sky ID manually..."
       class="cyber-inner px-4 py-3 text-xs outline-none focus:border-primary bg-transparent text-on-surface w-full rounded-2xl"/>
     <button onclick="confirmSendHeart()" class="bg-primary text-on-primary py-3 rounded-full text-xs font-bold">SEND HEART (5 Coins)</button>
   </div>
@@ -457,6 +464,16 @@
         <span class="cost-badge" data-cost-for="SkipIntro"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
         <span class="material-symbols-outlined text-primary text-[24px]">skip_next</span>
         <span class="font-code-md text-[11px] text-on-surface">Skip Intro</span>
+      </button>
+      <button onclick="runFeature('Map','Unlock Map')" id="feat-Map" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
+        <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+        <span class="material-symbols-outlined text-primary text-[24px]">map</span>
+        <span class="font-code-md text-[11px] text-on-surface">Unlock Map</span>
+      </button>
+      <button onclick="runFeature('ClosetUnlock','Closet Unlock')" id="feat-ClosetUnlock" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
+        <span class="cost-badge" data-cost-for="ClosetUnlock"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+        <span class="material-symbols-outlined text-primary text-[24px]">checkroom</span>
+        <span class="font-code-md text-[11px] text-on-surface">Closet Unlock</span>
       </button>
     </div>
   </div>
@@ -1224,20 +1241,30 @@ async function runFeature(name, label) {
               clearInterval(pollId);
               if (btn) btn.classList.remove('running');
               if (job.success) { showToast(label + ' done!', 'success'); addHistory(label, job.logs[job.logs.length - 1] || 'Done', 'success'); }
-              else { showToast(label + ' failed', 'error'); addHistory(label + ' Failed', job.logs[job.logs.length - 1] || 'Failed', 'error'); }
+              else {
+                const lastLog = job.logs[job.logs.length - 1] || 'Failed';
+                showToast(job.session_expired ? '⚠️ Session expired — re-login required' : label + ' failed', 'error');
+                addHistory(label + ' Failed', lastLog, 'error');
+              }
             }
           } catch (e) { /* silent */ }
         }, 10000);
         return;
+      } else if (name === 'ClosetUnlock' && data.logs && data.logs.length) {
+        addLog('DONE: ' + label, 'success');
+        data.logs.forEach(l => addLog(l, l.startsWith('✅') ? 'success' : 'warn'));
+        addHistory(label, data.logs[data.logs.length-1], 'success');
+        showToast(label + ' done!', 'success');
+      } else {
+        addLog('SUCCESS: ' + label, 'success');
+        addHistory(label, 'Executed successfully', 'success');
+        showToast(label + ' done!', 'success');
       }
-      addLog('SUCCESS: ' + label, 'success');
-      addHistory(label, 'Executed successfully', 'success');
-      showToast(label + ' done!', 'success');
     } else {
       const err = data.error || 'Unknown error';
       addLog('ERROR: ' + err, 'error');
       addHistory(label + ' Failed', err, 'error');
-      showToast(err, 'error');
+      showToast(data.session_expired ? '⚠️ Session expired — re-login required' : err, 'error');
       if (data.locked) refreshRole();
     }
   } catch (e) {
@@ -1250,7 +1277,40 @@ async function runFeature(name, label) {
 
 // ── SEND HEART ────────────────────────────────────────────────────────────────
 function openHeartModal()  { document.getElementById('heartModal').classList.remove('hidden'); }
-function closeHeartModal() { document.getElementById('heartModal').classList.add('hidden'); document.getElementById('heartTargetId').value = ''; }
+function closeHeartModal() {
+  document.getElementById('heartModal').classList.add('hidden');
+  document.getElementById('heartTargetId').value = '';
+  document.getElementById('friendListContainer').innerHTML =
+    `<button onclick="loadFriends()" class="w-full py-2.5 rounded-full text-xs font-bold border border-primary/30 text-primary hover:bg-primary/10 transition-all"><span class="material-symbols-outlined align-middle" style="font-size:14px">group</span> Load Friends</button>`;
+}
+async function loadFriends() {
+  const container = document.getElementById('friendListContainer');
+  container.innerHTML = '<div class="text-xs text-center text-on-surface-variant py-2">Loading...</div>';
+  try {
+    const res = await fetch(API_BASE + '/api/friends', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (!data.ok || !data.friends.length) {
+      container.innerHTML = '<div class="text-xs text-center text-on-surface-variant/60 py-2">No friends found.</div>';
+      return;
+    }
+    container.innerHTML = data.friends.map(f =>
+      `<button onclick="selectFriend('${f.id}','${(f.name||'').replace(/'/g,"\\'")}')
+        class="w-full text-left px-3 py-2 rounded-xl cyber-inner text-xs text-on-surface flex items-center gap-2 hover:border-primary/40 transition-all">
+        <span class="material-symbols-outlined text-primary" style="font-size:14px">person</span>
+        <span class="flex-1 truncate">${f.name || f.id}</span>
+        <span class="text-on-surface-variant/50 font-code-md" style="font-size:9px">${f.id.slice(0,8)}…</span>
+      </button>`
+    ).join('');
+  } catch(e) { container.innerHTML = '<div class="text-xs text-center text-error py-2">Failed to load.</div>'; }
+}
+function selectFriend(id, name) {
+  document.getElementById('heartTargetId').value = id;
+  showToast('Selected: ' + (name || id), 'info');
+}
 async function confirmSendHeart() {
   const targetId = document.getElementById('heartTargetId').value.trim();
   if (!targetId || targetId.length < 5) { showToast('Enter valid Sky ID', 'error'); return; }
