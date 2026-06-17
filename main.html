@@ -25,7 +25,27 @@
   .feat-btn{transition:transform .12s,background .15s;cursor:pointer;position:relative}
   .feat-btn:active{transform:scale(.93)}
   .feat-btn:hover{background:rgba(255,255,255,.05)}
-  .feat-btn.running{animation:pulse-slow 1s ease infinite;pointer-events:none;opacity:.7}
+  .feat-btn.running {
+    pointer-events: none;
+    opacity: 0.8;
+    position: relative;
+}
+.feat-btn.running::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: running-dot 1.2s ease-in-out infinite;
+    box-shadow: 0 0 6px #4ade80;
+}
+@keyframes running-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.6); }
+}
   .feat-btn.locked{opacity:.4;filter:grayscale(.6)}
   .feat-btn.locked .cost-badge{display:none}
   .lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border-radius:1rem;backdrop-filter:blur(1px)}
@@ -105,31 +125,61 @@
 
 <!-- MASS FARM -->
 <div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
-  <div class="glass-card p-5 rounded-2xl">
-    <div class="flex justify-between items-center mb-4">
-      <p class="section-title mb-0">MASS FARM (Max 10)</p>
-      <div class="flex gap-2">
-        <button onclick="checkAllSessions()" class="text-[10px] bg-amber-500/10 text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-amber-500/20">CHECK ALL</button>
-        <button onclick="addSessionRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20">ADD ACC</button>
-      </div>
+
+  <!-- Step 1: Add Sessions -->
+  <div id="mf-step-sessions" class="flex flex-col gap-3">
+    <div class="flex justify-between items-center px-1">
+      <p class="section-title mb-0">MASS FARM — Add Sessions</p>
+      <button onclick="mfAddRow()" class="text-[10px] bg-primary/10 text-primary px-3 py-1.5 rounded-lg font-bold border border-primary/20">+ Add Account</button>
     </div>
-    
-    <div id="massSessionContainer" class="flex flex-col gap-3 mb-5"></div>
-    
-    <button onclick="startMassFarm()" id="btnStartMassFarm"
-      class="w-full bg-primary text-on-primary py-3.5 rounded-xl text-sm font-black tracking-widest shadow-lg shadow-primary/10 transition-all active:scale-[0.98]">
-      START MASS FARMING</button>
+
+    <div id="mfContainer" class="flex flex-col gap-2"></div>
+
+    <!-- Check All + currency display -->
+    <button onclick="mfCheckAll()" id="btnMfCheck"
+      class="w-full border border-primary/30 text-primary py-3 rounded-xl text-sm font-bold transition-all active:scale-[.98]">
+      CHECK ALL CONNECTIONS
+    </button>
+    <div id="mfCurrencyPanel" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-2"></div>
+
+    <button onclick="mfGoFeature()" id="btnMfNext"
+      class="w-full bg-surface-container text-on-surface-variant py-3 rounded-xl text-sm font-bold opacity-50 cursor-not-allowed" disabled>
+      NEXT — SELECT FEATURES
+    </button>
   </div>
 
-  <div id="massFarmResult" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-3">
+  <!-- Step 2: Select Features + Start -->
+  <div id="mf-step-features" class="hidden flex-col gap-3">
+    <div class="flex items-center gap-3 px-1">
+      <button onclick="mfBackToSessions()" class="text-[10px] text-on-surface-variant border border-white/10 px-2 py-1 rounded-lg">Back</button>
+      <p class="section-title mb-0">SELECT FEATURES TO RUN</p>
+    </div>
+
+    <div class="glass-card p-4 rounded-2xl flex flex-col gap-2">
+      <p class="text-[10px] text-on-surface-variant mb-1">Select one or more features. Will run in sequence per account.</p>
+      <div class="grid grid-cols-3 gap-2" id="mfFeatureGrid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div id="mfSelectedSummary" class="text-[10px] text-on-surface-variant px-1"></div>
+
+    <button onclick="mfStart()" id="btnMfStart"
+      class="w-full bg-primary text-on-primary py-3.5 rounded-xl text-sm font-black tracking-widest shadow-lg shadow-primary/10 transition-all active:scale-[0.98]">
+      START MASS FARM
+    </button>
+  </div>
+
+  <!-- Progress -->
+  <div id="mfProgressPanel" class="hidden glass-card p-4 rounded-2xl flex flex-col gap-3">
     <div class="flex justify-between items-center">
       <p class="font-semibold text-xs">Progress</p>
-      <span id="massFarmStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
+      <span id="mfStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
     </div>
     <div class="w-full bg-white/5 rounded-full h-1.5">
-      <div id="massFarmProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
+      <div id="mfProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
     </div>
-    <div id="massFarmLog" class="font-mono text-[10px] max-h-48 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
+    <div id="mfLog" class="font-mono text-[10px] max-h-52 overflow-auto bg-black/30 p-3 rounded-xl flex flex-col gap-1 hide-scrollbar"></div>
   </div>
 </div>
 
@@ -1041,7 +1091,7 @@ async function runFeature(name, label) {
     }
 
     if (data.ok) {
-      if (name === 'Farm' && data.status === 'processing' && data.job_id) {
+      if (data.status === 'processing' && data.job_id) {
         addLog(data.message, 'info');
         let displayedCount = 1;
         
@@ -1084,9 +1134,9 @@ async function runFeature(name, label) {
               if (btn) btn.classList.remove('running');
 
               if (job.success) {
-                showToast('Farm done!', 'success');
+                showToast(label + ' done!', 'success');
                 const finalMsg = job.logs[job.logs.length - 1];
-                addHistory('Farm', finalMsg, 'success');
+                addHistory(label, finalMsg, 'success');
                 
                 if (job.after) lastCurrencyData = job.after;
                 
@@ -1100,8 +1150,8 @@ async function runFeature(name, label) {
                 if (document.getElementById('page-account').classList.contains('active')) refreshAccount();
               } else {
                 const finalMsg = job.logs[job.logs.length - 1];
-                addHistory('Farm Failed', finalMsg, 'error');
-                showToast('Farm failed', 'error');
+                addHistory(label + ' Failed', finalMsg, 'error');
+                showToast(label + ' failed', 'error');
               }
             }
           } catch (err) { /* silent poll fail */ }
@@ -1112,7 +1162,6 @@ async function runFeature(name, label) {
         addLog('DONE: '+label, 'success');
         data.logs.forEach(l => addLog(l, l.startsWith('✅') ? 'success' : 'warn'));
         addHistory(label, data.logs[data.logs.length-1], 'success');
-        if (btn) btn.classList.remove('running');
       } else {
         addLog('SUCCESS: '+label, 'success');
         addHistory(label, 'Executed successfully', 'success');
@@ -1126,6 +1175,7 @@ async function runFeature(name, label) {
       if (data.refunded) addLog('Coin refunded for failed action.', 'warn');
       if (data.locked) refreshRole();
     }
+    if (btn) btn.classList.remove('running');
   } catch(e) {
     addLog('ERROR: Tidak bisa reach server — ' + e.message, 'error');
     addHistory(label + ' Error', 'Server unreachable: ' + e.message, 'error');
@@ -1181,172 +1231,296 @@ async function refreshAccount() {
   btn.disabled = false;
 }
 
-function addSessionRow() {
-  const container = document.getElementById('massSessionContainer');
+// ============================================================
+// MASS FARM
+// ============================================================
+const MF_FEATURES = [
+  { id:'Farm',           label:'Farm' },
+  { id:'Eden',           label:'Eden' },
+  { id:'Quest',          label:'Daily Quest' },
+  { id:'WorldQuest',     label:'World Quest' },
+  { id:'SeasonalQuest',  label:'Seasonal' },
+  { id:'Wings',          label:'Wings' },
+  { id:'Map',            label:'Map' },
+  { id:'ElderHairs',     label:'Elder Hairs' },
+  { id:'DailyFunction',  label:'Daily All' },
+  { id:'All',            label:'Full All' },
+];
+
+let mfSelectedFeatures = new Set(['Farm']);
+let mfRowId = 0;
+let mfValidCount = 0; // how many rows passed check
+
+function mfAddRow() {
+  const container = document.getElementById('mfContainer');
   if (container.children.length >= MAX_MASSFARM_SESSIONS) {
-    showToast(`Max ${MAX_MASSFARM_SESSIONS} accounts for your role (${CURRENT_ROLE.toUpperCase()}). Upgrade for more.`, 'error');
-    return;
+    showToast(`Max ${MAX_MASSFARM_SESSIONS} accounts (${CURRENT_ROLE.toUpperCase()})`, 'error'); return;
   }
-  
-  const id = Date.now();
+  const id = ++mfRowId;
   const div = document.createElement('div');
-  div.id = 'row-' + id;
-  div.className = 'glass-card p-3 rounded-xl border border-white/5 relative flex flex-col gap-2 mb-1 fade-in';
+  div.id = 'mfrow-' + id;
+  div.className = 'glass-card p-3 rounded-xl border border-white/5 flex flex-col gap-2 relative fade-in';
   div.innerHTML = `
-    <button onclick="document.getElementById('row-${id}').remove()" class="absolute top-2 right-2 text-error/50 hover:text-error transition-colors">
-      <span class="material-symbols-outlined" style="font-size:18px">delete</span>
-    </button>
-    <div class="flex flex-col gap-1.5">
-      <label class="text-[9px] uppercase font-bold text-on-surface-variant/50 ml-1">Session JSON</label>
-      <div class="flex gap-2">
-        <input type="text" class="sess-json flex-1 bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none" placeholder='Place Session Code Here...'>
-        <button onclick="checkRowConnection('${id}')" class="bg-primary/10 text-primary px-3 rounded-lg text-[10px] font-bold border border-primary/20 hover:bg-primary/20 transition-all shrink-0">Check Connect</button>
-      </div>
-      <div id="check-status-${id}" class="text-[9px] ml-1 mt-1 font-semibold hidden"></div>
+    <div class="flex gap-1 mb-1">
+      ${['lua','lib','json'].map(m => `<button onclick="mfSetMethod(${id},'${m}')" id="mftab-${id}-${m}"
+        class="mftab flex-1 text-[9px] font-bold py-1 rounded-lg border border-white/5 transition-all ${m==='lua'?'bg-primary/20 text-primary border-primary/30':'text-on-surface-variant'}">${m.toUpperCase()}</button>`).join('')}
+      <button onclick="document.getElementById('mfrow-${id}').remove(); mfUpdateNext()"
+        class="text-error/50 hover:text-error ml-1 px-1"><span class="material-symbols-outlined" style="font-size:16px">close</span></button>
     </div>
+    <textarea id="mfinput-${id}" rows="2"
+      class="w-full bg-black/40 border border-white/10 rounded-lg p-2 text-[10px] font-mono focus:border-primary/50 outline-none resize-none"
+      placeholder="Paste Lua code here..."></textarea>
+    <div class="flex gap-2 items-center">
+      <select id="mfserver-${id}" class="bg-black/40 border border-white/10 rounded-lg px-2 py-1.5 text-[10px] outline-none text-on-surface-variant">
+        <option value="live">Live</option>
+        <option value="beta">Beta</option>
+      </select>
+      <button onclick="mfCheckRow(${id})"
+        class="flex-1 bg-primary/10 text-primary text-[10px] font-bold py-1.5 rounded-lg border border-primary/20 hover:bg-primary/20 transition-all">
+        Check Connect
+      </button>
+    </div>
+    <div id="mfstatus-${id}" class="hidden text-[9px] font-semibold"></div>
+    <div id="mfcurrency-${id}" class="hidden text-[9px] font-mono flex flex-wrap gap-2 pt-1"></div>
   `;
+  div.dataset.method = 'lua';
   container.appendChild(div);
 }
 
-addSessionRow();
-
-async function checkRowConnection(id) {
-  const row = document.getElementById('row-'+id);
-  const jsonStr = row.querySelector('.sess-json').value.trim();
-  const statusEl = document.getElementById('check-status-'+id);
-  
-  if (!jsonStr) { showToast('JSON is empty','error'); return; }
-  
-  statusEl.classList.remove('hidden');
-  statusEl.textContent = 'Checking...';
-  statusEl.className = 'text-[9px] ml-1 mt-1 text-on-surface-variant';
-  
-  try {
-    const sessionData = JSON.parse(jsonStr);
-    const res = await fetch(API_BASE+'/api/check_session', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({ session_data: sessionData, server: selectedServer })
-    });
-async function checkAllSessions() {
-  const rows = document.querySelectorAll('#massSessionContainer > div');
-  let sessions = [];
-  rows.forEach(row => {
-    const jsonStr = row.querySelector('.sess-json').value.trim();
-    if (jsonStr) {
-      try {
-        const data = JSON.parse(jsonStr);
-        if (data.user && data.session) sessions.push(data);
-      } catch (e) {}
-    }
+function mfSetMethod(id, method) {
+  const row = document.getElementById('mfrow-'+id);
+  row.dataset.method = method;
+  ['lua','lib','json'].forEach(m => {
+    const btn = document.getElementById(`mftab-${id}-${m}`);
+    btn.className = `mftab flex-1 text-[9px] font-bold py-1 rounded-lg border transition-all ${m===method?'bg-primary/20 text-primary border-primary/30':'border-white/5 text-on-surface-variant'}`;
   });
-  if (!sessions.length) return;
-  showToast('Checking all...');
-  try {
-    const res = await fetch(API_BASE+'/api/masscheck', {
-      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
-      body: JSON.stringify({ sessions, server: selectedServer })
-    });
-    const data = await res.json();
-    if (data.ok) showToast('Check complete', 'success');
-  } catch(e) { showToast('Check failed', 'error'); }
+  const textarea = document.getElementById('mfinput-'+id);
+  if (method==='lua')  textarea.placeholder = 'Paste Lua code here...';
+  if (method==='lib')  textarea.placeholder = 'Paste Lib session code...';
+  if (method==='json') textarea.placeholder = '{"user":"...","session":"..."}';
 }
+
+async function mfCheckRow(id) {
+  const row    = document.getElementById('mfrow-'+id);
+  const code   = document.getElementById('mfinput-'+id).value.trim();
+  const server = document.getElementById('mfserver-'+id).value;
+  const method = row.dataset.method || 'lua';
+  const statusEl   = document.getElementById('mfstatus-'+id);
+  const currencyEl = document.getElementById('mfcurrency-'+id);
+
+  if (!code) { showToast('Code is empty', 'error'); return; }
+  statusEl.className = 'text-[9px] font-semibold text-on-surface-variant';
+  statusEl.textContent = 'Checking...';
+  statusEl.classList.remove('hidden');
+  currencyEl.classList.add('hidden');
+  row.dataset.valid = '0';
+
+  try {
+    const res  = await fetch(API_BASE+'/api/check_session', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({ method, code, server })
+    });
     const data = await res.json();
     if (data.ok) {
-      statusEl.textContent = 'Session Connected';
-      statusEl.className = 'text-[9px] ml-1 mt-1 text-green-400';
+      statusEl.textContent = `Connected  (${data.user_id?.slice(0,12)}...)`;
+      statusEl.className = 'text-[9px] font-semibold text-green-400';
+      row.dataset.valid = '1';
+      // show currency
+      if (data.currency && Object.keys(data.currency).length) {
+        const cur = data.currency;
+        const keys = ['candles','wax','hearts','seasonal_candles','ascended_candles'];
+        const icons = {candles:'candle',wax:'opacity',hearts:'favorite',seasonal_candles:'auto_awesome',ascended_candles:'star'};
+        currencyEl.innerHTML = keys.filter(k=>cur[k]!==undefined).map(k=>
+          `<span class="flex items-center gap-0.5 bg-white/5 px-1.5 py-0.5 rounded-md">
+            <span class="material-symbols-outlined" style="font-size:10px">${icons[k]||'toll'}</span>
+            ${Number(cur[k]).toLocaleString()}
+          </span>`
+        ).join('');
+        currencyEl.classList.remove('hidden');
+      }
     } else {
-      statusEl.textContent = 'Session Expired/Invalid: ' + (data.error || 'Unknown');
-      statusEl.className = 'text-[9px] ml-1 mt-1 text-error';
+      statusEl.textContent = 'Failed: ' + (data.error || 'Invalid session');
+      statusEl.className = 'text-[9px] font-semibold text-red-400';
     }
   } catch(e) {
-    statusEl.textContent = 'JSON Error: ' + e.message;
-    statusEl.className = 'text-[9px] ml-1 mt-1 text-error';
+    statusEl.textContent = 'Error: ' + e.message;
+    statusEl.className = 'text-[9px] font-semibold text-red-400';
+  }
+  mfUpdateNext();
+}
+
+async function mfCheckAll() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  if (!rows.length) { showToast('Add at least one account', 'error'); return; }
+  const btn = document.getElementById('btnMfCheck');
+  btn.innerHTML = '<span class="spinner"></span>Checking...'; btn.disabled = true;
+
+  for (const row of rows) {
+    const id = row.id.replace('mfrow-','');
+    await mfCheckRow(parseInt(id));
+  }
+  btn.textContent = 'CHECK ALL CONNECTIONS'; btn.disabled = false;
+
+  // Show combined currency panel
+  const rows2 = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  const panel = document.getElementById('mfCurrencyPanel');
+  const validRows = [...rows2].filter(r => r.dataset.valid === '1');
+  if (validRows.length) {
+    panel.classList.remove('hidden');
+    panel.innerHTML = `<p class="section-title mb-2">${validRows.length} Connected — Currency Summary</p>` +
+      validRows.map((row, i) => {
+        const id = row.id.replace('mfrow-','');
+        const statusEl = document.getElementById('mfstatus-'+id);
+        const currEl   = document.getElementById('mfcurrency-'+id);
+        return `<div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
+          <span class="text-[10px] text-on-surface-variant">Acc ${i+1}</span>
+          <div class="flex gap-1.5">${currEl ? currEl.innerHTML : '—'}</div>
+        </div>`;
+      }).join('');
+  } else {
+    panel.classList.add('hidden');
   }
 }
 
-async function startMassFarm() {
-  const rows = document.querySelectorAll('#massSessionContainer > div');
-  currentSessions = [];
+function mfUpdateNext() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  const validCount = [...rows].filter(r => r.dataset.valid === '1').length;
+  const btn = document.getElementById('btnMfNext');
+  if (validCount > 0) {
+    btn.disabled = false;
+    btn.className = 'w-full bg-primary text-on-primary py-3 rounded-xl text-sm font-bold transition-all active:scale-[.98]';
+    btn.textContent = `NEXT — SELECT FEATURES (${validCount} account${validCount>1?'s':''})`;
+  } else {
+    btn.disabled = true;
+    btn.className = 'w-full bg-surface-container text-on-surface-variant py-3 rounded-xl text-sm font-bold opacity-50 cursor-not-allowed';
+    btn.textContent = 'NEXT — SELECT FEATURES';
+  }
+}
 
+function mfGoFeature() {
+  document.getElementById('mf-step-sessions').classList.add('hidden');
+  const feat = document.getElementById('mf-step-features');
+  feat.classList.remove('hidden'); feat.classList.add('flex');
+  mfRenderFeatureGrid();
+}
+function mfBackToSessions() {
+  document.getElementById('mf-step-features').classList.add('hidden');
+  document.getElementById('mf-step-features').classList.remove('flex');
+  document.getElementById('mf-step-sessions').classList.remove('hidden');
+}
+
+function mfRenderFeatureGrid() {
+  const grid = document.getElementById('mfFeatureGrid');
+  grid.innerHTML = MF_FEATURES.map(f => `
+    <button onclick="mfToggleFeature('${f.id}')" id="mffeat-${f.id}"
+      class="mffeat-btn text-[10px] font-bold py-2 px-1 rounded-xl border transition-all ${mfSelectedFeatures.has(f.id)?'border-primary bg-primary/15 text-primary':'border-white/10 bg-surface-container text-on-surface-variant'}">
+      ${f.label}
+    </button>`).join('');
+  mfUpdateSummary();
+}
+
+function mfToggleFeature(id) {
+  if (mfSelectedFeatures.has(id)) {
+    if (mfSelectedFeatures.size === 1) return; // keep at least 1
+    mfSelectedFeatures.delete(id);
+  } else {
+    mfSelectedFeatures.add(id);
+  }
+  const btn = document.getElementById('mffeat-'+id);
+  if (mfSelectedFeatures.has(id)) {
+    btn.className = 'mffeat-btn text-[10px] font-bold py-2 px-1 rounded-xl border transition-all border-primary bg-primary/15 text-primary';
+  } else {
+    btn.className = 'mffeat-btn text-[10px] font-bold py-2 px-1 rounded-xl border transition-all border-white/10 bg-surface-container text-on-surface-variant';
+  }
+  mfUpdateSummary();
+}
+
+function mfUpdateSummary() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  const validCount = [...rows].filter(r => r.dataset.valid === '1').length;
+  const feats = [...mfSelectedFeatures].join(', ');
+  document.getElementById('mfSelectedSummary').textContent =
+    `${validCount} account${validCount>1?'s':''} × [${feats}]`;
+}
+
+async function mfStart() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  const entries = [];
   rows.forEach(row => {
-    const jsonStr = row.querySelector('.sess-json').value.trim();
-    if (jsonStr) {
-      try {
-        const data = JSON.parse(jsonStr);
-        if (data.user && data.session) currentSessions.push(data);
-      } catch (e) {}
-    }
+    if (row.dataset.valid !== '1') return;
+    const id     = row.id.replace('mfrow-','');
+    const code   = document.getElementById('mfinput-'+id).value.trim();
+    const server = document.getElementById('mfserver-'+id).value;
+    const method = row.dataset.method || 'lua';
+    entries.push({ code, method, server });
   });
 
-  if (currentSessions.length === 0) { showToast('Add at least one account!', 'error'); return; }
+  if (!entries.length) { showToast('No valid sessions', 'error'); return; }
+  if (!mfSelectedFeatures.size) { showToast('Select at least one feature', 'error'); return; }
 
-  const btn       = document.getElementById('btnStartMassFarm');
-  const log       = document.getElementById('massFarmLog');
-  const bar       = document.getElementById('massFarmProgressBar');
-  const statusTxt = document.getElementById('massFarmStatusText');
+  const btn = document.getElementById('btnMfStart');
+  btn.innerHTML = '<span class="spinner"></span>STARTING...'; btn.disabled = true;
 
-  btn.disabled  = true;
-  btn.innerHTML = '<span class="spinner"></span>FARMING';
-  document.getElementById('massFarmResult').classList.remove('hidden');
-  log.innerHTML = '';
-  bar.style.width = '0%';
+  const panel = document.getElementById('mfProgressPanel');
+  const log   = document.getElementById('mfLog');
+  const bar   = document.getElementById('mfProgressBar');
+  panel.classList.remove('hidden'); log.innerHTML = ''; bar.style.width = '0%';
+  document.getElementById('mfStatusText').textContent = 'Starting...';
 
   let jobId = null;
   try {
-    const res = await fetch(API_BASE + '/api/massfarm', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1'},
-      body: JSON.stringify({ telegram_id: TELEGRAM_ID, sessions: currentSessions, server: selectedServer })
+    const res  = await fetch(API_BASE+'/api/massfarm', {
+      method:'POST', headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'1'},
+      body: JSON.stringify({
+        telegram_id: TELEGRAM_ID,
+        entries,
+        features: [...mfSelectedFeatures]
+      })
     });
     const data = await res.json();
     if (!data.ok) {
-      log.innerHTML += `<div class="text-red-400 py-1">✗ ${data.error}</div>`;
+      log.innerHTML += `<div class="text-red-400">${data.error}</div>`;
       showToast(data.error, 'error');
-      btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
-      return;
+      btn.textContent = 'START MASS FARM'; btn.disabled = false; return;
     }
     jobId = data.job_id;
-    log.innerHTML += `<div class="text-primary font-bold py-1">Mass Farm started — ${data.total} accounts (costs ${data.cost} coins)</div>`;
+    log.innerHTML += `<div class="text-primary font-bold">Started — ${data.total} accounts, cost ${data.cost} coins</div>`;
   } catch(e) {
-    log.innerHTML += `<div class="text-red-400 py-1">Connection error: ${e.message}</div>`;
+    log.innerHTML += `<div class="text-red-400">Connection error: ${e.message}</div>`;
     showToast('Connection error', 'error');
-    btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
-    return;
+    btn.textContent = 'START MASS FARM'; btn.disabled = false; return;
   }
 
   let rendered = 0;
   const poll = setInterval(async () => {
     try {
-      const res  = await fetch(`${API_BASE}/api/massfarm/status?job_id=${jobId}`, {
-        headers: {'ngrok-skip-browser-warning': '1'}
-      });
+      const res  = await fetch(`${API_BASE}/api/massfarm/status?job_id=${jobId}`,{headers:{'ngrok-skip-browser-warning':'1'}});
       const data = await res.json();
       if (!data.ok) return;
-
       const pct = data.total > 0 ? Math.round((data.current / data.total) * 100) : 0;
-      bar.style.width    = pct + '%';
-      statusTxt.textContent = data.status;
-
-      const newItems = data.results.slice(rendered);
-      newItems.forEach(r => {
+      bar.style.width = pct + '%';
+      document.getElementById('mfStatusText').textContent = data.status;
+      data.results.slice(rendered).forEach(r => {
         const color = r.status === 'success' ? 'text-green-400' : 'text-red-400';
         log.innerHTML += `<div class="${color} py-0.5">${r.msg}</div>`;
         rendered++;
       });
       log.scrollTop = log.scrollHeight;
-
       if (data.done) {
         clearInterval(poll);
         bar.style.width = '100%';
-        log.innerHTML += `<div class="text-primary font-bold py-1 border-t border-white/10 mt-1">Done! ${data.success}/${data.total} success</div>`;
-        showToast(`Mass Farm done! ${data.success}/${data.total} success`, 'success');
-        addHistory('Mass Farm', `Success: ${data.success}/${data.total}`, 'success');
-        btn.disabled = false; btn.innerHTML = 'START MASS FARMING';
+        log.innerHTML += `<div class="text-primary font-bold pt-1 border-t border-white/10">Done! ${data.success}/${data.total} success</div>`;
+        showToast(`Done! ${data.success}/${data.total} success`, 'success');
+        addHistory('Mass Farm', `${data.success}/${data.total} success — [${[...mfSelectedFeatures].join(',')}]`, 'success');
+        btn.textContent = 'START MASS FARM'; btn.disabled = false;
+        refreshCoins();
       }
-    } catch(e) { /* ignore poll errors */ }
+    } catch(e) {}
   }, 3000);
 }
+
+// seed 1 row on page load
+mfAddRow();
 
 const CURRENCY_META = {
   candles:          { label:'Candles',    icon:'candle',          color:'#fbbf24' },
