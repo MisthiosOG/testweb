@@ -91,19 +91,24 @@
 <div id="toast" class="toast"></div>
 
 <!-- Header -->
-<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-center items-center px-4 py-3">
- <div class="w-full max-w-container flex justify-between items-center">
-  <div class="flex items-center gap-3">
-    <div class="relative">
-      <img alt="TrashGameCompany" class="w-9 h-9 rounded-full border border-white/10" src="images/icon.jpg">
-      <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-surface rounded-full"></div>
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 flex justify-center px-4 py-2">
+ <div class="w-full max-w-container flex flex-col gap-1.5">
+  <!-- Row 1: branding -->
+  <div class="flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <img alt="TrashGameCompany" class="w-9 h-9 rounded-full border border-white/10" src="images/icon.jpg">
+        <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-surface rounded-full"></div>
+      </div>
+      <div>
+        <div class="text-sm font-bold text-primary tracking-tight">TrashGameCompany Bot</div>
+        <div class="text-[10px] text-primary animate-pulse-slow">System Operational</div>
+      </div>
     </div>
-    <div>
-      <div class="text-sm font-bold text-primary tracking-tight">TrashGameCompany Bot</div>
-      <div class="text-[10px] text-primary animate-pulse-slow">System Operational</div>
-    </div>
+    <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
   </div>
-  <div class="flex items-center gap-1.5 flex-wrap justify-end">
+  <!-- Row 2: tags -->
+  <div class="flex items-center gap-1.5">
     <div id="roleBadge" class="hidden items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-bold border">
       <span class="material-symbols-outlined" style="font-size:13px">military_tech</span>
       <span id="roleLabel">—</span>
@@ -116,12 +121,11 @@
       <span class="material-symbols-outlined" style="font-size:13px">add_circle</span>
       Top Up
     </button>
-    <div id="statusBadge" class="text-[10px] px-2.5 py-1 rounded-full bg-surface-container border border-white/5 text-on-surface-variant font-semibold">NOT LOGGED IN</div>
   </div>
  </div>
 </header>
 
-<main class="pt-20 px-4 max-w-container min-h-screen">
+<main class="pt-28 px-4 max-w-container min-h-screen">
 
 <!-- MASS FARM -->
 <div id="page-massfarm" class="page flex-col gap-4 mt-2 fade-in">
