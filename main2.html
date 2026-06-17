@@ -235,7 +235,7 @@
 </header>
 
 <!-- Main Canvas -->
-<main class="pt-24 pb-32 px-5 relative">
+<main class="pt-28 pb-32 px-5 relative">
 
 
 <!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
@@ -339,7 +339,7 @@
 </div>
 
 <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-dashboard">
+<div class="layer layer-hidden space-y-stack-lg mt-6" id="page-dashboard">
   <div class="flex justify-between items-end mb-2">
     <h2 class="font-headline-md text-headline-md leading-none text-on-surface">Dashboard</h2>
     <div class="flex items-center gap-2">
@@ -350,7 +350,8 @@
 
   <!-- User info -->
   <div class="cyber-inner rounded-2xl px-4 py-3 flex items-center gap-3">
-    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+    <img id="dashAvatar" src="" alt="" class="w-8 h-8 rounded-full object-cover bg-primary/20 hidden">
+    <div id="dashAvatarFallback" class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
       <span class="material-symbols-outlined text-primary text-[18px]">person</span>
     </div>
     <span class="font-code-md text-[14px] text-on-surface font-bold" id="dashUsername">—</span>
@@ -359,25 +360,29 @@
   <!-- Quick Actions -->
   <div class="grid grid-cols-2 gap-3">
     <button onclick="runFeature('DailyFunction','Daily Function')" id="feat-DailyFunction"
-      class="feat-btn cyber-card p-4 flex flex-col gap-3 relative">
-      <span class="cost-badge" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-      <div class="flex justify-between items-center">
+      class="feat-btn cyber-card p-4 flex flex-col gap-2 relative">
+      <div class="flex justify-between items-start">
         <span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
-        <span class="bg-primary/20 text-primary text-[9px] px-2 py-0.5 rounded-full font-code-md tracking-wider border border-primary/20">ALL</span>
+        <div class="flex flex-col items-end gap-1">
+          <span class="bg-primary/20 text-primary text-[9px] px-2 py-0.5 rounded-full font-code-md tracking-wider border border-primary/20">ALL</span>
+          <span class="cost-badge static flex items-center gap-0.5 text-[9px] font-bold text-amber-300" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+        </div>
       </div>
-      <div>
+      <div class="mt-1">
         <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">DAILY TASK</p>
         <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Daily Function</h3>
       </div>
     </button>
     <button onclick="runFeature('All','Run All')" id="feat-All"
-      class="feat-btn cyber-card-cyan p-4 flex flex-col gap-3 relative">
-      <span class="cost-badge" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-      <div class="flex justify-between items-center">
+      class="feat-btn cyber-card-cyan p-4 flex flex-col gap-2 relative">
+      <div class="flex justify-between items-start">
         <span class="material-symbols-outlined text-primary text-[22px]" style="font-variation-settings:'FILL' 1;">play_circle</span>
-        <span class="liquid-spinner" style="width:6px;height:6px;background:#a78bfa;box-shadow:0 0 10px #a78bfa;"></span>
+        <div class="flex flex-col items-end gap-1">
+          <span class="liquid-spinner" style="width:6px;height:6px;background:#a78bfa;box-shadow:0 0 10px #a78bfa;"></span>
+          <span class="cost-badge static flex items-center gap-0.5 text-[9px] font-bold text-amber-300" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+        </div>
       </div>
-      <div>
+      <div class="mt-1">
         <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">AUTOMATION</p>
         <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Run All</h3>
       </div>
@@ -891,7 +896,8 @@ async function submitLogin(method) {
 // ── SET LOGGED IN ─────────────────────────────────────────────────────────────
 function setLoggedIn(method, server, userId) {
   isLoggedIn = true;
-  const name = tg?.initDataUnsafe?.user?.first_name || 'User';
+  const user = tg?.initDataUnsafe?.user || {};
+  const name = user.first_name || 'User';
 
   // Switch home → dashboard
   document.getElementById('page-home').classList.add('layer-hidden');
@@ -907,6 +913,15 @@ function setLoggedIn(method, server, userId) {
   document.getElementById('dashUsername').textContent = name;
   document.getElementById('dashServer').textContent = server.toUpperCase() + ' · ' + method.toUpperCase();
   document.getElementById('headerStatus').textContent = 'CONNECTED';
+
+  // Telegram photo
+  const photoUrl = user.photo_url;
+  if (photoUrl) {
+    const img = document.getElementById('dashAvatar');
+    img.src = photoUrl;
+    img.classList.remove('hidden');
+    document.getElementById('dashAvatarFallback').classList.add('hidden');
+  }
 
   // Account page
   document.getElementById('accountNotLoggedIn').classList.add('hidden');
