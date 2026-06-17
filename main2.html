@@ -213,10 +213,10 @@
       <img alt="User Profile" class="w-full h-full object-cover" src="images/icon.jpg" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuAbH3kP0n245Tv5SqEFytkFPV6bGGWKjGdUM57zyrBNHTgh_BGenHoL8-IxiL6B0QsAGB8BFfMZwUJLmX2dCDzUszUbsAJ1kY8T2BjpM4STYp9T9H_R1pK-0FBsNCVwGSC7jz69wFhwMbZALM-tJ0sl4QT0bHI06iaX_xL-ht1xxkGdS6rhWH_Z3qc0qajCqToKbHXwxtYy5m3OOSkylVwWTvDuIOfYzBdrJVq_RdIcQdVZ9-fdAAg415Z7mE9CLs2phg2d4sDAZAc'"/>
     </div>
     <div class="flex flex-col justify-center">
-      <h1 class="font-headline-sm text-[16px] leading-tight font-extrabold text-primary tracking-tighter">TRASHGAME_OS</h1>
+      <h1 class="font-headline-sm text-[16px] leading-tight font-extrabold text-primary tracking-tighter">TrashGameCompany Bot</h1>
       <div class="flex items-center gap-2 mt-0.5">
         <span class="liquid-spinner" style="width:6px;height:6px;box-shadow:0 0 8px #a78bfa;background:#a78bfa;animation:none;"></span>
-        <span id="headerStatus" class="font-code-md text-[10px] text-on-surface-variant tracking-widest uppercase">SYS.ACTIVE</span>
+        <span id="headerStatus" class="font-code-md text-[10px] text-on-surface-variant tracking-widest uppercase">System Operational</span>
       </div>
     </div>
   </div>
@@ -246,22 +246,22 @@
         <span class="material-symbols-outlined text-primary text-[40px] relative z-10" style="font-variation-settings:'FILL' 1;">terminal</span>
       </div>
     </div>
-    <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Protocol Interface</h2>
-    <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Initialize your digital footprint within the ecosystem</p>
+    <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
+    <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
   </div>
 
   <!-- Server Toggle -->
   <div class="cyber-card p-1 flex gap-1 rounded-full">
-    <button class="flex-1 py-3 rounded-full font-code-md bg-primary text-on-primary font-bold pill-button transition-all shadow-md" id="btn-live" onclick="selectServer('live')">LIVE SERVER</button>
-    <button class="flex-1 py-3 rounded-full font-code-md text-on-surface hover:bg-white/5 transition-all pill-button" id="btn-beta" onclick="selectServer('beta')">BETA BRANCH</button>
+    <button class="flex-1 py-3 rounded-full font-code-md bg-primary text-on-primary font-bold pill-button transition-all shadow-md" id="btn-live" onclick="selectServer('live')">Live</button>
+    <button class="flex-1 py-3 rounded-full font-code-md text-on-surface hover:bg-white/5 transition-all pill-button" id="btn-beta" onclick="selectServer('beta')">Beta</button>
   </div>
 
   <!-- Login Tabs -->
   <div class="space-y-stack-md">
-    <div class="flex gap-6 px-2 border-b border-white/10">
-      <button id="ltab-lua" class="pb-2 font-code-md login-tab-active transition-colors" onclick="switchLoginTab('lua')">LUA CORE</button>
-      <button id="ltab-lib" class="pb-2 font-code-md login-tab-inactive transition-colors" onclick="switchLoginTab('lib')">LIB EXT</button>
-      <button id="ltab-platform" class="pb-2 font-code-md login-tab-inactive transition-colors" onclick="switchLoginTab('platform')">PLATFORM</button>
+    <div class="flex border-b border-white/10">
+      <button id="ltab-lua" class="flex-1 py-3 text-center font-code-md login-tab-active transition-colors text-[13px]" onclick="switchLoginTab('lua')">LUA</button>
+      <button id="ltab-lib" class="flex-1 py-3 text-center font-code-md login-tab-inactive transition-colors text-[13px]" onclick="switchLoginTab('lib')">LIB</button>
+      <button id="ltab-platform" class="flex-1 py-3 text-center font-code-md login-tab-inactive transition-colors text-[13px]" onclick="switchLoginTab('platform')">PLATFORM</button>
     </div>
 
     <!-- LUA tab -->
@@ -274,21 +274,21 @@
       </div>
       <button id="btn-lua-submit" onclick="submitLogin('lua')"
         class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-        ESTABLISH CONNECTION <span class="material-symbols-outlined text-[20px]">bolt</span>
+        CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
       </button>
     </div>
 
     <!-- LIB tab -->
     <div id="loginTab-lib" class="hidden cyber-card p-6 space-y-4">
       <div class="space-y-2">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">LIB SESSION CODE</label>
+        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">Lib Code</label>
         <textarea id="libInput" rows="3"
           class="w-full cyber-inner rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:border-primary outline-none transition-all font-code-md bg-transparent resize-none"
           placeholder="Paste Lib session code here..."></textarea>
       </div>
       <button id="btn-lib-submit" onclick="submitLogin('lib')"
         class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-        ESTABLISH CONNECTION <span class="material-symbols-outlined text-[20px]">bolt</span>
+        CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
       </button>
     </div>
 
@@ -306,13 +306,13 @@
         </div>
       </div>
       <div id="platformCodeWrap" class="hidden space-y-3">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">OAUTH JSON CODE</label>
+        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">OAuth JSON</label>
         <textarea id="platformInput" rows="3"
           class="w-full cyber-inner rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:border-primary outline-none transition-all font-code-md bg-transparent resize-none"
           placeholder='{"id":"...","token":"..."}'></textarea>
         <button id="btn-plat-submit" onclick="submitLogin('platform')"
           class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-          ESTABLISH CONNECTION <span class="material-symbols-outlined text-[20px]">bolt</span>
+          CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
         </button>
       </div>
     </div>
@@ -341,7 +341,7 @@
 <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
 <div class="layer layer-hidden space-y-stack-lg" id="page-dashboard">
   <div class="flex justify-between items-end mb-2">
-    <h2 class="font-headline-md text-headline-md leading-none text-on-surface">System Console</h2>
+    <h2 class="font-headline-md text-headline-md leading-none text-on-surface">Dashboard</h2>
     <div class="flex items-center gap-2">
       <span id="dashServer" class="font-code-md text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20 text-[11px]">—</span>
       <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-full px-3 py-1 font-semibold hover:bg-error/10 transition-all">LOGOUT</button>
@@ -357,36 +357,36 @@
   </div>
 
   <!-- Quick Actions -->
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid grid-cols-2 gap-3">
     <button onclick="runFeature('DailyFunction','Daily Function')" id="feat-DailyFunction"
-      class="feat-btn cyber-card p-5 flex flex-col justify-between interactive-scale h-32 relative overflow-hidden transform -rotate-1 hover:rotate-0 transition-transform">
+      class="feat-btn cyber-card p-4 flex flex-col gap-3 relative">
       <span class="cost-badge" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-      <div class="flex justify-between items-start">
-        <span class="material-symbols-outlined text-primary">calendar_today</span>
-        <span class="bg-primary/20 text-primary text-[10px] px-2 py-1 rounded-full font-code-md tracking-wider">ALL</span>
+      <div class="flex justify-between items-center">
+        <span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
+        <span class="bg-primary/20 text-primary text-[9px] px-2 py-0.5 rounded-full font-code-md tracking-wider border border-primary/20">ALL</span>
       </div>
       <div>
-        <p class="font-label-caps text-primary/70 text-[10px] mb-1">DAILY TASK</p>
-        <h3 class="font-headline-sm text-[15px] leading-tight text-on-surface">Daily Function</h3>
+        <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">DAILY TASK</p>
+        <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Daily Function</h3>
       </div>
     </button>
     <button onclick="runFeature('All','Run All')" id="feat-All"
-      class="feat-btn cyber-card-cyan p-5 flex flex-col justify-between interactive-scale h-32 relative overflow-hidden transform rotate-1 hover:rotate-0 transition-transform">
+      class="feat-btn cyber-card-cyan p-4 flex flex-col gap-3 relative">
       <span class="cost-badge" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-      <div class="flex justify-between items-start">
-        <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;">play_circle</span>
-        <span class="liquid-spinner" style="background:#a78bfa;box-shadow:0 0 16px #a78bfa;"></span>
+      <div class="flex justify-between items-center">
+        <span class="material-symbols-outlined text-primary text-[22px]" style="font-variation-settings:'FILL' 1;">play_circle</span>
+        <span class="liquid-spinner" style="width:6px;height:6px;background:#a78bfa;box-shadow:0 0 10px #a78bfa;"></span>
       </div>
       <div>
-        <p class="font-label-caps text-primary/70 text-[10px] mb-1">AUTOMATION</p>
-        <h3 class="font-headline-sm text-[15px] leading-tight text-on-surface">Run All</h3>
+        <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">AUTOMATION</p>
+        <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Run All</h3>
       </div>
     </button>
   </div>
 
   <!-- Automation Grid -->
   <div class="space-y-3">
-    <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[12px] uppercase">AUTOMATION MODULES</h3>
+    <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[12px] uppercase">FEATURES</h3>
     <div class="grid grid-cols-3 gap-3">
       <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
         <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
@@ -833,7 +833,7 @@ function switchLoginTab(tab) {
   ['lua','lib','platform'].forEach(t => {
     document.getElementById('loginTab-'+t).classList.toggle('hidden', t !== tab);
     const btn = document.getElementById('ltab-'+t);
-    if (btn) { btn.className = 'pb-2 font-code-md transition-colors ' + (t === tab ? 'login-tab-active' : 'login-tab-inactive'); }
+    if (btn) { btn.className = 'flex-1 py-3 text-center font-code-md text-[13px] transition-colors ' + (t === tab ? 'login-tab-active' : 'login-tab-inactive'); }
   });
 }
 
