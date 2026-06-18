@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>TrashGameCompany Admin Panel | Obsidian Intelligence</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+    <title>TrashGameCompany Admin Panel | Obsidian Intelligence</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
@@ -71,11 +72,12 @@
         },
       }
     </script>
-<style>
+    <style>
         body {
             background-color: #051424;
             color: #f1f5f9;
             -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
         }
         body::before {
             content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -99,6 +101,7 @@
             backdrop-filter: blur(16px);
             border: 0.5px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
         }
         .status-pulse {
             box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
@@ -112,405 +115,787 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(206, 189, 255, 0.1); border-radius: 10px; }
+        .layer {
+            animation: fadeIn 0.22s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden">
-<!-- Top App Bar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-surface/90 backdrop-blur-2xl border-b border-white/5">
-<div class="flex items-center gap-3">
-<div class="w-8 h-8 rounded-full overflow-hidden ring-1 ring-primary/20">
-<img alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
-</div>
-<span class="font-headline-sm text-[18px] tracking-tight font-bold text-on-surface">TrashGameCompany</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-white/5">
-<span class="material-symbols-outlined text-tertiary text-[18px]">payments</span>
-<span class="font-code-md text-code-md text-primary">$1,240.50</span>
-</div>
-</header>
-<main class="pt-20 px-margin-page space-y-stack-lg">
-<!-- System Stats Grid -->
-<section class="grid grid-cols-3 gap-gutter">
-<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
-<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Users</span>
-<span class="font-headline-md text-headline-sm text-primary">12,482</span>
-</div>
-<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
-<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Coins</span>
-<span class="font-headline-md text-headline-sm text-tertiary">4.2M</span>
-</div>
-<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
-<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Live</span>
-<div class="flex items-center gap-1.5">
-<div class="w-1.5 h-1.5 rounded-full bg-[#4ADE80] status-pulse"></div>
-<span class="font-headline-md text-headline-sm text-on-surface">842</span>
-</div>
-</div>
-</section>
-<!-- User Management -->
-<section class="space-y-stack-md">
-<h2 class="font-headline-sm text-headline-sm text-on-surface">User Management</h2>
-<div class="silk-glass-card p-base space-y-base">
-<!-- Search and Select User -->
-<div class="relative group">
-  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
-  <input id="userSearchInput" onfocus="showUserList()" onblur="hideUserList()" oninput="filterUserList(this.value)" class="w-full bg-surface-container-lowest border border-outline rounded-xl pl-11 pr-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search or select user..." type="text"/>
-  
-  <!-- Dropdown User List -->
-  <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface-container border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1">
-    <!-- populated dynamically -->
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-24 left-5 right-5 z-[999] p-4 rounded-xl text-xs font-semibold shadow-xl translate-y-10 opacity-0 pointer-events-none transition-all duration-300"></div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+  <div class="silk-glass-card p-6 mx-margin-page w-full max-w-sm flex flex-col gap-4">
+    <p id="confirmMsg" class="text-sm font-semibold text-center text-on-surface"></p>
+    <div class="flex gap-2">
+      <button id="confirmNo" class="flex-1 py-3 rounded-xl text-xs font-bold bg-white/5 border border-white/10 text-on-surface-variant active:scale-95 transition-all">Cancel</button>
+      <button id="confirmYes" class="flex-1 py-3 rounded-xl text-xs font-bold bg-primary text-on-primary active:scale-95 transition-all">Yes, Proceed</button>
+    </div>
   </div>
 </div>
-<!-- User Profile Preview -->
-<div class="flex items-center gap-4 p-4 bg-surface-container-low/50 rounded-2xl border border-white/5">
-<div class="w-16 h-16 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0">
-<img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV6BQz18ykutZP-Sc1SmhXSkpVPIWKSyTItgUkhxTOymAMxPOWyoKpQ_e-0MAlhhpMjpFCYg9mXjWRNhW0YH9Ea7f2kinhzByjflyRq0tLcLgWhgLTvmWUKWdYSZW9uneS69evSwZ97Z-eBnS4Pfx_nIlnZQtC_NFwHkvc75JQW1MIJyQz0rv1wXWQUWBvWolIVtAsG8uui8h_cUg88CfbwDa6X_5XH1nF_o9f6Wu0ur2y97cWgCsp6ILT83C5XEcMMbBC0kGLkgM"/>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex justify-between items-start">
-<div class="truncate">
-<h3 id="previewName" class="font-headline-sm text-[18px] leading-tight truncate">Select a user</h3>
-<p id="previewId" class="font-code-md text-code-md text-on-surface-variant">ID: —</p>
-</div>
-<span id="previewRole" class="px-2.5 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] whitespace-nowrap">—</span>
-</div>
-<div class="mt-2 flex items-center gap-2 text-tertiary">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1">paid</span>
-<span id="previewCoins" class="font-code-md text-code-md">—</span>
-</div>
-</div>
-</div>
-<!-- Actions Grid -->
-<div class="space-y-base pt-2">
-<!-- Set Coins -->
-<div class="space-y-2">
-<label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Update Coin Balance</label>
-<div class="flex gap-2">
-<input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors" type="number" value="0"/>
-<button onclick="updateCoins()" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SET COINS</button>
-</div>
-</div>
-<!-- Role & Ban -->
-<div class="flex items-end gap-3">
-<div class="flex-1 space-y-2">
-<label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Assign Role</label>
-<div class="flex gap-1 bg-surface-container-lowest p-1 rounded-xl border border-outline">
-<button id="roleBtn-FREE" onclick="assignRole('FREE')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">FREE</button>
-<button id="roleBtn-VIP_WEEKLY" onclick="assignRole('VIP_WEEKLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP W</button>
-<button id="roleBtn-VIP_MONTHLY" onclick="assignRole('VIP_MONTHLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP M</button>
-</div>
-</div>
-<button id="banBtn" onclick="toggleBan()" class="h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest">
-<span class="material-symbols-outlined">block</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- Request Queue -->
-<section class="space-y-stack-md">
-<div class="flex justify-between items-end px-1">
-<h2 class="font-headline-sm text-headline-sm text-on-surface">Accept Req</h2>
-<span class="font-label-caps text-[11px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">3 PENDING</span>
-</div>
-<div class="space-y-3">
-<!-- Request Item -->
-<div class="silk-glass-card p-4 flex items-center gap-4">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined text-[20px]">person_add</span>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-body-md font-bold text-on-surface truncate">Kaelen_Frost</p>
-<p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">Req Access • 2m ago</p>
-</div>
-<div class="flex gap-2">
-<button class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
-<span class="material-symbols-outlined text-[20px]">close</span>
-</button>
-<button class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 transition-all hover:scale-105">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</button>
-</div>
-</div>
-<!-- Request Item (Secondary) -->
-<div class="silk-glass-card p-4 flex items-center gap-4 opacity-70">
-<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined text-[20px]">person_add</span>
-</div>
-<div class="flex-1 min-w-0">
-<p class="font-body-md font-bold text-on-surface truncate">Neo_Noir_99</p>
-<p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">Req Access • 15m ago</p>
-</div>
-<div class="flex gap-2">
-<button class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant">
-<span class="material-symbols-outlined text-[20px]">close</span>
-</button>
-<button class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- Activity Stream -->
-<section class="space-y-stack-md pb-8">
-<h2 class="font-headline-sm text-headline-sm text-on-surface">Activity Stream</h2>
-<div class="silk-glass-card max-h-72 overflow-y-auto divide-y divide-white/5">
-<!-- Log Entry -->
-<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
-<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-tertiary shrink-0"></div>
-<div class="min-w-0">
-<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Vesper_Zero</span> purchased <span class="text-on-surface font-medium">Premium Lootbox</span></p>
-<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:45 PM • TRANSACTION</p>
-</div>
-</div>
-<!-- Log Entry -->
-<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
-<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-[#4ADE80] shrink-0"></div>
-<div class="min-w-0">
-<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Admin_Root</span> updated balance for <span class="text-on-surface font-medium">#7721</span></p>
-<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:30 PM • SYSTEM</p>
-</div>
-</div>
-<!-- Log Entry -->
-<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
-<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-on-surface-variant shrink-0"></div>
-<div class="min-w-0">
-<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Scythe_</span> logged into <span class="text-on-surface font-medium">Mobile_04</span></p>
-<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:22 PM • AUTH</p>
-</div>
-</div>
-<!-- Log Entry -->
-<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
-<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-error shrink-0"></div>
-<div class="min-w-0">
-<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Unauthorized</span> failed login attempt (3x)</p>
-<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:15 PM • SECURITY</p>
-</div>
-</div>
-</div>
-</section>
+
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-surface/90 backdrop-blur-2xl border-b border-white/5">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg ring-1 ring-primary/20 bg-surface-container-highest font-bold text-xs flex items-center justify-center">
+      <img id="adminAvatar" alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
+    </div>
+    <div class="flex flex-col">
+      <span id="adminName" class="font-headline-sm text-[15px] leading-tight font-bold text-on-surface">TrashGameCompany</span>
+      <span class="font-code-md text-[10px] text-primary tracking-widest uppercase">Admin Panel</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-white/5">
+    <span class="material-symbols-outlined text-amber-400 text-[18px]" style="font-variation-settings: 'FILL' 1">paid</span>
+    <span id="headerTotalCoins" class="font-code-md text-code-md text-primary">—</span>
+  </div>
+</header>
+
+<main class="pt-24 px-margin-page space-y-stack-lg">
+
+  <!-- ═══════════════════════════════ TAB: USERS ═══════════════════════════════ -->
+  <div id="page-users" class="layer space-y-stack-lg">
+    <!-- System Stats Grid -->
+    <section class="grid grid-cols-3 gap-gutter">
+      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
+        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Total Users</span>
+        <span id="statUsers" class="font-headline-md text-headline-sm text-primary">—</span>
+      </div>
+      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
+        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Total Coins</span>
+        <span id="statCoins" class="font-headline-md text-headline-sm text-tertiary">—</span>
+      </div>
+      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
+        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Live Sessions</span>
+        <div class="flex items-center gap-1.5 justify-center">
+          <div class="w-1.5 h-1.5 rounded-full bg-[#4ADE80] status-pulse"></div>
+          <span id="statLive" class="font-headline-md text-headline-sm text-on-surface">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Management -->
+    <section class="space-y-stack-md">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">User Management</h2>
+      <div class="silk-glass-card p-base space-y-base">
+        <!-- Search and Select User -->
+        <div class="relative group">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+          <input id="userSearchInput" onfocus="showUserList()" onblur="hideUserList()" oninput="filterUserList(this.value)" class="w-full bg-surface-container-lowest border border-outline rounded-xl pl-11 pr-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search Telegram ID or Name..." type="text"/>
+          <!-- Dropdown User List -->
+          <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface-container border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1"></div>
+        </div>
+
+        <!-- User Profile Preview -->
+        <div class="flex items-center gap-4 p-4 bg-surface-container-low/50 rounded-2xl border border-white/5">
+          <div class="w-16 h-16 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0 flex items-center justify-center bg-surface-container-highest">
+            <span id="previewAvatarFallback" class="material-symbols-outlined text-[32px] text-primary">person</span>
+            <img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.classList.add('hidden'); document.getElementById('previewAvatarFallback').classList.remove('hidden')"/>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-start">
+              <div class="truncate">
+                <h3 id="previewName" class="font-headline-sm text-[18px] leading-tight truncate">Select a user</h3>
+                <p id="previewId" class="font-code-md text-code-md text-on-surface-variant">ID: —</p>
+              </div>
+              <span id="previewRole" class="px-2.5 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] whitespace-nowrap">—</span>
+            </div>
+            <div class="mt-2 flex items-center gap-2 text-tertiary">
+              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1">paid</span>
+              <span id="previewCoins" class="font-code-md text-code-md">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions Grid -->
+        <div class="space-y-base pt-2">
+          <!-- Set Coins -->
+          <div class="space-y-2">
+            <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Update Coin Balance</label>
+            <div class="flex gap-2">
+              <input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors" type="number" value="0"/>
+              <button onclick="updateCoins()" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SET COINS</button>
+            </div>
+          </div>
+
+          <!-- Role & Ban & Bypass -->
+          <div class="space-y-2">
+            <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Access & Roles Controls</label>
+            <div class="flex gap-2 items-center">
+              <div class="flex-1 flex gap-1 bg-surface-container-lowest p-1 rounded-xl border border-outline">
+                <button id="roleBtn-FREE" onclick="assignRole('FREE')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">FREE</button>
+                <button id="roleBtn-VIP_WEEKLY" onclick="assignRole('VIP_WEEKLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP W</button>
+                <button id="roleBtn-VIP_MONTHLY" onclick="assignRole('VIP_MONTHLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP M</button>
+              </div>
+              
+              <!-- Bypass Toggle -->
+              <button id="bypassBtn" onclick="toggleBypass()" class="h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-outline text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container-lowest">
+                <span class="material-symbols-outlined text-[20px]">vpn_key</span>
+                <span id="bypassLabel" class="text-[10px] font-bold font-label-caps">BYPASS</span>
+              </button>
+
+              <!-- Ban Button -->
+              <button id="banBtn" onclick="toggleBan()" class="h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0">
+                <span class="material-symbols-outlined">block</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: REQUESTS ═══════════════════════════════ -->
+  <div id="page-requests" class="layer space-y-stack-lg hidden">
+    <!-- Access Requests (Bypass queue) -->
+    <section class="space-y-stack-md">
+      <div class="flex justify-between items-end px-1">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">Bypass Requests</h2>
+        <span id="accessReqCount" class="font-label-caps text-[11px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 PENDING</span>
+      </div>
+      <div id="accessRequestsList" class="space-y-3">
+        <!-- Dyn list -->
+      </div>
+    </section>
+
+    <!-- Topup Requests -->
+    <section class="space-y-stack-md">
+      <div class="flex justify-between items-end px-1">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">Topup Claims</h2>
+        <span id="topupReqCount" class="font-label-caps text-[11px] text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">0 CLAIMS</span>
+      </div>
+      <div id="topupRequestsList" class="space-y-3">
+        <!-- Dyn list -->
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: ACTIVITY ═══════════════════════════════ -->
+  <div id="page-activity" class="layer space-y-stack-md hidden pb-8">
+    <div class="flex justify-between items-center px-1">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">System Coin Logs</h2>
+      <button onclick="loadActivity()" class="text-xs text-primary font-bold flex items-center gap-1">
+        <span class="material-symbols-outlined text-[16px]">refresh</span> Refresh Logs
+      </button>
+    </div>
+    <div id="activityLogsList" class="silk-glass-card max-h-[500px] overflow-y-auto divide-y divide-white/5">
+      <!-- Dynamic stream entries -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TAB: SETTINGS ═══════════════════════════════ -->
+  <div id="page-settings" class="layer space-y-stack-lg hidden pb-8">
+    <section class="space-y-stack-md">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">System Status</h2>
+      <div class="silk-glass-card p-base space-y-3 font-code-md text-xs text-on-surface-variant">
+        <div class="flex justify-between py-1 border-b border-white/5">
+          <span>Backend Server Status</span>
+          <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>Operational</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-white/5">
+          <span>Active Connections</span>
+          <span id="settActiveSessions" class="text-primary font-bold">— sessions</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-white/5">
+          <span>SQLite Database size</span>
+          <span class="text-tertiary">Connected (coins.db)</span>
+        </div>
+        <div class="flex justify-between py-1">
+          <span>Web App Interface</span>
+          <span>v1.2 (Premium Mesh UI)</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-stack-md">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">Feature Prices Configuration</h2>
+      <div class="silk-glass-card divide-y divide-white/5">
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Daily Function (Farm + Quest)</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 5 coins</span>
+        </div>
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Mass Farm (Multi-Accounts)</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
+        </div>
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Single Farm Job</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
+        </div>
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Eden Rebirth / Wings / Maps</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 2 coins</span>
+        </div>
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Constellation Emotes Unlock</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
+        </div>
+        <div class="p-3 flex justify-between items-center">
+          <span class="font-body-md text-sm text-on-surface">Closet Unlock (Beta Only)</span>
+          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 5 coins</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
 </main>
+
 <!-- Navigation Dock -->
 <nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter pb-safe h-20 bg-surface/90 backdrop-blur-2xl border-t border-white/5">
-<a class="flex flex-col items-center justify-center text-primary group" href="#">
-<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">group</span>
-<span class="font-label-caps text-[11px] mt-1 tracking-tight">Users</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-[24px]">pending_actions</span>
-<span class="font-label-caps text-[11px] mt-1 tracking-tight">Requests</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-[24px]">list_alt</span>
-<span class="font-label-caps text-[11px] mt-1 tracking-tight">Activity</span>
-</a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
-<span class="material-symbols-outlined text-[24px]">settings</span>
-<span class="font-label-caps text-[11px] mt-1 tracking-tight">Settings</span>
-</a>
+    <a id="nav-users" onclick="goTab('users')" class="flex flex-col items-center justify-center text-primary group cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">group</span>
+        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Users</span>
+    </a>
+    <a id="nav-requests" onclick="goTab('requests')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">pending_actions</span>
+        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Requests</span>
+    </a>
+    <a id="nav-activity" onclick="goTab('activity')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">list_alt</span>
+        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Activity</span>
+    </a>
+    <a id="nav-settings" onclick="goTab('settings')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
+        <span class="material-symbols-outlined text-[24px]">settings</span>
+        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Settings</span>
+    </a>
 </nav>
-<!-- Micro-interaction script -->
+
+<!-- Logic and Micro-interaction Scripts -->
 <script>
-        const tg = window.Telegram?.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+    }
 
-        const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
+    const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
 
-        const API_BASE = (() => {
-          const h = location.hostname;
-          if (h.includes('ngrok')) return 'https://' + h;
-          if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
-          return 'https://bright-toad-brightly.ngrok-free.app';
-        })();
+    const API_BASE = (() => {
+      const h = location.hostname;
+      if (h.includes('ngrok')) return 'https://' + h;
+      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
+      return 'https://bright-toad-brightly.ngrok-free.app';
+    })();
 
-        let users = [];
-        let selectedUser = null;
+    let users = [];
+    let selectedUser = null;
 
-        async function loadUsers() {
-          try {
-            const res = await fetch(API_BASE + '/api/admin/users', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-              body: JSON.stringify({ admin_id: ADMIN_ID })
-            });
-            const data = await res.json();
-            if (data.ok) {
-              users = data.users;
-              renderDropdown();
-              if (users.length > 0 && !selectedUser) {
-                selectUser(users[0]);
-              }
-            } else {
-              console.error(data.error);
-            }
-          } catch (e) {
-            console.error("Failed to load users:", e);
-          }
+    // Toast Notifications Setup
+    function showToast(msg, type = 'primary') {
+      const t = document.getElementById('toast');
+      const styles = {
+        error:   ['#93000a', '#ffb4ab', 'rgba(255,180,171,.3)'],
+        success: ['rgba(74,222,128,.12)', '#4ade80', 'rgba(74,222,128,.3)'],
+        primary: ['rgba(39,54,71,.8)', '#cebdff', 'rgba(206,189,255,.3)'],
+      };
+      const [bg, fg, br] = styles[type] || styles.primary;
+      Object.assign(t.style, { background: bg, color: fg, border: `1px solid ${br}`, backdropFilter: 'blur(16px)' });
+      t.textContent = msg;
+      t.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+      t.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        t.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+        t.classList.remove('translate-y-0', 'opacity-100');
+      }, 2800);
+    }
+
+    // Confirmation Setup
+    function showConfirm(msg) {
+      return new Promise(resolve => {
+        const modal = document.getElementById('confirmModal');
+        document.getElementById('confirmMsg').innerHTML = msg;
+        modal.classList.remove('hidden');
+        const yes = document.getElementById('confirmYes');
+        const no  = document.getElementById('confirmNo');
+        const cleanup = val => { modal.classList.add('hidden'); yes.onclick = no.onclick = null; resolve(val); };
+        yes.onclick = () => cleanup(true);
+        no.onclick  = () => cleanup(false);
+      });
+    }
+
+    // Dynamic Navigation Tab switching
+    function goTab(name) {
+      ['users', 'requests', 'activity', 'settings'].forEach(n => {
+        const el = document.getElementById('page-' + n);
+        if (el) el.classList.add('hidden');
+        const nav = document.getElementById('nav-' + n);
+        if (nav) {
+          nav.className = 'flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer';
+          const icon = nav.querySelector('.material-symbols-outlined');
+          if (icon) icon.style.fontVariationSettings = "'FILL' 0";
         }
+      });
+      const target = document.getElementById('page-' + name);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      const activeNav = document.getElementById('nav-' + name);
+      if (activeNav) {
+        activeNav.className = 'flex flex-col items-center justify-center text-primary group cursor-pointer';
+        const icon = activeNav.querySelector('.material-symbols-outlined');
+        if (icon) icon.style.fontVariationSettings = "'FILL' 1";
+      }
+      
+      if (name === 'requests') loadRequests();
+      if (name === 'activity') loadActivity();
+    }
 
-        function renderDropdown() {
-          const dropdown = document.getElementById('userDropdown');
-          dropdown.innerHTML = users.map(u => `
-            <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-              <div class="flex flex-col">
-                <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-                <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
-              </div>
-            </button>
-          `).join('');
+    // Load Admin metadata from Telegram
+    if (tg) {
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        document.getElementById('adminName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+        if (user.photo_url) {
+          document.getElementById('adminAvatar').src = user.photo_url;
         }
+      }
+    }
 
-        function selectUserById(id) {
-          const user = users.find(u => u.telegram_id === id);
-          if (user) selectUser(user);
-          hideUserList();
-        }
-
-        function selectUser(user) {
-          selectedUser = user;
-          document.getElementById('userSearchInput').value = user.telegram_id;
-          document.getElementById('previewName').textContent = user.name;
-          document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
-          document.getElementById('previewRole').textContent = user.role_label;
-          document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
-          document.getElementById('coinInput').value = user.balance;
-          
-          const roles = ['FREE', 'VIP_WEEKLY', 'VIP_MONTHLY'];
-          roles.forEach(r => {
-            const btn = document.getElementById('roleBtn-' + r);
-            if (!btn) return;
-            if (user.role === r) {
-              btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-surface-bright text-primary border border-white/5 shadow-sm';
-            } else {
-              btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
-            }
-          });
-
-          const banBtn = document.getElementById('banBtn');
-          if (user.banned) {
-            banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-on-primary hover:bg-error-container transition-colors';
-            banBtn.innerHTML = '<span class="material-symbols-outlined">gavel</span>';
-          } else {
-            banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest';
-            banBtn.innerHTML = '<span class="material-symbols-outlined">block</span>';
-          }
-        }
-
-        function showUserList() {
-          document.getElementById('userDropdown').classList.remove('hidden');
-        }
-
-        function hideUserList() {
-          setTimeout(() => {
-            document.getElementById('userDropdown').classList.add('hidden');
-          }, 200);
-        }
-
-        function filterUserList(val) {
-          const dropdown = document.getElementById('userDropdown');
-          const filtered = users.filter(u => 
-            String(u.telegram_id).includes(val) || 
-            u.name.toLowerCase().includes(val.toLowerCase())
-          );
-          dropdown.innerHTML = filtered.map(u => `
-            <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-              <div class="flex flex-col">
-                <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-                <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
-              </div>
-            </button>
-          `).join('');
-        }
-
-        async function updateCoins() {
-          if (!selectedUser) return;
-          const val = parseInt(document.getElementById('coinInput').value) || 0;
-          try {
-            const res = await fetch(API_BASE + '/api/admin/action', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_coins', target_id: selectedUser.telegram_id, amount: val })
-            });
-            const data = await res.json();
-            if (data.ok) {
-              selectedUser.balance = val;
-              selectUser(selectedUser);
-              loadUsers();
-              alert("Coins updated successfully!");
-            } else {
-              alert("Error: " + data.error);
-            }
-          } catch (e) {
-            alert("API error");
-          }
-        }
-
-        async function assignRole(role) {
-          if (!selectedUser) return;
-          try {
-            const res = await fetch(API_BASE + '/api/admin/action', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_role', target_id: selectedUser.telegram_id, role: role.toLowerCase() })
-            });
-            const data = await res.json();
-            if (data.ok) {
-              selectedUser.role = role;
-              selectedUser.role_label = role === 'FREE' ? 'Free' : (role === 'VIP_WEEKLY' ? 'Weekly VIP' : 'Monthly VIP');
-              selectUser(selectedUser);
-              loadUsers();
-            } else {
-              alert("Error: " + data.error);
-            }
-          } catch (e) {
-            alert("API error");
-          }
-        }
-
-        async function toggleBan() {
-          if (!selectedUser) return;
-          const action = selectedUser.banned ? 'unban' : 'ban';
-          try {
-            const res = await fetch(API_BASE + '/api/admin/action', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
-            });
-            const data = await res.json();
-            if (data.ok) {
-              selectedUser.banned = !selectedUser.banned;
-              selectUser(selectedUser);
-              loadUsers();
-            } else {
-              alert("Error: " + data.error);
-            }
-          } catch (e) {
-            alert("API error");
-          }
-        }
-
-        loadUsers();
-
-        document.querySelectorAll('button, a').forEach(el => {
-            el.addEventListener('mousedown', () => {
-                el.style.transform = 'scale(0.96)';
-            });
-            el.addEventListener('mouseup', () => {
-                el.style.transform = '';
-            });
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = '';
-            });
+    // Load all Users from database
+    async function loadUsers() {
+      try {
+        const res = await fetch(API_BASE + '/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+          body: JSON.stringify({ admin_id: ADMIN_ID })
         });
-    </script>
-</body></html>
+        const data = await res.json();
+        if (data.ok) {
+          users = data.users;
+          
+          // Render Dynamic Statistics
+          document.getElementById('statUsers').textContent = users.length.toLocaleString();
+          const totalCoins = users.reduce((acc, u) => acc + (parseInt(u.balance) || 0), 0);
+          document.getElementById('statCoins').textContent = totalCoins.toLocaleString();
+          document.getElementById('headerTotalCoins').textContent = totalCoins.toLocaleString();
+          document.getElementById('statLive').textContent = data.live_count || 0;
+          document.getElementById('settActiveSessions').textContent = (data.live_count || 0) + ' active sessions';
+
+          renderDropdown();
+          if (users.length > 0 && !selectedUser) {
+            selectUser(users[0]);
+          } else if (selectedUser) {
+            const refreshed = users.find(u => u.telegram_id === selectedUser.telegram_id);
+            if (refreshed) selectUser(refreshed);
+          }
+        } else {
+          console.error(data.error);
+        }
+      } catch (e) {
+        console.error("Failed to load users:", e);
+      }
+    }
+
+    function renderDropdown() {
+      const dropdown = document.getElementById('userDropdown');
+      dropdown.innerHTML = users.map(u => `
+        <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+          <div class="flex flex-col">
+            <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+            <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function selectUserById(id) {
+      const user = users.find(u => u.telegram_id === id);
+      if (user) selectUser(user);
+      hideUserList();
+    }
+
+    function selectUser(user) {
+      selectedUser = user;
+      document.getElementById('userSearchInput').value = user.telegram_id;
+      document.getElementById('previewName').textContent = user.name;
+      document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
+      document.getElementById('previewRole').textContent = user.role_label;
+      document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
+      document.getElementById('coinInput').value = user.balance;
+
+      const fallback = document.getElementById('previewAvatarFallback');
+      fallback.textContent = user.name.charAt(0).toUpperCase();
+      fallback.className = "flex items-center justify-center font-bold text-lg text-primary bg-primary/10 rounded-full w-full h-full border border-primary/20 uppercase shadow-md";
+
+      const roles = ['FREE', 'VIP_WEEKLY', 'VIP_MONTHLY'];
+      roles.forEach(r => {
+        const btn = document.getElementById('roleBtn-' + r);
+        if (!btn) return;
+        if (user.role === r) {
+          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-surface-bright text-primary border border-white/5 shadow-sm font-bold';
+        } else {
+          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
+        }
+      });
+
+      const bypassBtn = document.getElementById('bypassBtn');
+      const bypassLabel = document.getElementById('bypassLabel');
+      if (user.bypass) {
+        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-primary/40 text-primary hover:bg-primary/10 transition-colors bg-surface-container-lowest shadow-sm';
+        bypassLabel.textContent = 'BYPASS: ON';
+      } else {
+        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-outline text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container-lowest';
+        bypassLabel.textContent = 'BYPASS: OFF';
+      }
+
+      const banBtn = document.getElementById('banBtn');
+      if (user.banned) {
+        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-on-primary hover:bg-error-container transition-colors shrink-0 shadow-md';
+        banBtn.innerHTML = '<span class="material-symbols-outlined">gavel</span>';
+      } else {
+        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0';
+        banBtn.innerHTML = '<span class="material-symbols-outlined">block</span>';
+      }
+    }
+
+    function showUserList() {
+      document.getElementById('userDropdown').classList.remove('hidden');
+    }
+
+    function hideUserList() {
+      setTimeout(() => {
+        document.getElementById('userDropdown').classList.add('hidden');
+      }, 200);
+    }
+
+    function filterUserList(val) {
+      const dropdown = document.getElementById('userDropdown');
+      const filtered = users.filter(u => 
+        String(u.telegram_id).includes(val) || 
+        u.name.toLowerCase().includes(val.toLowerCase())
+      );
+      dropdown.innerHTML = filtered.map(u => `
+        <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+          <div class="flex flex-col">
+            <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+            <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    // Set Coins Action
+    async function updateCoins() {
+      if (!selectedUser) return;
+      const val = parseInt(document.getElementById('coinInput').value) || 0;
+      const confirmed = await showConfirm(`Set coins to <b>${val.toLocaleString()}</b> for ${selectedUser.name}?`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_coins', target_id: selectedUser.telegram_id, amount: val })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          selectedUser.balance = val;
+          selectUser(selectedUser);
+          loadUsers();
+          showToast("Coins updated successfully!", "success");
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    // Assign Role Action
+    async function assignRole(role) {
+      if (!selectedUser) return;
+      const confirmed = await showConfirm(`Assign role <b>${role === 'FREE' ? 'Free' : (role === 'VIP_WEEKLY' ? 'Weekly VIP' : 'Monthly VIP')}</b> to user?`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_role', target_id: selectedUser.telegram_id, role: role.toLowerCase() })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          selectedUser.role = role;
+          selectedUser.role_label = role === 'FREE' ? 'Free' : (role === 'VIP_WEEKLY' ? 'Weekly VIP' : 'Monthly VIP');
+          selectUser(selectedUser);
+          loadUsers();
+          showToast("Role assigned successfully!", "success");
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    // Toggle Ban Action
+    async function toggleBan() {
+      if (!selectedUser) return;
+      const action = selectedUser.banned ? 'unban' : 'ban';
+      const confirmed = await showConfirm(`Are you sure you want to <b>${action.toUpperCase()}</b> this user?`);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          selectedUser.banned = !selectedUser.banned;
+          selectUser(selectedUser);
+          loadUsers();
+          showToast(action === 'ban' ? "User banned successfully!" : "User unbanned successfully!", "success");
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    // Toggle Bypass Action
+    async function toggleBypass() {
+      if (!selectedUser) return;
+      const action = selectedUser.bypass ? 'revoke_access' : 'grant_access';
+      const confirmTxt = selectedUser.bypass ? 'Revoke bypass access for user?' : 'Grant bypass access to user? (Starts with 30 coins)';
+      const confirmed = await showConfirm(confirmTxt);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          selectedUser.bypass = !selectedUser.bypass;
+          if (action === 'grant_access') {
+            selectedUser.balance = Math.max(selectedUser.balance, 30);
+          }
+          selectUser(selectedUser);
+          loadUsers();
+          showToast(action === 'grant_access' ? "Bypass access granted!" : "Bypass access revoked!", "success");
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    // Load Access and Topup requests
+    async function loadRequests() {
+      try {
+        const res = await fetch(API_BASE + '/api/admin/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          renderRequests(data.access_requests, data.topup_requests);
+        }
+      } catch (e) {
+        console.error("Failed to load requests:", e);
+      }
+    }
+
+    function renderRequests(accessReqs, topupReqs) {
+      document.getElementById('accessReqCount').textContent = accessReqs.length + ' PENDING';
+      document.getElementById('topupReqCount').textContent = topupReqs.length + ' CLAIMS';
+
+      const accessList = document.getElementById('accessRequestsList');
+      if (accessReqs.length === 0) {
+        accessList.innerHTML = `<div class="silk-glass-card p-5 text-center text-xs text-on-surface-variant/40">No pending bypass requests.</div>`;
+      } else {
+        accessList.innerHTML = accessReqs.map(req => `
+          <div class="silk-glass-card p-4 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary shadow-md">
+              <span class="material-symbols-outlined text-[20px]">person_add</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-body-md font-bold text-on-surface truncate">${req.name}</p>
+              <p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">ID: ${req.telegram_id} • ${new Date(req.ts).toLocaleDateString()}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="handleAccessReq(${req.telegram_id}, 'decline')" class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-error hover:bg-error/10 transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+              <button onclick="handleAccessReq(${req.telegram_id}, 'approve')" class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const topupList = document.getElementById('topupRequestsList');
+      if (topupReqs.length === 0) {
+        topupList.innerHTML = `<div class="silk-glass-card p-5 text-center text-xs text-on-surface-variant/40">No pending topup claims.</div>`;
+      } else {
+        topupList.innerHTML = topupReqs.map(req => `
+          <div class="silk-glass-card p-4 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-tertiary shadow-md">
+              <span class="material-symbols-outlined text-[20px]">payments</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-body-md font-bold text-on-surface truncate">${req.package} Claim</p>
+              <p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">User ID: ${req.telegram_id} (${req.name})</p>
+              <p class="text-[11px] text-tertiary font-bold mt-1">+${req.coins.toLocaleString()} Coins (Rp ${req.price.toLocaleString()})</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="handleTopupReq(${req.id}, 'reject')" class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-error hover:bg-error/10 transition-colors">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+              <button onclick="handleTopupReq(${req.id}, 'approve')" class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function handleAccessReq(targetId, action) {
+      const actionVal = action === 'approve' ? 'grant_access' : 'decline_access';
+      const confirmTxt = action === 'approve' ? `Approve bypass access for ID ${targetId}?` : `Decline access request for ID ${targetId}?`;
+      const confirmed = await showConfirm(confirmTxt);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, action: actionVal, target_id: targetId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(action === 'approve' ? "Access request approved!" : "Access request declined.", "success");
+          loadRequests();
+          loadUsers();
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    async function handleTopupReq(reqId, action) {
+      const confirmTxt = action === 'approve' ? `Approve topup claim #${reqId}?` : `Reject topup claim #${reqId}?`;
+      const confirmed = await showConfirm(confirmTxt);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/topup/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, req_id: reqId, action: action })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(action === 'approve' ? "Topup claim approved!" : "Topup claim rejected.", "success");
+          loadRequests();
+          loadUsers();
+        } else {
+          showToast("Error: " + data.error, "error");
+        }
+      } catch (e) {
+        showToast("API error", "error");
+      }
+    }
+
+    // Load Activity Logs
+    async function loadActivity() {
+      const list = document.getElementById('activityLogsList');
+      list.innerHTML = `<div class="p-5 text-center text-xs"><span class="animate-spin inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full mr-2"></span>Loading logs...</div>`;
+      try {
+        const res = await fetch(API_BASE + '/api/admin/activity', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          if (data.activities.length === 0) {
+            list.innerHTML = `<div class="p-5 text-center text-xs text-on-surface-variant/40">No system coin activity logs found.</div>`;
+            return;
+          }
+          list.innerHTML = data.activities.map(act => {
+            let colorClass = 'bg-on-surface-variant';
+            let iconSymbol = 'info';
+            if (act.delta > 0) {
+              colorClass = 'bg-[#4ADE80]';
+              iconSymbol = 'add_circle';
+            } else if (act.delta < 0) {
+              colorClass = 'bg-error';
+              iconSymbol = 'remove_circle';
+            }
+            if (act.reason.includes('topup')) {
+              colorClass = 'bg-tertiary';
+              iconSymbol = 'payments';
+            }
+            const sign = act.delta > 0 ? '+' : '';
+            return `
+              <div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
+                <div class="w-8 h-8 rounded-full ${colorClass}/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[16px] text-on-surface">${iconSymbol}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="font-body-md text-on-surface leading-snug">
+                    <span class="text-primary font-bold">${act.name} (ID: ${act.telegram_id})</span> 
+                    <span class="text-on-surface-variant">${act.delta !== 0 ? `received ${sign}${act.delta.toLocaleString()} coins` : `modified balance`}</span>
+                  </p>
+                  <p class="text-[11px] text-on-surface-variant/70 mt-1">Reason: ${act.reason}</p>
+                  <p class="font-label-caps text-[9px] text-on-surface-variant/40 mt-1 tracking-wider uppercase">${new Date(act.ts).toLocaleString()}</p>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          list.innerHTML = `<div class="p-5 text-center text-xs text-error">Failed to load: ${data.error}</div>`;
+        }
+      } catch (e) {
+        list.innerHTML = `<div class="p-5 text-center text-xs text-error">Failed to load logs.</div>`;
+      }
+    }
+
+    // Initial Load & Real-Time Syncing Loop
+    loadUsers();
+    setInterval(() => {
+      loadUsers();
+      const activeTab = ['users', 'requests', 'activity', 'settings'].find(t => !document.getElementById('page-' + t).classList.contains('hidden'));
+      if (activeTab === 'requests') {
+        loadRequests();
+      }
+    }, 5000);
+
+    // Micro-interactions scaling
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('mousedown', () => { el.style.transform = 'scale(0.96)'; });
+        el.addEventListener('mouseup', () => { el.style.transform = ''; });
+        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+</script>
+</body>
+</html>
