@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>TrashGameCompany Admin Panel | Obsidian Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#051424",
+                    "surface-dim": "#051424",
+                    "surface-bright": "#2c3a4c",
+                    "surface-container-lowest": "#010f1f",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-container": "#122131",
+                    "surface-container-high": "#1c2b3c",
+                    "surface-container-highest": "#273647",
+                    "on-surface": "#f1f5f9",
+                    "on-surface-variant": "#94a3b8",
+                    "primary": "#cebdff",
+                    "on-primary": "#381385",
+                    "primary-container": "#a78bfa",
+                    "on-primary-container": "#3c1989",
+                    "secondary": "#c7c5d3",
+                    "tertiary": "#f9bd22",
+                    "error": "#ffb4ab",
+                    "outline": "#494552",
+                    "outline-variant": "#273647"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-page": "20px",
+                    "gutter": "16px",
+                    "stack-sm": "8px",
+                    "stack-md": "16px",
+                    "stack-lg": "24px",
+                    "base": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Geist"],
+                    "headline-lg": ["Manrope"],
+                    "status-sm": ["Geist"],
+                    "code-md": ["Geist"],
+                    "label-caps": ["Geist"],
+                    "headline-md": ["Manrope"],
+                    "headline-sm": ["Manrope"],
+                    "body-md": ["Geist"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "status-sm": ["11px", {"lineHeight": "12px", "fontWeight": "700"}],
+                    "code-md": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #f1f5f9;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 15% 50%, rgba(103,75,181,0.4), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(1,143,155,0.3), transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(199,149,0,0.2), transparent 50%), #051424;
+            filter: blur(60px); z-index: -1; animation: meshShift 20s ease-in-out infinite alternate;
+        }
+        @keyframes meshShift {
+            0%   { transform: scale(1)   translate(0,0); }
+            50%  { transform: scale(1.1) translate(-2%,2%); }
+            100% { transform: scale(1)   translate(2%,-2%); }
+        }
+        .silk-glass {
+            background: rgba(13, 28, 45, 0.7);
+            backdrop-filter: blur(16px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+        .silk-glass-card {
+            background: rgba(13, 28, 45, 0.7);
+            backdrop-filter: blur(16px);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+        }
+        .status-pulse {
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(206, 189, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-surface/90 backdrop-blur-2xl border-b border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden ring-1 ring-primary/20">
+<img alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
+</div>
+<span class="font-headline-sm text-[18px] tracking-tight font-bold text-on-surface">TrashGameCompany</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-white/5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">payments</span>
+<span class="font-code-md text-code-md text-primary">$1,240.50</span>
+</div>
+</header>
+<main class="pt-20 px-margin-page space-y-stack-lg">
+<!-- System Stats Grid -->
+<section class="grid grid-cols-3 gap-gutter">
+<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Users</span>
+<span class="font-headline-md text-headline-sm text-primary">12,482</span>
+</div>
+<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Coins</span>
+<span class="font-headline-md text-headline-sm text-tertiary">4.2M</span>
+</div>
+<div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center aspect-square sm:aspect-auto">
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1">Live</span>
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ADE80] status-pulse"></div>
+<span class="font-headline-md text-headline-sm text-on-surface">842</span>
+</div>
+</div>
+</section>
+<!-- User Management -->
+<section class="space-y-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">User Management</h2>
+<div class="silk-glass-card p-base space-y-base">
+<!-- Search and Select User -->
+<div class="relative group">
+  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+  <input id="userSearchInput" onfocus="showUserList()" onblur="hideUserList()" oninput="filterUserList(this.value)" class="w-full bg-surface-container-lowest border border-outline rounded-xl pl-11 pr-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search or select user..." type="text"/>
+  
+  <!-- Dropdown User List -->
+  <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface-container border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1">
+    <!-- populated dynamically -->
+  </div>
+</div>
+<!-- User Profile Preview -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-low/50 rounded-2xl border border-white/5">
+<div class="w-16 h-16 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0">
+<img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV6BQz18ykutZP-Sc1SmhXSkpVPIWKSyTItgUkhxTOymAMxPOWyoKpQ_e-0MAlhhpMjpFCYg9mXjWRNhW0YH9Ea7f2kinhzByjflyRq0tLcLgWhgLTvmWUKWdYSZW9uneS69evSwZ97Z-eBnS4Pfx_nIlnZQtC_NFwHkvc75JQW1MIJyQz0rv1wXWQUWBvWolIVtAsG8uui8h_cUg88CfbwDa6X_5XH1nF_o9f6Wu0ur2y97cWgCsp6ILT83C5XEcMMbBC0kGLkgM"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div class="truncate">
+<h3 id="previewName" class="font-headline-sm text-[18px] leading-tight truncate">Select a user</h3>
+<p id="previewId" class="font-code-md text-code-md text-on-surface-variant">ID: —</p>
+</div>
+<span id="previewRole" class="px-2.5 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] whitespace-nowrap">—</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1">paid</span>
+<span id="previewCoins" class="font-code-md text-code-md">—</span>
+</div>
+</div>
+</div>
+<!-- Actions Grid -->
+<div class="space-y-base pt-2">
+<!-- Set Coins -->
+<div class="space-y-2">
+<label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Update Coin Balance</label>
+<div class="flex gap-2">
+<input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors" type="number" value="0"/>
+<button onclick="updateCoins()" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SET COINS</button>
+</div>
+</div>
+<!-- Role & Ban -->
+<div class="flex items-end gap-3">
+<div class="flex-1 space-y-2">
+<label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Assign Role</label>
+<div class="flex gap-1 bg-surface-container-lowest p-1 rounded-xl border border-outline">
+<button id="roleBtn-FREE" onclick="assignRole('FREE')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">FREE</button>
+<button id="roleBtn-VIP_WEEKLY" onclick="assignRole('VIP_WEEKLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP W</button>
+<button id="roleBtn-VIP_MONTHLY" onclick="assignRole('VIP_MONTHLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP M</button>
+</div>
+</div>
+<button id="banBtn" onclick="toggleBan()" class="h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest">
+<span class="material-symbols-outlined">block</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Request Queue -->
+<section class="space-y-stack-md">
+<div class="flex justify-between items-end px-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Accept Req</h2>
+<span class="font-label-caps text-[11px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">3 PENDING</span>
+</div>
+<div class="space-y-3">
+<!-- Request Item -->
+<div class="silk-glass-card p-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md font-bold text-on-surface truncate">Kaelen_Frost</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">Req Access • 2m ago</p>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<button class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 transition-all hover:scale-105">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</button>
+</div>
+</div>
+<!-- Request Item (Secondary) -->
+<div class="silk-glass-card p-4 flex items-center gap-4 opacity-70">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md font-bold text-on-surface truncate">Neo_Noir_99</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">Req Access • 15m ago</p>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<button class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Activity Stream -->
+<section class="space-y-stack-md pb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Activity Stream</h2>
+<div class="silk-glass-card max-h-72 overflow-y-auto divide-y divide-white/5">
+<!-- Log Entry -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
+<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-tertiary shrink-0"></div>
+<div class="min-w-0">
+<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Vesper_Zero</span> purchased <span class="text-on-surface font-medium">Premium Lootbox</span></p>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:45 PM • TRANSACTION</p>
+</div>
+</div>
+<!-- Log Entry -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
+<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-[#4ADE80] shrink-0"></div>
+<div class="min-w-0">
+<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Admin_Root</span> updated balance for <span class="text-on-surface font-medium">#7721</span></p>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:30 PM • SYSTEM</p>
+</div>
+</div>
+<!-- Log Entry -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
+<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-on-surface-variant shrink-0"></div>
+<div class="min-w-0">
+<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Scythe_</span> logged into <span class="text-on-surface font-medium">Mobile_04</span></p>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:22 PM • AUTH</p>
+</div>
+</div>
+<!-- Log Entry -->
+<div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
+<div class="w-1.5 h-1.5 mt-2.5 rounded-full bg-error shrink-0"></div>
+<div class="min-w-0">
+<p class="font-body-md text-on-surface leading-snug"><span class="text-primary font-bold">@Unauthorized</span> failed login attempt (3x)</p>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1.5 tracking-wider uppercase">12:15 PM • SECURITY</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation Dock -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter pb-safe h-20 bg-surface/90 backdrop-blur-2xl border-t border-white/5">
+<a class="flex flex-col items-center justify-center text-primary group" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-caps text-[11px] mt-1 tracking-tight">Users</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">pending_actions</span>
+<span class="font-label-caps text-[11px] mt-1 tracking-tight">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">list_alt</span>
+<span class="font-label-caps text-[11px] mt-1 tracking-tight">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="font-label-caps text-[11px] mt-1 tracking-tight">Settings</span>
+</a>
+</nav>
+<!-- Micro-interaction script -->
+<script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) { tg.ready(); tg.expand(); }
+
+        const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
+
+        const API_BASE = (() => {
+          const h = location.hostname;
+          if (h.includes('ngrok')) return 'https://' + h;
+          if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
+          return 'https://bright-toad-brightly.ngrok-free.app';
+        })();
+
+        let users = [];
+        let selectedUser = null;
+
+        async function loadUsers() {
+          try {
+            const res = await fetch(API_BASE + '/api/admin/users', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+              body: JSON.stringify({ admin_id: ADMIN_ID })
+            });
+            const data = await res.json();
+            if (data.ok) {
+              users = data.users;
+              renderDropdown();
+              if (users.length > 0 && !selectedUser) {
+                selectUser(users[0]);
+              }
+            } else {
+              console.error(data.error);
+            }
+          } catch (e) {
+            console.error("Failed to load users:", e);
+          }
+        }
+
+        function renderDropdown() {
+          const dropdown = document.getElementById('userDropdown');
+          dropdown.innerHTML = users.map(u => `
+            <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+              <div class="flex flex-col">
+                <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+                <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+              </div>
+            </button>
+          `).join('');
+        }
+
+        function selectUserById(id) {
+          const user = users.find(u => u.telegram_id === id);
+          if (user) selectUser(user);
+          hideUserList();
+        }
+
+        function selectUser(user) {
+          selectedUser = user;
+          document.getElementById('userSearchInput').value = user.telegram_id;
+          document.getElementById('previewName').textContent = user.name;
+          document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
+          document.getElementById('previewRole').textContent = user.role_label;
+          document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
+          document.getElementById('coinInput').value = user.balance;
+          
+          const roles = ['FREE', 'VIP_WEEKLY', 'VIP_MONTHLY'];
+          roles.forEach(r => {
+            const btn = document.getElementById('roleBtn-' + r);
+            if (!btn) return;
+            if (user.role === r) {
+              btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-surface-bright text-primary border border-white/5 shadow-sm';
+            } else {
+              btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
+            }
+          });
+
+          const banBtn = document.getElementById('banBtn');
+          if (user.banned) {
+            banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-on-primary hover:bg-error-container transition-colors';
+            banBtn.innerHTML = '<span class="material-symbols-outlined">gavel</span>';
+          } else {
+            banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest';
+            banBtn.innerHTML = '<span class="material-symbols-outlined">block</span>';
+          }
+        }
+
+        function showUserList() {
+          document.getElementById('userDropdown').classList.remove('hidden');
+        }
+
+        function hideUserList() {
+          setTimeout(() => {
+            document.getElementById('userDropdown').classList.add('hidden');
+          }, 200);
+        }
+
+        function filterUserList(val) {
+          const dropdown = document.getElementById('userDropdown');
+          const filtered = users.filter(u => 
+            String(u.telegram_id).includes(val) || 
+            u.name.toLowerCase().includes(val.toLowerCase())
+          );
+          dropdown.innerHTML = filtered.map(u => `
+            <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+              <div class="flex flex-col">
+                <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+                <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+              </div>
+            </button>
+          `).join('');
+        }
+
+        async function updateCoins() {
+          if (!selectedUser) return;
+          const val = parseInt(document.getElementById('coinInput').value) || 0;
+          try {
+            const res = await fetch(API_BASE + '/api/admin/action', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_coins', target_id: selectedUser.telegram_id, amount: val })
+            });
+            const data = await res.json();
+            if (data.ok) {
+              selectedUser.balance = val;
+              selectUser(selectedUser);
+              loadUsers();
+              alert("Coins updated successfully!");
+            } else {
+              alert("Error: " + data.error);
+            }
+          } catch (e) {
+            alert("API error");
+          }
+        }
+
+        async function assignRole(role) {
+          if (!selectedUser) return;
+          try {
+            const res = await fetch(API_BASE + '/api/admin/action', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_role', target_id: selectedUser.telegram_id, role: role.toLowerCase() })
+            });
+            const data = await res.json();
+            if (data.ok) {
+              selectedUser.role = role;
+              selectedUser.role_label = role === 'FREE' ? 'Free' : (role === 'VIP_WEEKLY' ? 'Weekly VIP' : 'Monthly VIP');
+              selectUser(selectedUser);
+              loadUsers();
+            } else {
+              alert("Error: " + data.error);
+            }
+          } catch (e) {
+            alert("API error");
+          }
+        }
+
+        async function toggleBan() {
+          if (!selectedUser) return;
+          const action = selectedUser.banned ? 'unban' : 'ban';
+          try {
+            const res = await fetch(API_BASE + '/api/admin/action', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
+            });
+            const data = await res.json();
+            if (data.ok) {
+              selectedUser.banned = !selectedUser.banned;
+              selectUser(selectedUser);
+              loadUsers();
+            } else {
+              alert("Error: " + data.error);
+            }
+          } catch (e) {
+            alert("API error");
+          }
+        }
+
+        loadUsers();
+
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.96)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = '';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = '';
+            });
+        });
+    </script>
+</body></html>
