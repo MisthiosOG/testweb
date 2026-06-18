@@ -125,6 +125,15 @@
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Hide browser up/down number spinners */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden">
@@ -146,7 +155,7 @@
 <!-- Top App Bar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-surface/90 backdrop-blur-2xl border-b border-white/5">
   <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg ring-1 ring-primary/20 bg-surface-container-highest font-bold text-xs flex items-center justify-center">
+    <div class="w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg ring-1 ring-primary/20 bg-surface-container-highest">
       <img id="adminAvatar" alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
     </div>
     <div class="flex flex-col">
@@ -222,7 +231,7 @@
           <div class="space-y-2">
             <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Update Coin Balance</label>
             <div class="flex gap-2">
-              <input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors" type="number" value="0"/>
+              <input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors animate-none" type="number" value="0"/>
               <button onclick="updateCoins()" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SET COINS</button>
             </div>
           </div>
@@ -482,7 +491,14 @@
           document.getElementById('statLive').textContent = data.live_count || 0;
           document.getElementById('settActiveSessions').textContent = (data.live_count || 0) + ' active sessions';
 
-          renderDropdown();
+          // Prevent dropdown refresh if user is currently typing search filter
+          const query = document.getElementById('userSearchInput').value.trim();
+          if (query && document.activeElement === document.getElementById('userSearchInput')) {
+            filterUserList(query);
+          } else {
+            renderDropdown();
+          }
+
           if (users.length > 0 && !selectedUser) {
             selectUser(users[0]);
           } else if (selectedUser) {
@@ -499,17 +515,25 @@
 
     function renderDropdown() {
       const dropdown = document.getElementById('userDropdown');
-      dropdown.innerHTML = users.map(u => `
-        <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-          <div class="flex flex-col">
-            <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-            <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
-          </div>
-        </button>
-      `).join('');
+      dropdown.innerHTML = users.map(u => {
+        const photoUrl = API_BASE + '/api/telegram/avatar/' + u.telegram_id;
+        const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
+        return `
+          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-sm">
+                <span class="text-[9px] text-primary uppercase font-bold">${initial}</span>
+                <img class="w-full h-full object-cover hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.remove()"/>
+              </div>
+              <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+              <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+            </div>
+          </button>
+        `;
+      }).join('');
     }
 
     function selectUserById(id) {
@@ -525,11 +549,30 @@
       document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
       document.getElementById('previewRole').textContent = user.role_label;
       document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
-      document.getElementById('coinInput').value = user.balance;
+      
+      // Focus check: do not revert the value typed by user if they are currently editing
+      if (document.activeElement !== document.getElementById('coinInput')) {
+        document.getElementById('coinInput').value = user.balance;
+      }
 
+      const previewAvatar = document.getElementById('previewAvatar');
       const fallback = document.getElementById('previewAvatarFallback');
-      fallback.textContent = user.name.charAt(0).toUpperCase();
-      fallback.className = "flex items-center justify-center font-bold text-lg text-primary bg-primary/10 rounded-full w-full h-full border border-primary/20 uppercase shadow-md";
+      
+      fallback.textContent = user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U';
+      fallback.className = "flex items-center justify-center font-bold text-lg text-primary bg-primary/10 rounded-full w-full h-full border border-primary/20 uppercase";
+      
+      previewAvatar.src = API_BASE + '/api/telegram/avatar/' + user.telegram_id;
+      previewAvatar.classList.add('hidden');
+      fallback.classList.remove('hidden');
+      
+      previewAvatar.onload = () => {
+        previewAvatar.classList.remove('hidden');
+        fallback.classList.add('hidden');
+      };
+      previewAvatar.onerror = () => {
+        previewAvatar.classList.add('hidden');
+        fallback.classList.remove('hidden');
+      };
 
       const roles = ['FREE', 'VIP_WEEKLY', 'VIP_MONTHLY'];
       roles.forEach(r => {
@@ -578,17 +621,25 @@
         String(u.telegram_id).includes(val) || 
         u.name.toLowerCase().includes(val.toLowerCase())
       );
-      dropdown.innerHTML = filtered.map(u => `
-        <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-          <div class="flex flex-col">
-            <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-            <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
-          </div>
-        </button>
-      `).join('');
+      dropdown.innerHTML = filtered.map(u => {
+        const photoUrl = API_BASE + '/api/telegram/avatar/' + u.telegram_id;
+        const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
+        return `
+          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-sm">
+                <span class="text-[9px] text-primary uppercase font-bold">${initial}</span>
+                <img class="w-full h-full object-cover hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.remove()"/>
+              </div>
+              <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
+              <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+            </div>
+          </button>
+        `;
+      }).join('');
     }
 
     // Set Coins Action
