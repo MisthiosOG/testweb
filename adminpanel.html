@@ -205,22 +205,30 @@
         </div>
 
         <!-- User Profile Preview -->
-        <div class="flex items-center gap-4 p-4 bg-surface-container-low/50 rounded-2xl border border-white/5">
-          <div class="w-16 h-16 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0 flex items-center justify-center bg-surface-container-highest">
-            <span id="previewAvatarFallback" class="material-symbols-outlined text-[32px] text-primary">person</span>
-            <img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.classList.add('hidden'); document.getElementById('previewAvatarFallback').classList.remove('hidden')"/>
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex justify-between items-start">
-              <div class="truncate">
-                <h3 id="previewName" class="font-headline-sm text-[18px] leading-tight truncate">Select a user</h3>
-                <p id="previewId" class="font-code-md text-code-md text-on-surface-variant">ID: —</p>
-              </div>
-              <span id="previewRole" class="px-2.5 py-0.5 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] whitespace-nowrap">—</span>
+        <div class="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-2xl border border-white/5 shadow-inner">
+          <div class="flex items-center gap-4 min-w-0">
+            <!-- Avatar Container -->
+            <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0 flex items-center justify-center bg-surface-container-highest relative">
+              <span id="previewAvatarFallback" class="text-xl text-primary font-bold uppercase">U</span>
+              <img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover absolute inset-0 hidden" src="" onerror="this.classList.add('hidden'); document.getElementById('previewAvatarFallback').classList.remove('hidden')"/>
             </div>
-            <div class="mt-2 flex items-center gap-2 text-tertiary">
-              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1">paid</span>
-              <span id="previewCoins" class="font-code-md text-code-md">—</span>
+            
+            <!-- Text Stack -->
+            <div class="flex flex-col min-w-0">
+              <div class="flex items-center gap-2">
+                <h3 id="previewName" class="font-headline-sm text-[18px] leading-tight font-bold text-on-surface truncate">Select a user</h3>
+                <span id="previewUsername" class="text-primary text-xs font-normal truncate"></span>
+              </div>
+              <p id="previewId" class="font-code-md text-xs text-on-surface-variant/80 mt-1">ID: —</p>
+            </div>
+          </div>
+          
+          <!-- Badge and Coins Stack -->
+          <div class="flex flex-col items-end shrink-0 gap-2 ml-4">
+            <span id="previewRole" class="px-3 py-1 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] tracking-wider font-bold whitespace-nowrap uppercase shadow-sm">—</span>
+            <div class="flex items-center gap-1 text-tertiary">
+              <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1">paid</span>
+              <span id="previewCoins" class="font-code-md text-sm font-bold">—</span>
             </div>
           </div>
         </div>
@@ -598,20 +606,29 @@
     function renderDropdown() {
       const dropdown = document.getElementById('userDropdown');
       dropdown.innerHTML = users.map(u => {
-        const photoUrl = API_BASE + '/api/telegram/avatar/' + u.telegram_id;
+        const photoUrl = u.photo_url || (API_BASE + '/api/telegram/avatar/' + u.telegram_id);
         const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
         return `
-          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-            <div class="flex items-center gap-2.5">
-              <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-sm">
-                <span class="text-[9px] text-primary uppercase font-bold">${initial}</span>
-                <img class="w-full h-full object-cover hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.remove()"/>
+          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-white/[0.03] last:border-0">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-md relative">
+                <span class="text-xs text-primary uppercase font-bold">${initial}</span>
+                <img class="w-full h-full object-cover absolute inset-0 hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.classList.add('hidden'); this.previousElementSibling.classList.remove('hidden')"/>
               </div>
-              <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+              <div class="flex flex-col min-w-0">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="font-bold text-on-surface truncate text-sm leading-tight">${u.first_name || 'User'}</span>
+                  ${u.username ? `<span class="text-primary font-normal text-xs truncate">@${u.username}</span>` : ''}
+                </div>
+                <span class="text-[10px] text-on-surface-variant font-code-md tracking-wider mt-0.5">ID: ${u.telegram_id}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-              <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+            <div class="flex flex-col items-end shrink-0 gap-1 ml-4">
+              <span class="px-2.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold tracking-wider uppercase font-label-caps">${u.role_label}</span>
+              <span class="text-tertiary font-bold text-xs flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1">paid</span>
+                ${Number(u.balance).toLocaleString()}
+              </span>
             </div>
           </button>
         `;
@@ -632,7 +649,8 @@
         document.getElementById('userSearchInput').value = user.telegram_id;
       }
       
-      document.getElementById('previewName').textContent = user.name;
+      document.getElementById('previewName').textContent = user.first_name || 'User';
+      document.getElementById('previewUsername').textContent = user.username ? '@' + user.username : '';
       document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
       document.getElementById('previewRole').textContent = user.role_label;
       document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
@@ -646,9 +664,10 @@
       const fallback = document.getElementById('previewAvatarFallback');
       
       fallback.textContent = user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U';
-      fallback.className = "flex items-center justify-center font-bold text-lg text-primary bg-primary/10 rounded-full w-full h-full border border-primary/20 uppercase";
+      fallback.className = "text-xl text-primary font-bold uppercase";
       
-      previewAvatar.src = API_BASE + '/api/telegram/avatar/' + user.telegram_id;
+      const photoUrl = user.photo_url || (API_BASE + '/api/telegram/avatar/' + user.telegram_id);
+      previewAvatar.src = photoUrl;
       previewAvatar.classList.add('hidden');
       fallback.classList.remove('hidden');
       
@@ -709,20 +728,29 @@
         u.name.toLowerCase().includes(val.toLowerCase())
       );
       dropdown.innerHTML = filtered.map(u => {
-        const photoUrl = API_BASE + '/api/telegram/avatar/' + u.telegram_id;
+        const photoUrl = u.photo_url || (API_BASE + '/api/telegram/avatar/' + u.telegram_id);
         const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
         return `
-          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-4 py-2 hover:bg-surface-container-high rounded-xl text-xs flex justify-between items-center transition-colors">
-            <div class="flex items-center gap-2.5">
-              <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-sm">
-                <span class="text-[9px] text-primary uppercase font-bold">${initial}</span>
-                <img class="w-full h-full object-cover hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.remove()"/>
+          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-white/[0.03] last:border-0">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-md relative">
+                <span class="text-xs text-primary uppercase font-bold">${initial}</span>
+                <img class="w-full h-full object-cover absolute inset-0 hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.classList.add('hidden'); this.previousElementSibling.classList.remove('hidden')"/>
               </div>
-              <span class="font-bold text-on-surface">${u.name} (ID: ${u.telegram_id})</span>
+              <div class="flex flex-col min-w-0">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="font-bold text-on-surface truncate text-sm leading-tight">${u.first_name || 'User'}</span>
+                  ${u.username ? `<span class="text-primary font-normal text-xs truncate">@${u.username}</span>` : ''}
+                </div>
+                <span class="text-[10px] text-on-surface-variant font-code-md tracking-wider mt-0.5">ID: ${u.telegram_id}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold">${u.role_label}</span>
-              <span class="text-tertiary font-bold">${Number(u.balance).toLocaleString()} coins</span>
+            <div class="flex flex-col items-end shrink-0 gap-1 ml-4">
+              <span class="px-2.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold tracking-wider uppercase font-label-caps">${u.role_label}</span>
+              <span class="text-tertiary font-bold text-xs flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1">paid</span>
+                ${Number(u.balance).toLocaleString()}
+              </span>
             </div>
           </button>
         `;
