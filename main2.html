@@ -455,12 +455,21 @@
         <span class="material-symbols-outlined text-primary text-[24px]">favorite</span>
         <span class="font-code-md text-[11px] text-on-surface">Send Heart</span>
       </button>
-      <button onclick="runFeature('SendHeartsAll','Send Hearts All')" id="feat-SendHeartsAll" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative col-span-3">
+      <button onclick="runFeature('SendHeartsAll','Send Hearts All')" id="feat-SendHeartsAll" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
         <span class="cost-badge" data-cost-for="SendHeartsAll"><span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—</span>
         <span class="material-symbols-outlined text-primary text-[24px]">favorite_border</span>
         <span class="font-code-md text-[11px] text-on-surface">Hearts All</span>
       </button>
-
+      <button onclick="runFeature('SkipIntro','Skip Intro')" id="feat-SkipIntro" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
+        <span class="cost-badge" data-cost-for="SkipIntro"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+        <span class="material-symbols-outlined text-primary text-[24px]">fast_forward</span>
+        <span class="font-code-md text-[11px] text-on-surface">Skip Intro</span>
+      </button>
+      <button onclick="runFeature('Map','Unlock Map')" id="feat-Map" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
+        <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+        <span class="material-symbols-outlined text-primary text-[24px]">map</span>
+        <span class="font-code-md text-[11px] text-on-surface">Unlock Map</span>
+      </button>
     </div>
   </div>
 
@@ -893,7 +902,16 @@ async function submitLogin(method) {
     const res = await fetch(API_BASE + '/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-      body: JSON.stringify({ telegram_id: TELEGRAM_ID, method, server: selectedServer, platform: selectedPlatformVal, code })
+      body: JSON.stringify({ 
+        telegram_id: TELEGRAM_ID, 
+        method, 
+        server: selectedServer, 
+        platform: selectedPlatformVal, 
+        code,
+        first_name: tg?.initDataUnsafe?.user?.first_name || '',
+        username: tg?.initDataUnsafe?.user?.username || '',
+        photo_url: tg?.initDataUnsafe?.user?.photo_url || ''
+      })
     });
     const data = await res.json();
     if (data.ok) {
