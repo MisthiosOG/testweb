@@ -335,6 +335,24 @@
       </div>
     </section>
 
+    <!-- Game Data Sync Panel -->
+    <section class="space-y-stack-md">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">Game Data Synchronization</h2>
+      <div class="silk-glass-card p-base space-y-base">
+        <p class="text-xs text-on-surface-variant">Update the bot's static level and wing databases directly from your local Sky game installation folder.</p>
+        <div class="space-y-2">
+          <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Sky Installation Directory</label>
+          <input id="syncGamePath" class="w-full bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors text-xs" type="text" value="C:\Program Files (x86)\Steam\steamapps\common\Sky Children of the Light" placeholder="C:\Program Files (x86)\Steam\steamapps\common\Sky Children of the Light"/>
+        </div>
+        <button id="btnSyncResources" onclick="triggerSyncResources()" class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS
+        </button>
+        <div id="syncResultContainer" class="hidden silk-glass p-3 rounded-xl border border-white/5 font-code-md text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto">
+          <!-- Result logs -->
+        </div>
+      </div>
+    </section>
+
     <section class="space-y-stack-md">
       <h2 class="font-headline-sm text-headline-sm text-on-surface">Feature Prices Configuration</h2>
       <div class="silk-glass-card divide-y divide-white/5">
@@ -1130,6 +1148,66 @@
         }
       } catch (e) {
         showToast("API error executing global action", "error");
+      }
+    }
+
+    // Trigger Resource Synchronization & Database Rebuilding
+    async function triggerSyncResources() {
+      const path = document.getElementById('syncGamePath').value.trim();
+      if (!path) {
+        showToast("Game path cannot be empty!", "error");
+        return;
+      }
+
+      const confirmed = await showConfirm("Rebuild bot databases and sync game configs from Steam directory?");
+      if (!confirmed) return;
+
+      const btn = document.getElementById('btnSyncResources');
+      const container = document.getElementById('syncResultContainer');
+      
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full mr-2"></span> SYNCING ASSETS...`;
+      container.classList.add('hidden');
+      container.innerHTML = '';
+
+      try {
+        const res = await fetch(API_BASE + '/api/admin/sync_resources', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_id: ADMIN_ID, game_path: path })
+        });
+        const data = await res.json();
+        
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS`;
+        
+        container.classList.remove('hidden');
+        if (data.ok) {
+          showToast("Sync and database rebuild complete!", "success");
+          container.innerHTML = `
+            <div class="text-[#4ADE80] font-bold mb-1">✓ Synchronization Succeeded</div>
+            <div>• Synced files: ${data.synced_files}</div>
+            <div>• Scanned levels: ${data.scanned_levels}</div>
+            <div>• Total pickup IDs: ${data.total_pickup_ids}</div>
+            <div>• Wings found: ${data.total_wings} (Spirit: ${data.spirit_wings}, Level: ${data.level_wings})</div>
+            <div class="border-t border-white/5 my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
+              ${data.logs.map(log => `<div>${log}</div>`).join('')}
+            </div>
+          `;
+        } else {
+          showToast("Sync failed: " + data.error, "error");
+          container.innerHTML = `
+            <div class="text-error font-bold mb-1">✗ Synchronization Failed</div>
+            <div class="text-error">${data.error}</div>
+            <div class="border-t border-white/5 my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
+              ${data.logs ? data.logs.map(log => `<div>${log}</div>`).join('') : ''}
+            </div>
+          `;
+        }
+      } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS`;
+        showToast("Network error triggering sync", "error");
       }
     }
 
