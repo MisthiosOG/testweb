@@ -334,22 +334,32 @@
 
     <!-- Quick Actions -->
     <div class="grid grid-cols-2 gap-gutter shimmer-entrance" style="animation-delay: 0.2s;">
-      <button class="bg-primary p-stack-md rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-lg shadow-primary/20 feat-btn text-white" id="feat-DailyFunction" onclick="runFeature('DailyFunction','Daily Function')">
+      <button class="bg-primary p-5 rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-lg shadow-primary/20 feat-btn text-white" id="feat-DailyFunction" onclick="runFeature('DailyFunction','Daily Function')">
         <div class="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md">
           <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
         </div>
-        <div>
-          <p class="font-bold text-[16px]">Daily Function</p>
-          <span class="cost-badge flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-white/10 border-white/20 static" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+        <div class="flex items-end justify-between w-full">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-[15px] leading-tight truncate">Daily Function</p>
+            <p class="text-[11px] text-white/75 mt-0.5 truncate">Resets in 12h 40m</p>
+          </div>
+          <span class="static flex items-center gap-1 bg-white/25 px-2 py-0.5 rounded-full text-[10px] font-bold text-white shrink-0 ml-1.5" data-cost-for="DailyFunction">
+            <span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—
+          </span>
         </div>
       </button>
-      <button class="bg-white p-stack-md rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-md border border-outline-variant feat-btn" id="feat-All" onclick="runFeature('All','Run All')">
+      <button class="bg-white p-5 rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-md border border-outline-variant feat-btn animate-none" id="feat-All" onclick="runFeature('All','Run All')">
         <div class="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center">
           <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
         </div>
-        <div>
-          <p class="font-bold text-on-surface text-[16px]">Run All</p>
-          <span class="cost-badge flex items-center gap-0.5 text-[9px] font-bold text-amber-600 bg-amber-50 border-amber-200 static" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+        <div class="flex items-end justify-between w-full">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-on-surface text-[15px] leading-tight truncate">Run All</p>
+            <p class="text-[11px] text-on-surface-variant mt-0.5 truncate">Execute all queues</p>
+          </div>
+          <span class="static flex items-center gap-1 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-600 shrink-0 ml-1.5" data-cost-for="All">
+            <span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—
+          </span>
         </div>
       </button>
     </div>
