@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
 <head>
+<script>
+  (function() {
+    const theme = localStorage.getItem('theme') || 'light';
+    document.documentElement.className = theme;
+  })();
+</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TrashGameCompany Dashboard</title>
@@ -13,21 +19,21 @@
             theme: {
                 extend: {
                     "colors": {
-                        "primary": "#2D31FA", // Vibrant blue from reference
-                        "primary-container": "#E7E8FF",
-                        "on-primary-container": "#000566",
-                        "background": "#F5F5F7", // Off-white from reference
-                        "surface": "#FFFFFF",
-                        "on-surface": "#1C1C1E", // Near-black for headings
-                        "on-surface-variant": "#636366", // Medium gray for secondary
-                        "outline": "#D1D1D6",
-                        "outline-variant": "#E5E5EA",
+                        "primary": "#2D31FA", // Vibrant blue
+                        "primary-container": "var(--primary-container)",
+                        "on-primary-container": "var(--on-primary-container)",
+                        "background": "var(--background)", 
+                        "surface": "var(--surface)",
+                        "on-surface": "var(--on-surface)",
+                        "on-surface-variant": "var(--on-surface-variant)",
+                        "outline": "var(--outline)",
+                        "outline-variant": "var(--outline-variant)",
                         "secondary": "#5856D6",
-                        "tertiary": "#34C759", // Bright green for status
+                        "tertiary": "#34C759", // Status green
                         "error": "#FF3B30",
-                        "surface-container": "#FFFFFF",
-                        "surface-container-low": "#F2F2F7",
-                        "surface-container-highest": "#E5E5EA"
+                        "surface-container": "var(--surface-container)",
+                        "surface-container-low": "var(--surface-container-low)",
+                        "surface-container-highest": "var(--surface-container-highest)"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.5rem",
@@ -66,8 +72,40 @@
         }
     </script>
 <style>
+        :root {
+            --primary-container: #E7E8FF;
+            --on-primary-container: #000566;
+            --background: #F5F5F7;
+            --surface: #FFFFFF;
+            --on-surface: #1C1C1E;
+            --on-surface-variant: #636366;
+            --outline: #D1D1D6;
+            --outline-variant: #E5E5EA;
+            --surface-container: #FFFFFF;
+            --surface-container-low: #F2F2F7;
+            --surface-container-highest: #E5E5EA;
+        }
+
+        html.dark {
+            --primary-container: #1b1c3c;
+            --on-primary-container: #e0e2ff;
+            --background: #0b0c10;
+            --surface: #15161e;
+            --on-surface: #f4f5f8;
+            --on-surface-variant: #9ea2b0;
+            --outline: #2c2e3d;
+            --outline-variant: #1f212d;
+            --surface-container: #15161e;
+            --surface-container-low: #0f1015;
+            --surface-container-highest: #282b3d;
+        }
+
+        body, header, nav, button, div, span, p, textarea, input, select {
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+
         body {
-            background-color: #F5F5F7;
+            background-color: var(--background);
         }
         .card-shadow {
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
@@ -151,6 +189,79 @@
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
         .history-item { padding: 12px; border-radius: 16px; background: #ffffff; border: 1px solid #E5E5EA; margin-bottom: 8px; }
+
+        /* Premium Theme Toggle Animations */
+        #themeToggleBtn .sun-icon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        #themeToggleBtn .moon-icon {
+            transform: rotate(-90deg) scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        html.dark #themeToggleBtn .sun-icon {
+            transform: rotate(90deg) scale(0);
+            opacity: 0;
+        }
+        html.dark #themeToggleBtn .moon-icon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+        }
+
+        /* Glassmorphism Header & Navigation in Light/Dark Modes */
+        header {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        html.dark header {
+            background: rgba(11, 12, 16, 0.8) !important;
+        }
+        nav {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        html.dark nav {
+            background: rgba(21, 22, 30, 0.95) !important;
+        }
+
+        /* Overrides to prevent dead / light colors in dark mode */
+        html.dark .bg-white {
+            background-color: var(--surface) !important;
+        }
+        html.dark .cost-badge {
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: #fbbf24 !important;
+            border-color: rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .lock-overlay {
+            background: rgba(11, 12, 16, 0.65) !important;
+        }
+        html.dark .role-free {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: #9ea2b0 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        html.dark .role-vip_weekly {
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: #fbbf24 !important;
+            border-color: rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .role-vip_monthly {
+            background: rgba(139, 92, 246, 0.15) !important;
+            color: #a78bfa !important;
+            border-color: rgba(139, 92, 246, 0.25) !important;
+        }
+        html.dark .currency-row {
+            border-bottom-color: var(--outline-variant) !important;
+        }
+        html.dark .history-item {
+            background: var(--surface) !important;
+            border-color: var(--outline-variant) !important;
+        }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body-md selection:bg-primary/20 min-h-screen pb-32 overflow-x-hidden">
@@ -204,12 +315,19 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-col items-end cursor-pointer" onclick="goPage('topup')">
-    <div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant">
-      <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
-      <span class="font-bold text-sm text-on-surface" id="coinBalance">—</span>
+  <div class="flex items-center gap-3">
+    <!-- Theme Toggle -->
+    <button id="themeToggleBtn" onclick="toggleTheme()" class="relative w-9 h-9 rounded-full flex items-center justify-center border border-outline-variant bg-surface text-on-surface hover:bg-surface-container-low transition-all duration-300 interactive-scale shrink-0 overflow-hidden" aria-label="Toggle Theme">
+      <span class="material-symbols-outlined absolute transition-all duration-500 transform sun-icon" style="font-size: 20px;">light_mode</span>
+      <span class="material-symbols-outlined absolute transition-all duration-500 transform moon-icon" style="font-size: 20px;">dark_mode</span>
+    </button>
+    <div class="flex flex-col items-end cursor-pointer" onclick="goPage('topup')">
+      <div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant">
+        <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+        <span class="font-bold text-sm text-on-surface" id="coinBalance">—</span>
+      </div>
+      <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
     </div>
-    <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
   </div>
 </header>
 
@@ -1655,6 +1773,19 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('click', () => { if (navigator.vibrate) navigator.vibrate(8); });
   });
 });
+
+function toggleTheme() {
+  const html = document.documentElement;
+  if (html.classList.contains('dark')) {
+    html.classList.remove('dark');
+    html.classList.add('light');
+    localStorage.setItem('theme', 'light');
+  } else {
+    html.classList.remove('light');
+    html.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  }
+}
 </script>
 </body>
 </html>
