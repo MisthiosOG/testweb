@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html class="light" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
@@ -13,60 +13,58 @@
         theme: {
           extend: {
             "colors": {
-                    "surface": "#051424",
-                    "surface-dim": "#051424",
-                    "surface-bright": "#2c3a4c",
-                    "surface-container-lowest": "#010f1f",
-                    "surface-container-low": "#0d1c2d",
-                    "surface-container": "#122131",
-                    "surface-container-high": "#1c2b3c",
-                    "surface-container-highest": "#273647",
-                    "on-surface": "#f1f5f9",
-                    "on-surface-variant": "#94a3b8",
-                    "primary": "#cebdff",
-                    "on-primary": "#381385",
-                    "primary-container": "#a78bfa",
-                    "on-primary-container": "#3c1989",
-                    "secondary": "#c7c5d3",
-                    "tertiary": "#f9bd22",
-                    "error": "#ffb4ab",
-                    "outline": "#494552",
-                    "outline-variant": "#273647"
+              "primary": "#2D31FA", // Vibrant blue
+              "primary-container": "#E7E8FF",
+              "on-primary-container": "#000566",
+              "background": "#F5F5F7",
+              "surface": "#FFFFFF",
+              "on-surface": "#1C1C1E",
+              "on-surface-variant": "#636366",
+              "outline": "#D1D1D6",
+              "outline-variant": "#E5E5EA",
+              "secondary": "#5856D6",
+              "tertiary": "#34C759",
+              "error": "#FF3B30",
+              "surface-container-lowest": "#FFFFFF",
+              "surface-container-low": "#F2F2F7",
+              "surface-container": "#FFFFFF",
+              "surface-container-high": "#E5E5EA",
+              "surface-container-highest": "#D1D1D6"
             },
             "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "2xl": "1rem",
-                    "full": "9999px"
+              "DEFAULT": "0.5rem",
+              "lg": "1rem",
+              "xl": "1.5rem",
+              "2xl": "2rem",
+              "full": "9999px"
             },
             "spacing": {
-                    "margin-page": "20px",
-                    "gutter": "16px",
-                    "stack-sm": "8px",
-                    "stack-md": "16px",
-                    "stack-lg": "24px",
-                    "base": "16px"
+              "margin-page": "20px",
+              "gutter": "16px",
+              "stack-sm": "8px",
+              "stack-md": "16px",
+              "stack-lg": "24px",
+              "base": "16px"
             },
             "fontFamily": {
-                    "body-lg": ["Geist"],
-                    "headline-lg": ["Manrope"],
-                    "status-sm": ["Geist"],
-                    "code-md": ["Geist"],
-                    "label-caps": ["Geist"],
-                    "headline-md": ["Manrope"],
-                    "headline-sm": ["Manrope"],
-                    "body-md": ["Geist"]
+              "body-lg": ["Geist"],
+              "headline-lg": ["Manrope"],
+              "status-sm": ["Geist"],
+              "code-md": ["Geist"],
+              "label-caps": ["Geist"],
+              "headline-md": ["Manrope"],
+              "headline-sm": ["Manrope"],
+              "body-md": ["Geist"]
             },
             "fontSize": {
-                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "status-sm": ["11px", {"lineHeight": "12px", "fontWeight": "700"}],
-                    "code-md": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
-                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+              "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+              "status-sm": ["11px", {"lineHeight": "12px", "fontWeight": "700"}],
+              "code-md": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+              "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+              "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+              "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+              "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
             }
           },
         },
@@ -74,37 +72,24 @@
     </script>
     <style>
         body {
-            background-color: #051424;
-            color: #f1f5f9;
+            background-color: #F5F5F7;
+            color: #1C1C1E;
             -webkit-font-smoothing: antialiased;
             -webkit-tap-highlight-color: transparent;
         }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 15% 50%, rgba(103,75,181,0.4), transparent 50%),
-                        radial-gradient(circle at 85% 30%, rgba(1,143,155,0.3), transparent 50%),
-                        radial-gradient(circle at 50% 80%, rgba(199,149,0,0.2), transparent 50%), #051424;
-            filter: blur(60px); z-index: -1; animation: meshShift 20s ease-in-out infinite alternate;
-        }
-        @keyframes meshShift {
-            0%   { transform: scale(1)   translate(0,0); }
-            50%  { transform: scale(1.1) translate(-2%,2%); }
-            100% { transform: scale(1)   translate(2%,-2%); }
-        }
         .silk-glass {
-            background: rgba(13, 28, 45, 0.7);
-            backdrop-filter: blur(16px);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid #E5E5EA;
         }
         .silk-glass-card {
-            background: rgba(13, 28, 45, 0.7);
-            backdrop-filter: blur(16px);
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
+            background: #FFFFFF;
+            border: 1px solid #E5E5EA;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
         .status-pulse {
-            box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+            box-shadow: 0 0 8px rgba(52, 199, 89, 0.4);
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
@@ -117,7 +102,7 @@
         }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(206, 189, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(45, 49, 250, 0.1); border-radius: 10px; }
         .layer {
             animation: fadeIn 0.22s ease forwards;
         }
@@ -136,26 +121,26 @@
         }
     </style>
 </head>
-<body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden">
+<body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden bg-background text-on-surface">
 
 <!-- Toast Notification -->
 <div id="toast" class="fixed bottom-24 left-5 right-5 z-[999] p-4 rounded-xl text-xs font-semibold shadow-xl translate-y-10 opacity-0 pointer-events-none transition-all duration-300"></div>
 
 <!-- Confirm Modal -->
-<div id="confirmModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+<div id="confirmModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
   <div class="silk-glass-card p-6 mx-margin-page w-full max-w-sm flex flex-col gap-4">
     <p id="confirmMsg" class="text-sm font-semibold text-center text-on-surface"></p>
     <div class="flex gap-2">
-      <button id="confirmNo" class="flex-1 py-3 rounded-xl text-xs font-bold bg-white/5 border border-white/10 text-on-surface-variant active:scale-95 transition-all">Cancel</button>
-      <button id="confirmYes" class="flex-1 py-3 rounded-xl text-xs font-bold bg-primary text-on-primary active:scale-95 transition-all">Yes, Proceed</button>
+      <button id="confirmNo" class="flex-1 py-3 rounded-xl text-xs font-bold bg-surface-container-low border border-outline-variant text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all">Cancel</button>
+      <button id="confirmYes" class="flex-1 py-3 rounded-xl text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">Yes, Proceed</button>
     </div>
   </div>
 </div>
 
 <!-- Top App Bar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-surface/90 backdrop-blur-2xl border-b border-white/5">
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
   <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg ring-1 ring-primary/20 bg-surface-container-highest">
+    <div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden shadow-sm bg-surface-container-low">
       <img id="adminAvatar" alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
     </div>
     <div class="flex flex-col">
@@ -163,9 +148,9 @@
       <span class="font-code-md text-[10px] text-primary tracking-widest uppercase">Admin Panel</span>
     </div>
   </div>
-  <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-white/5">
-    <span class="material-symbols-outlined text-amber-400 text-[18px]" style="font-variation-settings: 'FILL' 1">paid</span>
-    <span id="headerTotalCoins" class="font-code-md text-code-md text-primary">—</span>
+  <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant">
+    <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1">paid</span>
+    <span id="headerTotalCoins" class="font-code-md text-code-md text-on-surface font-bold">—</span>
   </div>
 </header>
 
@@ -201,14 +186,14 @@
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
           <input id="userSearchInput" onfocus="showUserList()" onblur="hideUserList()" oninput="filterUserList(this.value)" class="w-full bg-surface-container-lowest border border-outline rounded-xl pl-11 pr-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search Telegram ID or Name..." type="text"/>
           <!-- Dropdown User List -->
-          <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface-container border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1"></div>
+          <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface border border-outline-variant rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1"></div>
         </div>
 
         <!-- User Profile Preview -->
-        <div class="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-2xl border border-white/5 shadow-inner">
+        <div class="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-2xl border border-outline-variant shadow-inner">
           <div class="flex items-center gap-4 min-w-0">
             <!-- Avatar Container -->
-            <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0 flex items-center justify-center bg-surface-container-highest relative">
+            <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-outline-variant shrink-0 flex items-center justify-center bg-surface-container-highest relative">
               <span id="previewAvatarFallback" class="text-xl text-primary font-bold uppercase">U</span>
               <img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover absolute inset-0 hidden" src="" onerror="this.classList.add('hidden'); document.getElementById('previewAvatarFallback').classList.remove('hidden')"/>
             </div>
@@ -316,15 +301,15 @@
     <section class="space-y-stack-md">
       <h2 class="font-headline-sm text-headline-sm text-on-surface">System Status</h2>
       <div class="silk-glass-card p-base space-y-3 font-code-md text-xs text-on-surface-variant">
-        <div class="flex justify-between py-1 border-b border-white/5">
+        <div class="flex justify-between py-1 border-b border-outline-variant">
           <span>Backend Server Status</span>
           <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>Operational</span>
         </div>
-        <div class="flex justify-between py-1 border-b border-white/5">
+        <div class="flex justify-between py-1 border-b border-outline-variant">
           <span>Active Connections</span>
           <span id="settActiveSessions" class="text-primary font-bold">— sessions</span>
         </div>
-        <div class="flex justify-between py-1 border-b border-white/5">
+        <div class="flex justify-between py-1 border-b border-outline-variant">
           <span>SQLite Database size</span>
           <span class="text-tertiary">Connected (coins.db)</span>
         </div>
@@ -347,7 +332,7 @@
         <button id="btnSyncResources" onclick="triggerSyncResources()" class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS
         </button>
-        <div id="syncResultContainer" class="hidden silk-glass p-3 rounded-xl border border-white/5 font-code-md text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto">
+        <div id="syncResultContainer" class="hidden silk-glass p-3 rounded-xl border border-outline-variant font-code-md text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto">
           <!-- Result logs -->
         </div>
       </div>
@@ -355,7 +340,7 @@
 
     <section class="space-y-stack-md">
       <h2 class="font-headline-sm text-headline-sm text-on-surface">Feature Prices Configuration</h2>
-      <div class="silk-glass-card divide-y divide-white/5">
+      <div class="silk-glass-card divide-y divide-outline-variant">
         <div class="p-3 flex justify-between items-center">
           <span class="font-body-md text-sm text-on-surface">Daily Function (Farm + Quest)</span>
           <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 5 coins</span>
@@ -426,7 +411,7 @@
           </div>
         </div>
 
-        <div class="border-t border-white/5 my-4"></div>
+        <div class="border-t border-outline-variant my-4"></div>
 
         <!-- Danger Zone -->
         <div class="space-y-4">
@@ -464,7 +449,7 @@
 </main>
 
 <!-- Navigation Dock -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter pb-safe h-20 bg-surface/90 backdrop-blur-2xl border-t border-white/5">
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter pb-safe h-20 bg-white/95 backdrop-blur-xl border-t border-outline-variant shadow-2xl">
     <a id="nav-users" onclick="goTab('users')" class="flex flex-col items-center justify-center text-primary group cursor-pointer">
         <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">group</span>
         <span class="font-label-caps text-[11px] mt-1 tracking-tight">Users</span>
@@ -511,9 +496,9 @@
     function showToast(msg, type = 'primary') {
       const t = document.getElementById('toast');
       const styles = {
-        error:   ['#93000a', '#ffb4ab', 'rgba(255,180,171,.3)'],
-        success: ['rgba(74,222,128,.12)', '#4ade80', 'rgba(74,222,128,.3)'],
-        primary: ['rgba(39,54,71,.8)', '#cebdff', 'rgba(206,189,255,.3)'],
+        error:   ['#ffdad6', '#FF3B30', 'rgba(255,59,48,.3)'],
+        success: ['#e8f5e9', '#34C759', 'rgba(52,199,89,.3)'],
+        primary: ['#e7e8ff', '#2D31FA', 'rgba(45,49,250,.3)'],
       };
       const [bg, fg, br] = styles[type] || styles.primary;
       Object.assign(t.style, { background: bg, color: fg, border: `1px solid ${br}`, backdropFilter: 'blur(16px)' });
@@ -627,9 +612,9 @@
         const photoUrl = u.photo_url || (API_BASE + '/api/telegram/avatar/' + u.telegram_id);
         const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
         return `
-          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-white/[0.03] last:border-0">
+          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-outline-variant last:border-0">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-md relative">
+              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-outline-variant bg-surface-container-low flex items-center justify-center shadow-sm relative">
                 <span class="text-xs text-primary uppercase font-bold">${initial}</span>
                 <img class="w-full h-full object-cover absolute inset-0 hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.classList.add('hidden'); this.previousElementSibling.classList.remove('hidden')"/>
               </div>
@@ -664,7 +649,7 @@
       
       // Update search input only if not background refresh or if input is not focused
       if (!isBackground || document.activeElement !== document.getElementById('userSearchInput')) {
-        document.getElementById('userSearchInput').value = user.telegram_id;
+         document.getElementById('userSearchInput').value = user.telegram_id;
       }
       
       document.getElementById('previewName').textContent = user.first_name || 'User';
@@ -703,7 +688,7 @@
         const btn = document.getElementById('roleBtn-' + r);
         if (!btn) return;
         if (user.role === r) {
-          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-surface-bright text-primary border border-white/5 shadow-sm font-bold';
+          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-primary text-white shadow-sm font-bold';
         } else {
           btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
         }
@@ -712,7 +697,7 @@
       const bypassBtn = document.getElementById('bypassBtn');
       const bypassLabel = document.getElementById('bypassLabel');
       if (user.bypass) {
-        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-primary/40 text-primary hover:bg-primary/10 transition-colors bg-surface-container-lowest shadow-sm';
+        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-primary/30 text-primary bg-primary/10 transition-colors shadow-sm font-bold';
         bypassLabel.textContent = 'BYPASS: ON';
       } else {
         bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-outline text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container-lowest';
@@ -721,10 +706,10 @@
 
       const banBtn = document.getElementById('banBtn');
       if (user.banned) {
-        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-on-primary hover:bg-error-container transition-colors shrink-0 shadow-md';
+        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-white transition-colors shrink-0 shadow-md';
         banBtn.innerHTML = '<span class="material-symbols-outlined">gavel</span>';
       } else {
-        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0';
+        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/20 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0';
         banBtn.innerHTML = '<span class="material-symbols-outlined">block</span>';
       }
     }
@@ -1027,24 +1012,24 @@
             return;
           }
           list.innerHTML = data.activities.map(act => {
-            let colorClass = 'bg-on-surface-variant';
+            let colorClass = 'primary';
             let iconSymbol = 'info';
             if (act.delta > 0) {
-              colorClass = 'bg-[#4ADE80]';
+              colorClass = 'tertiary';
               iconSymbol = 'add_circle';
             } else if (act.delta < 0) {
-              colorClass = 'bg-error';
+              colorClass = 'error';
               iconSymbol = 'remove_circle';
             }
             if (act.reason.includes('topup')) {
-              colorClass = 'bg-tertiary';
+              colorClass = 'secondary';
               iconSymbol = 'payments';
             }
             const sign = act.delta > 0 ? '+' : '';
             return `
-              <div class="p-4 flex gap-4 hover:bg-white/[0.02] transition-colors">
-                <div class="w-8 h-8 rounded-full ${colorClass}/10 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-[16px] text-on-surface">${iconSymbol}</span>
+              <div class="p-4 flex gap-4 hover:bg-surface-container-low transition-colors">
+                <div class="w-8 h-8 rounded-full bg-${colorClass}/10 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[16px] text-${colorClass}">${iconSymbol}</span>
                 </div>
                 <div class="min-w-0 flex-1">
                   <p class="font-body-md text-on-surface leading-snug">
@@ -1190,7 +1175,7 @@
             <div>• Scanned levels: ${data.scanned_levels}</div>
             <div>• Total pickup IDs: ${data.total_pickup_ids}</div>
             <div>• Wings found: ${data.total_wings} (Spirit: ${data.spirit_wings}, Level: ${data.level_wings})</div>
-            <div class="border-t border-white/5 my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
+            <div class="border-t border-outline-variant my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
               ${data.logs.map(log => `<div>${log}</div>`).join('')}
             </div>
           `;
@@ -1199,7 +1184,7 @@
           container.innerHTML = `
             <div class="text-error font-bold mb-1">✗ Synchronization Failed</div>
             <div class="text-error">${data.error}</div>
-            <div class="border-t border-white/5 my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
+            <div class="border-t border-outline-variant my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
               ${data.logs ? data.logs.map(log => `<div>${log}</div>`).join('') : ''}
             </div>
           `;
