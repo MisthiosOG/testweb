@@ -1,776 +1,725 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>TrashGameCompany Bot</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TrashGameCompany Dashboard</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Geist+Mono:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        "colors": {
-          "inverse-surface": "#d4e4fa","error": "#ffb4ab","surface-dim": "#051424",
-          "on-primary-fixed": "#21005e","on-tertiary-fixed-variant": "#5c4300",
-          "tertiary-container": "#c79500","secondary": "#c7c5d3","tertiary-fixed": "#ffdf9f",
-          "primary-fixed-dim": "#cebdff","secondary-container": "#494853",
-          "inverse-on-surface": "#233143","background": "#051424",
-          "surface-container-highest": "#273647","tertiary": "#f9bd22",
-          "error-container": "#93000a","surface-tint": "#cebdff",
-          "on-surface-variant": "#cac4d4","inverse-primary": "#674bb5",
-          "surface-variant": "#273647","tertiary-fixed-dim": "#f9bd22",
-          "on-surface": "#d4e4fa","on-error": "#690005",
-          "on-secondary-fixed-variant": "#464651","on-tertiary-fixed": "#261a00",
-          "surface-container-low": "#0d1c2d","surface-container-high": "#1c2b3c",
-          "on-primary-fixed-variant": "#4f319c","secondary-fixed-dim": "#c7c5d3",
-          "on-primary-container": "#3c1989","primary-fixed": "#e8ddff",
-          "on-primary": "#381385","on-tertiary-container": "#453100",
-          "on-tertiary": "#402d00","surface-container": "#122131",
-          "primary-container": "#a78bfa","surface-container-lowest": "#010f1f",
-          "on-secondary": "#302f3a","on-background": "#d4e4fa",
-          "secondary-fixed": "#e3e1ef","outline-variant": "#494552",
-          "on-secondary-fixed": "#1b1b25","on-error-container": "#ffdad6",
-          "surface-bright": "#2c3a4c","on-secondary-container": "#b9b7c4",
-          "outline": "#948e9d","primary": "#cebdff","surface": "#051424"
-        },
-        "borderRadius": {"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},
-        "fontFamily": {
-          "headline-md":["Manrope"],"headline-lg":["Manrope"],"body-md":["Geist"],
-          "headline-sm":["Manrope"],"status-sm":["Geist"],"code-md":["Geist"],
-          "label-caps":["Geist"],"body-lg":["Geist"]
-        },
-        "fontSize": {
-          "headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"800"}],
-          "headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"800"}],
-          "body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],
-          "headline-sm":["20px",{"lineHeight":"28px","fontWeight":"800"}],
-          "status-sm":["11px",{"lineHeight":"12px","fontWeight":"700"}],
-          "code-md":["14px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"500"}],
-          "label-caps":["12px",{"lineHeight":"16px","letterSpacing":"0.05em","fontWeight":"600"}],
-          "body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}]
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#2D31FA", // Vibrant blue from reference
+                        "primary-container": "#E7E8FF",
+                        "on-primary-container": "#000566",
+                        "background": "#F5F5F7", // Off-white from reference
+                        "surface": "#FFFFFF",
+                        "on-surface": "#1C1C1E", // Near-black for headings
+                        "on-surface-variant": "#636366", // Medium gray for secondary
+                        "outline": "#D1D1D6",
+                        "outline-variant": "#E5E5EA",
+                        "secondary": "#5856D6",
+                        "tertiary": "#34C759", // Bright green for status
+                        "error": "#FF3B30",
+                        "surface-container": "#FFFFFF",
+                        "surface-container-low": "#F2F2F7",
+                        "surface-container-highest": "#E5E5EA"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "gutter": "12px",
+                        "stack-md": "16px",
+                        "margin-x": "20px",
+                        "stack-lg": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "label-caps": ["Geist"],
+                        "body-md": ["Geist"],
+                        "numeral-lg": ["Manrope"],
+                        "headline-sm": ["Manrope"],
+                        "body-lg": ["Geist"],
+                        "display-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "numeral-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
         }
-      }
-    }
-  }
-</script>
+    </script>
 <style>
-  body {
-    background-color: #051424; color: #d4e4fa;
-    -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden; font-family: 'Geist', sans-serif; min-height: 100vh;
-    scroll-behavior: smooth;
-  }
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(206,189,255,0.25); border-radius: 999px;
-    transition: background 0.2s;
-  }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(206,189,255,0.5); }
-  * { scrollbar-width: thin; scrollbar-color: rgba(206,189,255,0.25) transparent; }
-  body::before {
-    content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle at 15% 50%, rgba(103,75,181,0.4), transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(1,143,155,0.3), transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(199,149,0,0.2), transparent 50%), #051424;
-    filter: blur(60px); z-index: -1; animation: meshShift 20s ease-in-out infinite alternate;
-  }
-  @keyframes meshShift {
-    0%   { transform: scale(1)   translate(0,0); }
-    50%  { transform: scale(1.1) translate(-2%,2%); }
-    100% { transform: scale(1)   translate(2%,-2%); }
-  }
-  .cyber-card {
-    background: rgba(39,54,71,0.4); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); border-radius: 24px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-  }
-  .cyber-card-cyan {
-    background: rgba(1,143,155,0.15); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); border-radius: 24px;
-    border: 1px solid rgba(1,143,155,0.3);
-    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-  }
-  .cyber-inner {
-    background: rgba(13,28,45,0.6); border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-  .terminal-panel {
-    background: rgba(1,15,31,0.7); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px; color: #d4e4fa; backdrop-filter: blur(8px);
-  }
-  .pill-button, .interactive-scale {
-    transition: all 0.2s cubic-bezier(0.4,0,0.2,1); border-radius: 9999px;
-  }
-  .pill-button:active, .interactive-scale:active { transform: scale(0.96); }
-  button { transition: all 0.2s cubic-bezier(0.4,0,0.2,1); }
-  button:active { transform: scale(0.96); }
-  .liquid-spinner {
-    width: 8px; height: 8px; border-radius: 50%; background: #cebdff;
-    box-shadow: 0 0 16px #cebdff; animation: liquidPulse 2s ease-in-out infinite;
-  }
-  @keyframes liquidPulse {
-    0%   { transform: scale(0.8); opacity: 0.8; box-shadow: 0 0 8px #cebdff; }
-    50%  { transform: scale(1.4); opacity: 1;   box-shadow: 0 0 20px #cebdff, 0 0 30px #cebdff; }
-    100% { transform: scale(0.8); opacity: 0.8; box-shadow: 0 0 8px #cebdff; }
-  }
-  .nav-item.active { color: #cebdff; }
-  .nav-item.active .material-symbols-outlined { text-shadow: 0 0 12px rgba(206,189,255,0.8); }
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .layer { transition: opacity 0.4s ease, transform 0.4s ease; }
-  .layer-hidden { display: none; opacity: 0; transform: scale(0.98) translateY(10px); }
-  input::placeholder { color: rgba(212,228,250,0.4) !important; }
-  .energy-orb {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #fff, #cebdff);
-    box-shadow: 0 0 10px rgba(206,189,255,0.6), inset -2px -2px 4px rgba(0,0,0,0.2);
-    display: inline-block;
-  }
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    padding: 8px 18px; border-radius: 12px; font-size: 11px; font-weight: 600;
-    z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap;
-  }
-  .toast.show { opacity: 1; }
-  /* Spinner */
-  .spinner {
-    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3);
-    border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite;
-    display: inline-block; margin-right: 6px; vertical-align: middle;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  /* Login tabs active */
-  .login-tab-active { color: #cebdff; border-bottom: 2px solid #cebdff; }
-  .login-tab-inactive { color: rgba(202,196,212,0.6); border-bottom: 2px solid transparent; }
-  /* Server btn selected */
-  .server-selected { background: rgba(206,189,255,0.2); color: #cebdff; }
-  /* Feature button */
-  .feat-btn { cursor: pointer; position: relative; }
-  .feat-btn.running { pointer-events: none; opacity: 0.8; }
-  .feat-btn.running::after {
-    content: ''; position: absolute; top: 8px; right: 8px;
-    width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
-    animation: running-dot 1.2s ease-in-out infinite; box-shadow: 0 0 6px #4ade80;
-  }
-  @keyframes running-dot {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.4; transform: scale(0.6); }
-  }
-  .feat-btn.locked { opacity: 0.4; filter: grayscale(.6); }
-  .lock-overlay {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,.35); border-radius: 24px; backdrop-filter: blur(1px);
-  }
-  .cost-badge {
-    position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 700;
-    color: #f9bd22; background: rgba(249,189,34,.12); border: 1px solid rgba(249,189,34,.25);
-    border-radius: 99px; padding: 1px 6px; line-height: 1.4; display: flex; align-items: center; gap: 2px;
-  }
-  .role-free    { background: rgba(202,196,212,.08); color: #cac4d4; border-color: rgba(202,196,212,.2); }
-  .role-vip_weekly  { background: rgba(249,189,34,.1); color: #f9bd22; border-color: rgba(249,189,34,.3); }
-  .role-vip_monthly { background: rgba(167,139,250,.12); color: #a78bfa; border-color: rgba(167,139,250,.35); }
-  .session-item { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); padding: 8px; border-radius: 8px; margin-bottom: 6px; font-size: 11px; }
-  .history-item { padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); margin-bottom: 8px; }
-  .currency-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
-  .currency-row:last-child { border-bottom: none; }
-  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type=number] { -moz-appearance: textfield; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-  .fade-in { animation: fadeIn .22s ease forwards; }
-</style>
+        body {
+            background-color: #F5F5F7;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+        .terminal-light {
+            background: #1C1C1E;
+            color: #FFFFFF;
+        }
+        .interactive-scale:active {
+            transform: scale(0.96);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        @keyframes shimmer {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .shimmer-entrance {
+            animation: shimmer 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Feat states */
+        .feat-btn { cursor: pointer; position: relative; }
+        .feat-btn.running { pointer-events: none; opacity: 0.8; }
+        .feat-btn.running::after {
+            content: ''; position: absolute; top: 8px; right: 8px;
+            width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
+            animation: running-dot 1.2s ease-in-out infinite; box-shadow: 0 0 6px #4ade80;
+        }
+        @keyframes running-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.4; transform: scale(0.6); }
+        }
+        .feat-btn.locked { opacity: 0.5; }
+        .lock-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.45); border-radius: 24px; backdrop-filter: blur(1px);
+        }
+        .cost-badge {
+            position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 700;
+            color: #b25e00; background: #fffbeb; border: 1px solid #fde68a;
+            border-radius: 99px; padding: 1px 6px; line-height: 1.4; display: flex; align-items: center; gap: 2px;
+        }
+        .cost-badge.static {
+            position: static;
+        }
+        .role-free    { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
+        .role-vip_weekly  { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+        .role-vip_monthly { background: #f5f3ff; color: #7c3aed; border-color: #ddd6fe; }
+        
+        .currency-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E5E5EA; }
+        .currency-row:last-child { border-bottom: none; }
+        
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            padding: 8px 18px; border-radius: 12px; font-size: 11px; font-weight: 600;
+            z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap;
+        }
+        .toast.show { opacity: 1; }
+        
+        /* Spinner */
+        .spinner {
+            width: 14px; height: 14px; border: 2px solid rgba(0,0,0,.15);
+            border-top-color: #2D31FA; border-radius: 50%; animation: spin .6s linear infinite;
+            display: inline-block; margin-right: 6px; vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .layer { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .layer-hidden { display: none; opacity: 0; transform: scale(0.98) translateY(10px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        .history-item { padding: 12px; border-radius: 16px; background: #ffffff; border: 1px solid #E5E5EA; margin-bottom: 8px; }
+    </style>
 </head>
-<body class="antialiased selection:bg-primary/30 selection:text-primary">
+<body class="bg-background text-on-surface font-body-md selection:bg-primary/20 min-h-screen pb-32 overflow-x-hidden">
 
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <!-- Confirm Modal -->
 <div id="confirmModal" class="fixed inset-0 z-[99] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
-  <div class="cyber-card p-5 mx-4 w-full max-w-xs flex flex-col gap-4 fade-in">
+  <div class="bg-white p-5 mx-4 w-full max-w-xs flex flex-col gap-4 rounded-3xl border border-outline-variant card-shadow fade-in">
     <p id="confirmMsg" class="text-sm font-semibold text-center text-on-surface"></p>
     <div class="flex gap-2">
-      <button id="confirmNo"  class="flex-1 py-2.5 rounded-full text-xs font-bold bg-white/5 border border-white/10 text-on-surface-variant">Cancel</button>
-      <button id="confirmYes" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-primary text-on-primary">Run</button>
+      <button id="confirmNo" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-surface-container-low border border-outline-variant text-on-surface-variant hover:bg-surface-container-highest transition-all interactive-scale">Cancel</button>
+      <button id="confirmYes" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 transition-all interactive-scale">Run</button>
     </div>
   </div>
 </div>
 
 <!-- Heart Modal -->
 <div id="heartModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-  <div class="cyber-card w-full max-w-xs p-5 flex flex-col gap-3">
+  <div class="bg-white w-full max-w-xs p-5 flex flex-col gap-3 rounded-3xl border border-outline-variant card-shadow">
     <div class="flex justify-between items-center">
       <span class="font-bold text-sm text-on-surface">Send Heart</span>
-      <button onclick="closeHeartModal()" class="material-symbols-outlined text-on-surface-variant">close</button>
+      <button onclick="closeHeartModal()" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-all">close</button>
     </div>
     <!-- Friend list -->
-    <div id="friendListContainer" class="flex flex-col gap-2 max-h-52 overflow-y-auto">
+    <div id="friendListContainer" class="flex flex-col gap-2 max-h-52 overflow-y-auto no-scrollbar">
       <button onclick="loadFriends()" class="w-full py-2.5 rounded-full text-xs font-bold border border-primary/30 text-primary hover:bg-primary/10 transition-all">
         <span class="material-symbols-outlined align-middle" style="font-size:14px">group</span> Load Friends
       </button>
     </div>
     <!-- Manual fallback -->
     <input type="text" id="heartTargetId" placeholder="Or enter Sky ID manually..."
-      class="cyber-inner px-4 py-3 text-xs outline-none focus:border-primary bg-transparent text-on-surface w-full rounded-2xl"/>
-    <button onclick="confirmSendHeart()" class="bg-primary text-on-primary py-3 rounded-full text-xs font-bold">SEND HEART (5 Coins)</button>
+      class="bg-surface-container-low border border-outline-variant px-4 py-3 text-xs outline-none focus:border-primary/50 bg-transparent text-on-surface w-full rounded-2xl"/>
+    <button onclick="confirmSendHeart()" class="bg-primary text-white py-3 rounded-full text-xs font-bold shadow-lg shadow-primary/25 hover:opacity-90 transition-all interactive-scale">SEND HEART (5 Coins)</button>
   </div>
 </div>
 
-<!-- Top App Bar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-5 py-4 bg-background/40 backdrop-blur-xl border-b border-white/5">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-x h-16 bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
   <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full border border-white/20 overflow-hidden shadow-lg">
-      <img alt="User Profile" class="w-full h-full object-cover" src="images/icon.jpg" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuAbH3kP0n245Tv5SqEFytkFPV6bGGWKjGdUM57zyrBNHTgh_BGenHoL8-IxiL6B0QsAGB8BFfMZwUJLmX2dCDzUszUbsAJ1kY8T2BjpM4STYp9T9H_R1pK-0FBsNCVwGSC7jz69wFhwMbZALM-tJ0sl4QT0bHI06iaX_xL-ht1xxkGdS6rhWH_Z3qc0qajCqToKbHXwxtYy5m3OOSkylVwWTvDuIOfYzBdrJVq_RdIcQdVZ9-fdAAg415Z7mE9CLs2phg2d4sDAZAc'"/>
+    <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant">
+      <img id="dashAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC149HxTkGpa4n0SPCWoLbCkwvt7n9J5eKOClgrWBY9379zS9mlwSKEdHRkEdubNL4Gt6rFLMwFvLMuK20GJQW54T3VppTONzBU6s_I3uvqVVRg6mdoRAcsELSFaUO_JEYS0wmUBj0IA9HHVPhfKBTw0SC9E_U7Kk4unjwgkS5AjkLrYPvDXilv2KVI5ZeHgpXY6dJtRwMgPu_92ZoZMsnu5v8dTkd1Ae1MeStgn4mFpXdI7YPUFEAeSkTB2iDTC4Yt0W3u6ZsbVeJl"/>
+      <img id="dashAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src=""/>
     </div>
-    <div class="flex flex-col justify-center">
-      <h1 class="font-headline-sm text-[16px] leading-tight font-extrabold text-primary tracking-tighter">TrashGameCompany Bot</h1>
-      <div class="flex items-center gap-2 mt-0.5">
-        <span class="liquid-spinner" style="width:6px;height:6px;box-shadow:0 0 8px #a78bfa;background:#a78bfa;animation:none;"></span>
-        <span id="headerStatus" class="font-code-md text-[10px] text-on-surface-variant tracking-widest uppercase">System Operational</span>
+    <div>
+      <p class="font-headline-sm text-[16px] font-bold text-on-surface leading-tight">TrashGameCompany</p>
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+        <span class="text-[10px] font-label-caps uppercase tracking-wider text-tertiary" id="headerStatus">System Operational</span>
       </div>
     </div>
   </div>
-  <div class="flex flex-col items-end gap-1">
-    <!-- Coin balance -->
-    <div class="flex items-center gap-2 cyber-inner px-3 py-1.5 rounded-full" onclick="goPage('topup')" style="cursor:pointer">
-      <span class="energy-orb"></span>
-      <span class="font-code-md text-primary font-semibold text-[14px] tracking-wide" id="coinBalance">—</span>
+  <div class="flex flex-col items-end cursor-pointer" onclick="goPage('topup')">
+    <div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant">
+      <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+      <span class="font-bold text-sm text-on-surface" id="coinBalance">—</span>
     </div>
-    <!-- Role badge -->
-    <div id="roleBadge" class="hidden items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-bold border">
-      <span class="material-symbols-outlined" style="font-size:12px">military_tech</span>
-      <span id="roleLabel">—</span>
-    </div>
+    <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
   </div>
 </header>
 
-<!-- Main Canvas -->
-<main class="pt-28 pb-32 px-5 relative">
+<main class="pt-24 px-margin-x space-y-stack-lg max-w-lg mx-auto relative z-10">
 
-
-<!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
-<div class="layer space-y-stack-lg" id="page-home">
-  <div class="flex flex-col items-center justify-center py-8 relative">
-    <div class="w-24 h-24 mb-6 relative">
-      <div class="w-full h-full cyber-card rounded-full flex items-center justify-center">
-        <span class="material-symbols-outlined text-primary text-[40px] relative z-10" style="font-variation-settings:'FILL' 1;">terminal</span>
+  <!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
+  <div class="layer space-y-stack-lg" id="page-home">
+    <div class="flex flex-col items-center justify-center py-8 relative shimmer-entrance" style="animation-delay: 0.1s;">
+      <div class="w-20 h-20 mb-4 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20">
+        <span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings:'FILL' 1;">terminal</span>
       </div>
-    </div>
-    <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
-    <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
-  </div>
-
-  <!-- Server Toggle -->
-  <div class="cyber-card p-1 flex gap-1 rounded-full">
-    <button class="flex-1 py-3 rounded-full font-code-md bg-primary text-on-primary font-bold pill-button transition-all shadow-md" id="btn-live" onclick="selectServer('live')">Live</button>
-    <button class="flex-1 py-3 rounded-full font-code-md text-on-surface hover:bg-white/5 transition-all pill-button" id="btn-beta" onclick="selectServer('beta')">Beta</button>
-  </div>
-
-  <!-- Login Tabs -->
-  <div class="space-y-stack-md">
-    <div class="flex border-b border-white/10">
-      <button id="ltab-lua" class="flex-1 py-3 text-center font-code-md login-tab-active transition-colors text-[13px]" onclick="switchLoginTab('lua')">LUA</button>
-      <button id="ltab-lib" class="flex-1 py-3 text-center font-code-md login-tab-inactive transition-colors text-[13px]" onclick="switchLoginTab('lib')">LIB</button>
-      <button id="ltab-platform" class="flex-1 py-3 text-center font-code-md login-tab-inactive transition-colors text-[13px]" onclick="switchLoginTab('platform')">PLATFORM</button>
+      <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
+      <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
     </div>
 
-    <!-- LUA tab -->
-    <div id="loginTab-lua" class="cyber-card p-6 space-y-4">
-      <div class="space-y-2">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">LUA SESSION CODE</label>
-        <textarea id="luaInput" rows="3"
-          class="w-full cyber-inner rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:border-primary outline-none transition-all font-code-md bg-transparent resize-none"
-          placeholder="Paste Lua base64 code here..."></textarea>
+    <!-- Server Toggle -->
+    <div class="bg-white p-1 flex gap-1 rounded-full border border-outline-variant card-shadow max-w-sm mx-auto shimmer-entrance" style="animation-delay: 0.2s;">
+      <button class="flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale" id="btn-live" onclick="selectServer('live')">Live</button>
+      <button class="flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale" id="btn-beta" onclick="selectServer('beta')">Beta</button>
+    </div>
+
+    <!-- Login Tabs -->
+    <div class="space-y-stack-md shimmer-entrance" style="animation-delay: 0.3s;">
+      <div class="flex border-b border-outline-variant justify-center gap-4">
+        <button id="ltab-lua" class="py-3 px-4 text-center font-bold text-xs border-b-2 border-primary text-primary transition-all" onclick="switchLoginTab('lua')">LUA</button>
+        <button id="ltab-lib" class="py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all" onclick="switchLoginTab('lib')">LIB</button>
+        <button id="ltab-platform" class="py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all" onclick="switchLoginTab('platform')">PLATFORM</button>
       </div>
-      <button id="btn-lua-submit" onclick="submitLogin('lua')"
-        class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-        CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
-      </button>
-    </div>
 
-    <!-- LIB tab -->
-    <div id="loginTab-lib" class="hidden cyber-card p-6 space-y-4">
-      <div class="space-y-2">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">Lib Code</label>
-        <textarea id="libInput" rows="3"
-          class="w-full cyber-inner rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:border-primary outline-none transition-all font-code-md bg-transparent resize-none"
-          placeholder="Paste Lib session code here..."></textarea>
-      </div>
-      <button id="btn-lib-submit" onclick="submitLogin('lib')"
-        class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-        CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
-      </button>
-    </div>
-
-    <!-- PLATFORM tab -->
-    <div id="loginTab-platform" class="hidden cyber-card p-6 space-y-4">
-      <div class="space-y-2">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">SELECT PLATFORM</label>
-        <div class="grid grid-cols-3 gap-2">
-          <button onclick="selectPlatform('Nintendo')" id="plat-Nintendo" class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Nintendo</button>
-          <button onclick="selectPlatform('Google')"   id="plat-Google"   class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Google</button>
-          <button onclick="selectPlatform('Steam')"    id="plat-Steam"    class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Steam</button>
-          <button onclick="selectPlatform('Sony')"     id="plat-Sony"     class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Sony</button>
-          <button onclick="selectPlatform('Facebook')" id="plat-Facebook" class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Facebook</button>
-          <button onclick="selectPlatform('Huawei')"   id="plat-Huawei"   class="cyber-inner py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl transition-all">Huawei</button>
+      <!-- LUA tab -->
+      <div id="loginTab-lua" class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">LUA SESSION CODE</label>
+          <textarea id="luaInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder="Paste Lua base64 code here..."></textarea>
         </div>
-      </div>
-      <div id="platformCodeWrap" class="hidden space-y-3">
-        <label class="font-label-caps text-primary ml-1 tracking-widest text-[12px] uppercase">OAuth JSON</label>
-        <textarea id="platformInput" rows="3"
-          class="w-full cyber-inner rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:border-primary outline-none transition-all font-code-md bg-transparent resize-none"
-          placeholder='{"id":"...","token":"..."}'></textarea>
-        <button id="btn-plat-submit" onclick="submitLogin('platform')"
-          class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-bold flex items-center justify-center gap-2 pill-button hover:bg-primary/90 shadow-lg shadow-primary/20">
-          CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
+        <button id="btn-lua-submit" onclick="submitLogin('lua')"
+          class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+          CONNECT <span class="material-symbols-outlined text-[16px]">bolt</span>
         </button>
       </div>
-    </div>
-  </div>
 
-  <!-- Access Denied Card -->
-  <div id="reqAccessCard" class="hidden cyber-card p-5 flex flex-col gap-3 border border-error/20">
-    <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-error" style="font-size:20px">lock</span>
-      <span class="text-sm font-bold text-error">Access Denied</span>
-    </div>
-    <p class="text-[11px] text-on-surface-variant">Your Telegram ID is not authorized. Request access from the bot owner.</p>
-    <div class="cyber-inner rounded-2xl p-3 flex items-center justify-between">
-      <span class="text-[10px] text-on-surface-variant">Your Telegram ID</span>
-      <span class="text-xs font-mono text-primary" id="reqTgId">—</span>
-    </div>
-    <button onclick="requestAccess()" id="btnReqAccess"
-      class="w-full bg-error/20 text-error border border-error/30 py-2.5 rounded-full text-xs font-bold hover:bg-error/30 transition-all">
-      REQUEST ACCESS VIA BOT
-    </button>
-    <div id="reqAccessResult" class="text-[11px] text-center py-2 rounded-xl hidden"></div>
-    <button onclick="hideReqAccess()" class="text-[11px] text-on-surface-variant text-center">← Back to Login</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg mt-6" id="page-dashboard">
-  <div class="flex justify-between items-end mb-2">
-    <h2 class="font-headline-md text-headline-md leading-none text-on-surface">Dashboard</h2>
-    <div class="flex items-center gap-2">
-      <span id="dashServer" class="font-code-md text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20 text-[11px]">—</span>
-      <button onclick="logout()" class="text-[10px] text-error border border-error/30 rounded-full px-3 py-1 font-semibold hover:bg-error/10 transition-all">LOGOUT</button>
-    </div>
-  </div>
-
-  <!-- User info -->
-  <div class="cyber-inner rounded-2xl px-4 py-3 flex items-center gap-3 mb-2">
-    <img id="dashAvatar" src="" alt="" class="w-8 h-8 rounded-full object-cover bg-primary/20 hidden">
-    <div id="dashAvatarFallback" class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-      <span class="material-symbols-outlined text-primary text-[18px]">person</span>
-    </div>
-    <span class="font-code-md text-[14px] text-on-surface font-bold" id="dashUsername">—</span>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="grid grid-cols-2 gap-3">
-    <button onclick="runFeature('DailyFunction','Daily Function')" id="feat-DailyFunction"
-      class="feat-btn cyber-card p-4 flex flex-col gap-2 relative">
-      <div class="flex justify-between items-start">
-        <span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
-        <div class="flex flex-col items-end gap-1">
-          <span class="bg-primary/20 text-primary text-[9px] px-2 py-0.5 rounded-full font-code-md tracking-wider border border-primary/20">ALL</span>
-          <span class="cost-badge static flex items-center gap-0.5 text-[9px] font-bold text-amber-300" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+      <!-- LIB tab -->
+      <div id="loginTab-lib" class="hidden bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">Lib Code</label>
+          <textarea id="libInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder="Paste Lib session code here..."></textarea>
         </div>
-      </div>
-      <div class="mt-1">
-        <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">DAILY TASK</p>
-        <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Daily Function</h3>
-      </div>
-    </button>
-    <button onclick="runFeature('All','Run All')" id="feat-All"
-      class="feat-btn cyber-card-cyan p-4 flex flex-col gap-2 relative">
-      <div class="flex justify-between items-start">
-        <span class="material-symbols-outlined text-primary text-[22px]" style="font-variation-settings:'FILL' 1;">play_circle</span>
-        <div class="flex flex-col items-end gap-1">
-          <span class="bg-primary/20 text-primary text-[9px] px-2 py-0.5 rounded-full font-code-md tracking-wider border border-primary/20">AUTO</span>
-          <span class="cost-badge static flex items-center gap-0.5 text-[9px] font-bold text-amber-300" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
-        </div>
-      </div>
-      <div class="mt-1">
-        <p class="font-label-caps text-primary/70 text-[9px] mb-0.5 tracking-widest">AUTOMATION</p>
-        <h3 class="font-headline-sm text-[13px] leading-tight text-on-surface">Run All</h3>
-      </div>
-    </button>
-  </div>
-
-  <!-- Automation Grid -->
-  <div class="space-y-3">
-    <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[12px] uppercase">FEATURES</h3>
-    <div class="grid grid-cols-3 gap-3">
-      <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">Agriculture</span>
-        <span class="font-code-md text-[11px] text-on-surface">Farm</span>
-      </button>
-      <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">Assignment</span>
-        <span class="font-code-md text-[11px] text-on-surface">Daily Quest</span>
-      </button>
-      <button onclick="runFeature('WorldQuest','World Quest')" id="feat-WorldQuest" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="WorldQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">public</span>
-        <span class="font-code-md text-[11px] text-on-surface">World Quest</span>
-      </button>
-      <button onclick="runFeature('SeasonalQuest','Seasonal Quest')" id="feat-SeasonalQuest" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="SeasonalQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
-        <span class="font-code-md text-[11px] text-on-surface">Seasonal</span>
-      </button>
-      <button onclick="runFeature('Eden','Eden')" id="feat-Eden" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Eden"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-error/80 text-[24px]">local_fire_department</span>
-        <span class="font-code-md text-[11px] text-on-surface">Eden</span>
-      </button>
-      <button onclick="runFeature('Wings','Wings')" id="feat-Wings" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Wings"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">Flight</span>
-        <span class="font-code-md text-[11px] text-on-surface">Wings</span>
-      </button>
-      <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">emoji_emotions</span>
-        <span class="font-code-md text-[11px] text-on-surface">Emotes</span>
-      </button>
-      <button onclick="runFeature('LitCollect','Lit &amp; Collect')" id="feat-LitCollect" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="LitCollect"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">wb_sunny</span>
-        <span class="font-code-md text-[11px] text-on-surface">Lit Collect</span>
-      </button>
-      <button onclick="openHeartModal()" id="feat-SendHeart" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="SendHeart"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">favorite</span>
-        <span class="font-code-md text-[11px] text-on-surface">Send Heart</span>
-      </button>
-      <button onclick="runFeature('SendHeartsAll','Send Hearts All')" id="feat-SendHeartsAll" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="SendHeartsAll"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">favorite_border</span>
-        <span class="font-code-md text-[11px] text-on-surface">Hearts All</span>
-      </button>
-      <button onclick="runFeature('SkipIntro','Skip Intro')" id="feat-SkipIntro" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="SkipIntro"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">skip_next</span>
-        <span class="font-code-md text-[11px] text-on-surface">Skip Intro</span>
-      </button>
-      <button onclick="runFeature('Map','Unlock Map')" id="feat-Map" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Map"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">map</span>
-        <span class="font-code-md text-[11px] text-on-surface">Unlock Map</span>
-      </button>
-      <button onclick="runFeature('ClosetUnlock','Closet Unlock')" id="feat-ClosetUnlock" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="ClosetUnlock"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">checkroom</span>
-        <span class="font-code-md text-[11px] text-on-surface">Closet Unlock</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Elder Cosmetics -->
-  <div class="space-y-3">
-    <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[12px] uppercase">ELDER COSMETICS</h3>
-    <div class="grid grid-cols-2 gap-3">
-      <button onclick="runFeature('ElderHairs','Elder Hairs')" id="feat-ElderHairs" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="ElderHairs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">face_retouching_natural</span>
-        <span class="font-code-md text-[11px] text-on-surface">Elder Hairs</span>
-      </button>
-      <button onclick="runFeature('ElderMask','Elder Mask')" id="feat-ElderMask" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="ElderMask"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">theater_comedy</span>
-        <span class="font-code-md text-[11px] text-on-surface">Elder Mask</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Beta Only -->
-  <div id="betaSection" class="hidden space-y-3">
-    <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[12px] uppercase">BETA ONLY</h3>
-    <div class="grid grid-cols-2 gap-3">
-      <button onclick="runFeature('IAPs','Unlock IAPs')" id="feat-IAPs" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="IAPs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">redeem</span>
-        <span class="font-code-md text-[11px] text-on-surface">Unlock IAPs</span>
-      </button>
-      <button onclick="runFeature('Candles','300 Candles')" id="feat-Candles" class="feat-btn cyber-card p-4 flex flex-col items-center gap-2 relative">
-        <span class="cost-badge" data-cost-for="Candles"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
-        <span class="material-symbols-outlined text-primary text-[24px]">candle</span>
-        <span class="font-code-md text-[11px] text-on-surface">300 Candles</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- System Console -->
-  <div class="space-y-2">
-    <div class="flex items-center justify-between ml-1">
-      <h3 class="font-label-caps text-on-surface-variant tracking-widest text-[12px] uppercase">SYSTEM LOG</h3>
-      <button onclick="clearConsole()" class="text-[10px] text-on-surface-variant/60 border border-white/5 rounded-full px-2 py-1 hover:text-error hover:border-error/20 transition-all">Clear</button>
-    </div>
-    <div id="consoleLogs" class="terminal-panel p-4 h-44 overflow-y-auto font-code-md text-[10px] no-scrollbar flex flex-col gap-0.5">
-      <div style="color:#cebdff">[READY] System online... waiting for session.</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════ MASS FARM ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-mass-farm">
-  <h2 class="font-headline-md text-headline-md mb-2 text-on-surface">Mass Operations</h2>
-
-  <!-- Step 1: Sessions -->
-  <div id="mf-step-sessions" class="space-y-3">
-    <div class="flex justify-between items-center px-1">
-      <span class="font-label-caps text-on-surface-variant tracking-widest text-[12px]">TARGET ACCOUNTS</span>
-      <button onclick="mfAddRow()" class="text-primary font-code-md hover:text-primary/80 transition-colors interactive-scale text-[12px] cyber-inner px-3 py-1 rounded-full">+ ADD ACCOUNT</button>
-    </div>
-
-    <div id="mfContainer" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar"></div>
-
-    <button onclick="mfCheckAll()" id="btnMfCheck"
-      class="w-full border border-primary/30 text-primary py-3 rounded-full text-sm font-bold transition-all active:scale-[.98] cyber-inner">
-      CHECK ALL CONNECTIONS
-    </button>
-    <div id="mfCurrencyPanel" class="hidden cyber-card p-4 rounded-2xl flex flex-col gap-2"></div>
-
-    <button onclick="mfGoFeature()" id="btnMfNext"
-      class="w-full bg-surface-container text-on-surface-variant py-3 rounded-full text-sm font-bold opacity-50 cursor-not-allowed" disabled>
-      NEXT — SELECT FEATURES
-    </button>
-  </div>
-
-  <!-- Step 2: Features -->
-  <div id="mf-step-features" class="hidden space-y-3">
-    <div class="flex items-center gap-3 px-1">
-      <button onclick="mfBackToSessions()" class="text-[10px] text-on-surface-variant cyber-inner px-3 py-1 rounded-full">← Back</button>
-      <span class="font-label-caps text-on-surface-variant tracking-widest text-[12px]">SELECT FEATURES</span>
-    </div>
-    <div class="cyber-card p-4 space-y-3">
-      <p class="text-[10px] text-on-surface-variant">Select one or more features. Will run in sequence per account.</p>
-      <div class="grid grid-cols-3 gap-2" id="mfFeatureGrid"></div>
-    </div>
-    <div id="mfSelectedSummary" class="text-[10px] text-on-surface-variant px-1"></div>
-    <button onclick="mfStart()" id="btnMfStart"
-      class="w-full bg-primary text-on-primary py-4 rounded-full font-code-md text-[16px] font-black tracking-widest shadow-lg shadow-primary/10 pill-button">
-      START EXECUTION
-    </button>
-  </div>
-
-  <!-- Progress -->
-  <div id="mfProgressPanel" class="hidden cyber-card p-4 space-y-3">
-    <div class="flex justify-between items-center">
-      <p class="font-code-md text-xs text-on-surface">Progress</p>
-      <span id="mfStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
-    </div>
-    <div class="w-full bg-white/5 rounded-full h-1.5">
-      <div id="mfProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
-    </div>
-    <div id="mfLog" class="font-code-md text-[10px] max-h-52 overflow-auto bg-black/30 p-3 rounded-2xl flex flex-col gap-1 no-scrollbar terminal-panel"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ HISTORY ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-history">
-  <div class="flex items-center justify-between">
-    <h2 class="font-headline-md text-headline-md text-on-surface">Execution Logs</h2>
-    <button onclick="clearHistory()" class="text-[10px] text-error/70 border border-error/20 rounded-full px-3 py-1 hover:text-error transition-all">Clear</button>
-  </div>
-  <div id="historyList" class="space-y-2">
-    <div class="terminal-panel p-5 text-center font-code-md text-[11px] text-on-surface-variant">No activity yet.</div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════ ACCOUNT ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-account">
-  <!-- Not logged in -->
-  <div id="accountNotLoggedIn" class="cyber-card p-6 text-center space-y-3">
-    <span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">person_off</span>
-    <p class="text-xs text-on-surface-variant/60">Login first to see your account info.</p>
-  </div>
-
-  <!-- Logged in -->
-  <div id="accountLoggedIn" class="hidden space-y-4">
-    <div class="cyber-card p-6 text-center relative overflow-hidden">
-      <div class="relative inline-block mb-7">
-        <div class="w-24 h-24 rounded-full border-2 border-primary/50 p-1 bg-surface">
-          <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full grayscale opacity-80" src=""/>
-        </div>
-        <div id="accRoleBadge" class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-2 py-0.5 rounded-full font-code-md text-[10px] font-bold shadow-lg">VIP</div>
-      </div>
-      <h2 class="font-headline-lg text-[24px] tracking-tight text-on-surface" id="accUsername">—</h2>
-      <p class="font-code-md text-[12px] text-primary mt-1 bg-primary/10 inline-block px-3 py-1 rounded-full border border-primary/20">
-        UID: <span id="accUserId">—</span>
-      </p>
-      <div class="flex items-center justify-center gap-2 mt-3">
-        <span id="accStatusBadge" class="text-[10px] px-2 py-1 rounded-full font-semibold bg-green-500/10 text-green-400 border border-green-500/25">LIVE</span>
-        <span id="accServer" class="text-[10px] text-on-surface-variant font-code-md">—</span>
-      </div>
-    </div>
-
-    <div class="cyber-card p-5">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-label-caps text-on-surface-variant tracking-widest text-[12px] uppercase">BALANCE</h3>
-        <button onclick="refreshAccount()" id="refreshBtn"
-          class="flex items-center gap-1 text-[10px] text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10 transition-all font-semibold">
-          <span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh
+        <button id="btn-lib-submit" onclick="submitLogin('lib')"
+          class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+          CONNECT <span class="material-symbols-outlined text-[16px]">bolt</span>
         </button>
       </div>
-      <div id="currencyLoading" class="hidden items-center justify-center py-4 gap-2">
-        <div class="spinner"></div><span class="text-[11px] text-on-surface-variant">Fetching balance...</span>
-      </div>
-      <div id="currencyGrid">
-        <div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>
+
+      <!-- PLATFORM tab -->
+      <div id="loginTab-platform" class="hidden bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">SELECT PLATFORM</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectPlatform('Nintendo')" id="plat-Nintendo" class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Nintendo</button>
+            <button onclick="selectPlatform('Google')"   id="plat-Google"   class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Google</button>
+            <button onclick="selectPlatform('Steam')"    id="plat-Steam"    class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Steam</button>
+            <button onclick="selectPlatform('Sony')"     id="plat-Sony"     class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Sony</button>
+            <button onclick="selectPlatform('Facebook')" id="plat-Facebook" class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Facebook</button>
+            <button onclick="selectPlatform('Huawei')"   id="plat-Huawei"   class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Huawei</button>
+          </div>
+        </div>
+        <div id="platformCodeWrap" class="hidden space-y-3">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">OAuth JSON</label>
+          <textarea id="platformInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder='{"id":"...","token":"..."}'></textarea>
+          <button id="btn-plat-submit" onclick="submitLogin('platform')"
+            class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+            CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="cyber-card p-4 flex items-center justify-between">
-      <div>
-        <p class="text-xs font-semibold text-on-surface">Auto Refresh</p>
-        <p class="text-[10px] text-on-surface-variant">Update every 30 seconds</p>
+    <!-- Access Denied Card -->
+    <div id="reqAccessCard" class="hidden bg-white p-6 rounded-3xl border border-error/20 card-shadow flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-error" style="font-size:20px">lock</span>
+        <span class="text-sm font-bold text-error">Access Denied</span>
       </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()" class="sr-only peer"/>
-        <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
-      </label>
+      <p class="text-[11px] text-on-surface-variant">Your Telegram ID is not authorized. Request access from the bot owner.</p>
+      <div class="bg-surface-container-low border border-outline-variant rounded-2xl p-3 flex items-center justify-between">
+        <span class="text-[10px] text-on-surface-variant">Your Telegram ID</span>
+        <span class="text-xs font-mono text-primary font-bold" id="reqTgId">—</span>
+      </div>
+      <button onclick="requestAccess()" id="btnReqAccess"
+        class="w-full bg-error text-white py-3 rounded-full text-xs font-bold hover:bg-error/90 transition-all interactive-scale">
+        REQUEST ACCESS VIA BOT
+      </button>
+      <div id="reqAccessResult" class="text-[11px] text-center py-2 rounded-xl hidden"></div>
+      <button onclick="hideReqAccess()" class="text-[11px] text-on-surface-variant text-center hover:text-primary transition-all">← Back to Login</button>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════════════════════ SETTINGS ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-settings">
-  <h2 class="font-headline-md text-headline-md mb-2 text-on-surface">System Parameters</h2>
-
-  <!-- Membership -->
-  <section>
-    <h3 class="font-label-caps text-on-surface-variant mb-2 ml-1 tracking-widest text-[12px] uppercase">MEMBERSHIP</h3>
-    <div class="cyber-card p-4 space-y-3">
-      <div class="flex justify-between items-center text-[11px]">
-        <span class="text-on-surface-variant">Status</span>
-        <span id="settingsRoleBadge" class="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full font-bold border role-free">
-          <span id="settingsRoleLabel">FREE</span>
-        </span>
+  <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-dashboard">
+    <div class="flex items-center justify-between shimmer-entrance" style="animation-delay: 0.1s;">
+      <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
+      <div class="flex items-center gap-2">
+        <span id="dashServer" class="text-primary bg-primary-container text-on-primary-container px-3 py-1 rounded-full border border-primary/20 text-[11px] font-bold">—</span>
+        <button onclick="logout()" class="text-[10px] text-error hover:bg-error/10 border border-error/30 rounded-full px-3 py-1 font-semibold transition-all">LOGOUT</button>
       </div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Active Since</span><span id="settingsRoleSince" class="text-primary font-code-md">—</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Expires On</span><span id="settingsRoleExpiry" class="text-primary font-code-md">Never</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Time Remaining</span><span id="settingsRoleRemaining" class="text-primary font-code-md">—</span></div>
     </div>
-  </section>
 
-  <!-- About -->
-  <section>
-    <h3 class="font-label-caps text-on-surface-variant mb-2 ml-1 tracking-widest text-[12px] uppercase">ABOUT</h3>
-    <div class="cyber-card p-4 space-y-3">
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Developer</span><span class="text-primary font-code-md">WaterFlai | iPowfu</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Project</span><span class="text-primary">ThrashGameCompany</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Version</span><span class="text-primary font-code-md">1.2.0</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Telegram ID</span><span id="settingsTgId" class="text-primary font-code-md">—</span></div>
-      <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant">Status</span><span class="text-green-400 font-code-md">● Online</span></div>
+    <!-- User info -->
+    <div class="bg-white px-4 py-3 rounded-2xl border border-outline-variant card-shadow flex items-center gap-3 shimmer-entrance" style="animation-delay: 0.15s;">
+      <img id="dashAvatar" src="" alt="" class="w-8 h-8 rounded-full object-cover border border-outline-variant hidden">
+      <div id="dashAvatarFallback" class="w-8 h-8 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary text-[18px]">person</span>
+      </div>
+      <span class="font-bold text-sm text-on-surface" id="dashUsername">—</span>
     </div>
-  </section>
 
-  <!-- Danger Zone -->
-  <section>
-    <h3 class="font-label-caps mb-2 ml-1 tracking-widest text-[12px] uppercase" style="color:rgba(255,180,171,.6)">DANGER ZONE</h3>
-    <div class="cyber-card p-4 space-y-3 border border-error/10">
-      <button onclick="logout()" class="w-full border border-error/30 text-error py-2.5 rounded-full text-xs font-semibold hover:bg-error/10 transition-all flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">logout</span> Logout Current Session
-      </button>
-      <button onclick="clearAllData()" class="w-full border border-error/15 text-error/50 py-2.5 rounded-full text-xs font-semibold hover:bg-error/5 transition-all">Clear All Local Data</button>
-    </div>
-  </section>
-</div>
-
-<!-- ═══════════════════════════════ TOPUP ═══════════════════════════════ -->
-<div class="layer layer-hidden space-y-stack-lg" id="page-topup">
-  <h2 class="font-headline-md text-headline-md mb-2 text-on-surface">Coin Store</h2>
-  <div class="grid grid-cols-2 gap-3">
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group">
-      <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">monetization_on</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface">1,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase">Coins</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-tertiary text-on-tertiary py-2 rounded-full text-[11px] font-black text-center shadow-lg">100k</a>
-    </div>
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group">
-      <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">database</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface">2,500</div><div class="text-[9px] text-on-surface-variant font-bold uppercase">Coins</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-tertiary text-on-tertiary py-2 rounded-full text-[11px] font-black text-center shadow-lg">240k</a>
-    </div>
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group">
-      <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">savings</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface">5,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase">Coins</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-tertiary text-on-tertiary py-2 rounded-full text-[11px] font-black text-center shadow-lg">450k</a>
-    </div>
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group">
-      <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">workspace_premium</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface">10,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase">Coins</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-tertiary text-on-tertiary py-2 rounded-full text-[11px] font-black text-center shadow-lg">850k</a>
-    </div>
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 border-primary/30 bg-primary/5 hover:border-primary/50 transition-all group">
-      <span class="material-symbols-outlined text-primary text-3xl group-hover:rotate-12 transition-transform">workspace_premium</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface uppercase tracking-tighter">Weekly VIP</div><div class="text-[9px] text-primary/60 font-bold uppercase">7 Days Access</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-primary text-on-primary py-2 rounded-full text-[11px] font-black text-center shadow-lg shadow-primary/20">100k</a>
-    </div>
-    <div class="cyber-card p-4 flex flex-col items-center gap-2 border-secondary/30 bg-secondary/5 hover:border-secondary/50 transition-all group">
-      <span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">stars</span>
-      <div class="text-center"><div class="text-base font-black text-on-surface uppercase tracking-tighter">Monthly VIP</div><div class="text-[9px] text-secondary/60 font-bold uppercase">30 Days Access</div></div>
-      <a href="https://t.me/dieforcringes" class="w-full mt-2 bg-secondary text-on-secondary py-2 rounded-full text-[11px] font-black text-center shadow-lg">350k</a>
-    </div>
-    <div class="cyber-card p-4 col-span-2 border-primary/20 bg-primary/5 flex flex-col gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full cyber-inner flex items-center justify-center">
-          <span class="material-symbols-outlined text-primary">edit_note</span>
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-2 gap-gutter shimmer-entrance" style="animation-delay: 0.2s;">
+      <button class="bg-primary p-stack-md rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-lg shadow-primary/20 feat-btn text-white" id="feat-DailyFunction" onclick="runFeature('DailyFunction','Daily Function')">
+        <div class="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md">
+          <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
         </div>
         <div>
-          <div class="text-xs font-black text-on-surface uppercase">Custom Amount</div>
-          <div class="text-[9px] text-primary/60 font-bold uppercase">Rate: Rp 100 / Coin</div>
+          <p class="font-bold text-[16px]">Daily Function</p>
+          <span class="cost-badge flex items-center gap-0.5 text-[9px] font-bold text-amber-300 bg-white/10 border-white/20 static" data-cost-for="DailyFunction"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
         </div>
-      </div>
-      <div class="flex gap-2">
-        <input type="number" id="customCoinInput" oninput="calcCustomPrice(this.value)" placeholder="Enter amount..."
-          class="flex-1 cyber-inner px-3 py-2 text-xs outline-none focus:border-primary/50 transition-all font-code-md bg-transparent text-on-surface rounded-2xl"/>
-        <div class="cyber-inner px-4 flex items-center justify-center min-w-[80px] rounded-2xl">
-          <span id="customPriceLabel" class="text-[11px] font-black text-primary">Rp 0</span>
+      </button>
+      <button class="bg-white p-stack-md rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-md border border-outline-variant feat-btn" id="feat-All" onclick="runFeature('All','Run All')">
+        <div class="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
         </div>
+        <div>
+          <p class="font-bold text-on-surface text-[16px]">Run All</p>
+          <span class="cost-badge flex items-center gap-0.5 text-[9px] font-bold text-amber-600 bg-amber-50 border-amber-200 static" data-cost-for="All"><span class="material-symbols-outlined" style="font-size:9px">monetization_on</span>—</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="space-y-stack-sm shimmer-entrance" style="animation-delay: 0.3s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Features</h3>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Agriculture</span>
+          <span class="text-[12px] font-semibold text-on-surface">Farm</span>
+        </button>
+        <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Assignment</span>
+          <span class="text-[12px] font-semibold text-on-surface">Daily Quest</span>
+        </button>
+        <button onclick="runFeature('WorldQuest','World Quest')" id="feat-WorldQuest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="WorldQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">public</span>
+          <span class="text-[12px] font-semibold text-on-surface">World Quest</span>
+        </button>
+        <button onclick="runFeature('SeasonalQuest','Seasonal Quest')" id="feat-SeasonalQuest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SeasonalQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
+          <span class="text-[12px] font-semibold text-on-surface">Seasonal</span>
+        </button>
+        <button onclick="runFeature('Eden','Eden')" id="feat-Eden" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Eden"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-error/80 text-[24px]">local_fire_department</span>
+          <span class="text-[12px] font-semibold text-on-surface">Eden</span>
+        </button>
+        <button onclick="runFeature('Wings','Wings')" id="feat-Wings" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Wings"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Flight</span>
+          <span class="text-[12px] font-semibold text-on-surface">Wings</span>
+        </button>
+        <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">emoji_emotions</span>
+          <span class="text-[12px] font-semibold text-on-surface">Emotes</span>
+        </button>
+        <button onclick="runFeature('LitCollect','Lit &amp; Collect')" id="feat-LitCollect" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="LitCollect"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">wb_sunny</span>
+          <span class="text-[12px] font-semibold text-on-surface">Lit Collect</span>
+        </button>
+        <button onclick="openHeartModal()" id="feat-SendHeart" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SendHeart"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">favorite</span>
+          <span class="text-[12px] font-semibold text-on-surface">Send Heart</span>
+        </button>
+        <button onclick="runFeature('SendHeartsAll','Send Hearts All')" id="feat-SendHeartsAll" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SendHeartsAll"><span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">favorite_border</span>
+          <span class="text-[12px] font-semibold text-on-surface">Hearts All</span>
+        </button>
+        <button onclick="runFeature('ClaimAchievements','Claim Achievements')" id="feat-ClaimAchievements" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ClaimAchievements"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">emoji_events</span>
+          <span class="text-[12px] font-semibold text-on-surface">Achievements</span>
+        </button>
       </div>
-      <button onclick="orderCustom()" class="w-full bg-primary text-on-primary py-3 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 pill-button">Order Custom Amount</button>
+    </div>
+
+    <!-- Elder Cosmetics -->
+    <div class="space-y-stack-sm shimmer-entrance" style="animation-delay: 0.35s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Elder Cosmetics</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="runFeature('ElderHairs','Elder Hairs')" id="feat-ElderHairs" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ElderHairs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">face_retouching_natural</span>
+          <span class="text-[12px] font-semibold text-on-surface">Elder Hairs</span>
+        </button>
+        <button onclick="runFeature('ElderMask','Elder Mask')" id="feat-ElderMask" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ElderMask"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">theater_comedy</span>
+          <span class="text-[12px] font-semibold text-on-surface">Elder Mask</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Beta Only -->
+    <div id="betaSection" class="hidden space-y-stack-sm shimmer-entrance" style="animation-delay: 0.38s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Beta Only</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="runFeature('IAPs','Unlock IAPs')" id="feat-IAPs" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="IAPs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">redeem</span>
+          <span class="text-[12px] font-semibold text-on-surface">Unlock IAPs</span>
+        </button>
+        <button onclick="runFeature('Candles','300 Candles')" id="feat-Candles" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Candles"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">candle</span>
+          <span class="text-[12px] font-semibold text-on-surface">300 Candles</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Terminal Log -->
+    <div class="terminal-light rounded-[24px] overflow-hidden flex flex-col shimmer-entrance shadow-xl" style="animation-delay: 0.4s;">
+      <div class="bg-white/5 px-4 py-3 border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+          <span class="text-[10px] font-label-caps text-white/60 ml-2">SYSTEM CONSOLE</span>
+        </div>
+        <button onclick="clearConsole()" class="text-[10px] text-white/40 hover:text-white transition-all flex items-center gap-1 font-semibold">
+          <span class="material-symbols-outlined text-sm">terminal</span> Clear
+        </button>
+      </div>
+      <div class="p-4 h-48 overflow-y-auto terminal-scroll font-mono text-[12px] leading-relaxed" id="consoleLogs">
+        <div class="text-tertiary">&gt;&gt; Initializing TGC.Core...</div>
+      </div>
     </div>
   </div>
-  <div class="cyber-card p-4 border-white/5">
-    <p class="text-[10px] text-on-surface-variant text-center leading-relaxed">Setelah pembayaran berhasil, koin akan otomatis ditambahkan ke ID Telegram kamu. Hubungi admin jika ada kendala.</p>
+
+  <!-- ═══════════════════════════════ MASS FARM ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-mass-farm">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Mass Operations</h2>
+    </div>
+
+    <!-- Step 1: Sessions -->
+    <div id="mf-step-sessions" class="space-y-3">
+      <div class="flex justify-between items-center px-1">
+        <span class="font-label-caps text-on-surface-variant tracking-widest text-[11px]">TARGET ACCOUNTS</span>
+        <button onclick="mfAddRow()" class="text-primary hover:text-primary/80 transition-all font-bold text-xs bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full interactive-scale">+ ADD ACCOUNT</button>
+      </div>
+
+      <div id="mfContainer" class="space-y-3 max-h-72 overflow-y-auto no-scrollbar"></div>
+
+      <button onclick="mfCheckAll()" id="btnMfCheck"
+        class="w-full bg-white border border-outline-variant hover:bg-surface-container-low text-on-surface py-3.5 rounded-full text-xs font-bold transition-all interactive-scale card-shadow">
+        CHECK ALL CONNECTIONS
+      </button>
+      <div id="mfCurrencyPanel" class="hidden bg-white p-4 rounded-2xl border border-outline-variant card-shadow flex flex-col gap-2"></div>
+
+      <button onclick="mfGoFeature()" id="btnMfNext"
+        class="w-full bg-surface-container text-on-surface-variant py-3.5 rounded-full text-xs font-bold opacity-50 cursor-not-allowed" disabled>
+        NEXT — SELECT FEATURES
+      </button>
+    </div>
+
+    <!-- Step 2: Features -->
+    <div id="mf-step-features" class="hidden space-y-3">
+      <div class="flex items-center gap-3 px-1">
+        <button onclick="mfBackToSessions()" class="text-[10px] text-on-surface-variant bg-white border border-outline-variant px-3 py-1 rounded-full hover:bg-surface-container-low transition-all">← Back</button>
+        <span class="font-label-caps text-on-surface-variant tracking-widest text-[11px]">SELECT FEATURES</span>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <p class="text-[10px] text-on-surface-variant">Select one or more features. Will run in sequence per account.</p>
+        <div class="grid grid-cols-3 gap-2" id="mfFeatureGrid"></div>
+      </div>
+      <div id="mfSelectedSummary" class="text-[10px] text-on-surface-variant px-1 font-semibold"></div>
+      <button onclick="mfStart()" id="btnMfStart"
+        class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+        START EXECUTION
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div id="mfProgressPanel" class="hidden bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+      <div class="flex justify-between items-center">
+        <p class="font-bold text-xs text-on-surface">Progress</p>
+        <span id="mfStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
+      </div>
+      <div class="w-full bg-surface-container-low rounded-full h-1.5">
+        <div id="mfProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+      <div id="mfLog" class="font-mono text-[10px] max-h-52 overflow-auto p-3 rounded-2xl flex flex-col gap-1 no-scrollbar terminal-light"></div>
+    </div>
   </div>
-</div>
+
+  <!-- ═══════════════════════════════ HISTORY ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-history">
+    <div class="flex items-center justify-between">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Execution Logs</h2>
+      <button onclick="clearHistory()" class="text-[10px] text-error hover:bg-error/10 border border-error/30 rounded-full px-3 py-1 font-semibold transition-all">Clear</button>
+    </div>
+    <div id="historyList" class="space-y-3">
+      <div class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow text-center font-mono text-[11px] text-on-surface-variant">No activity yet.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ ACCOUNT ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-account">
+    <!-- Not logged in -->
+    <div id="accountNotLoggedIn" class="bg-white p-6 text-center space-y-4 rounded-3xl border border-outline-variant card-shadow">
+      <span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">person_off</span>
+      <p class="text-xs text-on-surface-variant">Login first to see your account info.</p>
+    </div>
+
+    <!-- Logged in -->
+    <div id="accountLoggedIn" class="hidden space-y-4">
+      <div class="bg-white p-6 text-center relative overflow-hidden rounded-3xl border border-outline-variant card-shadow">
+        <div class="relative inline-block mb-4">
+          <div class="w-20 h-20 rounded-full border border-outline-variant p-0.5 bg-surface">
+            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src=""/>
+          </div>
+          <div id="accRoleBadge" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded-full text-[9px] font-bold shadow-md">VIP</div>
+        </div>
+        <h2 class="font-headline-lg text-[22px] tracking-tight text-on-surface" id="accUsername">—</h2>
+        <p class="font-mono text-[11px] text-primary mt-1 bg-primary/10 inline-block px-3 py-1 rounded-full border border-primary/20">
+          UID: <span id="accUserId">—</span>
+        </p>
+        <div class="flex items-center justify-center gap-2 mt-3">
+          <span id="accStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-green-500/10 text-green-600 border border-green-500/25">LIVE</span>
+          <span id="accServer" class="text-[10px] text-on-surface-variant font-mono">—</span>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-3xl border border-outline-variant card-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-label-caps text-on-surface-variant tracking-widest text-[12px] uppercase">Balance</h3>
+          <button onclick="refreshAccount()" id="refreshBtn"
+            class="flex items-center gap-1 text-[10px] text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10 transition-all font-semibold">
+            <span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh
+          </button>
+        </div>
+        <div id="currencyLoading" class="hidden items-center justify-center py-4 gap-2">
+          <div class="spinner"></div><span class="text-[11px] text-on-surface-variant">Fetching balance...</span>
+        </div>
+        <div id="currencyGrid" class="divide-y divide-outline-variant">
+          <div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-on-surface">Auto Refresh</p>
+          <p class="text-[10px] text-on-surface-variant">Update every 30 seconds</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()" class="sr-only peer"/>
+          <div class="w-11 h-6 bg-surface-container-low peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ SETTINGS ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-settings">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">System Parameters</h2>
+    </div>
+
+    <!-- Membership -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps text-on-surface-variant mb-1 ml-1 tracking-widest text-[11px] uppercase">MEMBERSHIP</h3>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <div class="flex justify-between items-center text-[11px]">
+          <span class="text-on-surface-variant font-medium">Status</span>
+          <span id="settingsRoleBadge" class="flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold border role-free">
+            <span id="settingsRoleLabel">FREE</span>
+          </span>
+        </div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Active Since</span><span id="settingsRoleSince" class="text-primary font-mono font-bold">—</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Expires On</span><span id="settingsRoleExpiry" class="text-primary font-mono font-bold">Never</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Time Remaining</span><span id="settingsRoleRemaining" class="text-primary font-mono font-bold">—</span></div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps text-on-surface-variant mb-1 ml-1 tracking-widest text-[11px] uppercase">ABOUT</h3>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Developer</span><span class="text-primary font-mono font-bold">WaterFlai | iPowfu</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Project</span><span class="text-primary font-bold">TrashGameCompany</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Version</span><span class="text-primary font-mono font-bold">1.2.0</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Telegram ID</span><span id="settingsTgId" class="text-primary font-mono font-bold">—</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Status</span><span class="text-tertiary font-mono font-bold">● Online</span></div>
+      </div>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps mb-1 ml-1 tracking-widest text-[11px] uppercase text-error">DANGER ZONE</h3>
+      <div class="bg-white p-4 rounded-3xl border border-error/20 card-shadow space-y-3">
+        <button onclick="logout()" class="w-full border border-error/30 text-error py-2.5 rounded-full text-xs font-bold hover:bg-error/10 transition-all flex items-center justify-center gap-2 interactive-scale">
+          <span class="material-symbols-outlined text-[18px]">logout</span> Logout Current Session
+        </button>
+        <button onclick="clearAllData()" class="w-full border border-error/15 text-error/50 py-2.5 rounded-full text-xs font-bold hover:bg-error/5 transition-all interactive-scale">Clear All Local Data</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════════════════ TOPUP ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-topup">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Coin Store</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1">paid</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">1,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">100k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">database</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">2,500</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">240k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">savings</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">5,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">450k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">workspace_premium</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">10,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">850k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-primary/20 bg-primary/5 flex flex-col items-center gap-2 hover:border-primary/40 transition-all group relative">
+        <span class="material-symbols-outlined text-primary text-3xl group-hover:rotate-12 transition-transform">workspace_premium</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface uppercase tracking-tighter">Weekly VIP</div><div class="text-[9px] text-primary/60 font-bold uppercase tracking-wider">7 Days Access</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-primary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-primary/25 hover:opacity-90 block">100k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-secondary/20 bg-secondary/5 flex flex-col items-center gap-2 hover:border-secondary/40 transition-all group relative">
+        <span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">stars</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface uppercase tracking-tighter">Monthly VIP</div><div class="text-[9px] text-secondary/60 font-bold uppercase tracking-wider">30 Days Access</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-secondary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-secondary/25 hover:opacity-90 block">350k</a>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-primary/25 bg-primary/5 flex flex-col gap-3 col-span-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">edit_note</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-on-surface uppercase tracking-wider">Custom Amount</div>
+            <div class="text-[9px] text-primary/60 font-bold uppercase tracking-wider">Rate: Rp 100 / Coin</div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <input type="number" id="customCoinInput" oninput="calcCustomPrice(this.value)" placeholder="Enter amount..."
+            class="flex-1 bg-white border border-outline-variant px-3 py-2 text-xs outline-none focus:border-primary/50 transition-all font-mono text-on-surface rounded-2xl"/>
+          <div class="bg-white border border-outline-variant px-4 flex items-center justify-center min-w-[90px] rounded-2xl">
+            <span id="customPriceLabel" class="text-[11px] font-bold text-primary">Rp 0</span>
+          </div>
+        </div>
+        <button onclick="orderCustom()" class="w-full bg-primary text-white py-3 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">Order Custom Amount</button>
+      </div>
+    </div>
+    <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow">
+      <p class="text-[10px] text-on-surface-variant text-center leading-relaxed">Setelah pembayaran berhasil, koin akan otomatis ditambahkan ke ID Telegram kamu. Hubungi admin jika ada kendala.</p>
+    </div>
+  </div>
 
 </main>
 
-<!-- Floating Navigation Dock -->
-<nav class="fixed bottom-4 left-4 right-4 z-50 flex justify-around items-center px-4 py-3 bg-surface-container-highest/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl">
-  <button class="nav-item active flex flex-col items-center justify-center text-primary w-14 h-12 interactive-scale" id="nav-home" onclick="goPage('home')">
-    <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1">grid_view</span>
+<!-- Navigation -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] z-50 flex justify-between items-center px-4 py-2 max-w-sm bg-white/95 backdrop-blur-lg border border-outline-variant shadow-2xl rounded-full">
+  <button class="bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale" id="nav-home" onclick="goPage('home')">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
   </button>
-  <button class="nav-item flex flex-col items-center justify-center text-on-surface-variant opacity-80 w-14 h-12 hover:text-primary hover:opacity-100 interactive-scale" id="nav-mass-farm" onclick="goPage('mass-farm')">
-    <span class="material-symbols-outlined text-[24px]">terminal</span>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-mass-farm" onclick="goPage('mass-farm')">
+    <span class="material-symbols-outlined">terminal</span>
   </button>
-  <button class="nav-item flex flex-col items-center justify-center text-on-surface-variant opacity-80 w-14 h-12 hover:text-primary hover:opacity-100 interactive-scale" id="nav-account" onclick="goPage('account')">
-    <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-account" onclick="goPage('account')">
+    <span class="material-symbols-outlined">account_balance_wallet</span>
   </button>
-  <button class="nav-item flex flex-col items-center justify-center text-on-surface-variant opacity-80 w-14 h-12 hover:text-primary hover:opacity-100 interactive-scale" id="nav-history" onclick="goPage('history')">
-    <span class="material-symbols-outlined text-[24px]">hub</span>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-history" onclick="goPage('history')">
+    <span class="material-symbols-outlined">hub</span>
   </button>
-  <button class="nav-item flex flex-col items-center justify-center text-on-surface-variant opacity-80 w-14 h-12 hover:text-primary hover:opacity-100 interactive-scale" id="nav-settings" onclick="goPage('settings')">
-    <span class="material-symbols-outlined text-[24px]">settings</span>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-settings" onclick="goPage('settings')">
+    <span class="material-symbols-outlined">settings</span>
   </button>
 </nav>
-
 
 <script>
 // ── TELEGRAM + API ──────────────────────────────────────────────────────────
@@ -806,7 +755,7 @@ function goPage(name) {
     if (el) { el.classList.add('layer-hidden'); }
     const nav = document.getElementById('nav-' + p);
     if (nav) {
-      nav.className = 'nav-item flex flex-col items-center justify-center text-on-surface-variant opacity-80 w-14 h-12 hover:text-primary hover:opacity-100 interactive-scale';
+      nav.className = 'text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale';
       const icon = nav.querySelector('.material-symbols-outlined');
       if (icon) icon.style.fontVariationSettings = "'FILL' 0";
     }
@@ -818,7 +767,7 @@ function goPage(name) {
   }
   const activeNav = document.getElementById('nav-' + name);
   if (activeNav) {
-    activeNav.className = 'nav-item active flex flex-col items-center justify-center text-primary w-14 h-12 interactive-scale';
+    activeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
     const icon = activeNav.querySelector('.material-symbols-outlined');
     if (icon) icon.style.fontVariationSettings = "'FILL' 1";
   }
@@ -830,9 +779,9 @@ function goPage(name) {
 function showToast(msg, type = 'primary') {
   const t = document.getElementById('toast');
   const styles = {
-    error:   ['#93000a', '#ffb4ab', 'rgba(255,180,171,.3)'],
-    success: ['rgba(74,222,128,.12)', '#4ade80', 'rgba(74,222,128,.3)'],
-    primary: ['rgba(0,100,200,.2)', '#cebdff', 'rgba(206,189,255,.3)'],
+    error:   ['#ffdad6', '#FF3B30', 'rgba(255,59,48,.3)'],
+    success: ['#e8f5e9', '#34C759', 'rgba(52,199,89,.3)'],
+    primary: ['#e7e8ff', '#2D31FA', 'rgba(45,49,250,.3)'],
   };
   const [bg, fg, br] = styles[type] || styles.primary;
   Object.assign(t.style, { background: bg, color: fg, border: `1px solid ${br}` });
@@ -861,11 +810,11 @@ function selectServer(s) {
   const live = document.getElementById('btn-live');
   const beta = document.getElementById('btn-beta');
   if (s === 'live') {
-    live.className = 'flex-1 py-3 rounded-full font-code-md bg-primary text-on-primary font-bold pill-button transition-all shadow-md';
-    beta.className = 'flex-1 py-3 rounded-full font-code-md text-on-surface hover:bg-white/5 transition-all pill-button';
+    live.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale';
+    beta.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale';
   } else {
-    beta.className = 'flex-1 py-3 rounded-full font-code-md bg-primary text-on-primary font-bold pill-button transition-all shadow-md';
-    live.className = 'flex-1 py-3 rounded-full font-code-md text-on-surface hover:bg-white/5 transition-all pill-button';
+    beta.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale';
+    live.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale';
   }
 }
 
@@ -874,7 +823,11 @@ function switchLoginTab(tab) {
   ['lua','lib','platform'].forEach(t => {
     document.getElementById('loginTab-'+t).classList.toggle('hidden', t !== tab);
     const btn = document.getElementById('ltab-'+t);
-    if (btn) { btn.className = 'flex-1 py-3 text-center font-code-md text-[13px] transition-colors ' + (t === tab ? 'login-tab-active' : 'login-tab-inactive'); }
+    if (btn) {
+      btn.className = t === tab
+        ? 'py-3 px-4 text-center font-bold text-xs border-b-2 border-primary text-primary transition-all'
+        : 'py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all';
+    }
   });
 }
 
@@ -882,8 +835,9 @@ function selectPlatform(p) {
   selectedPlatformVal = p;
   ['Nintendo','Google','Steam','Sony','Facebook','Huawei'].forEach(x => {
     const btn = document.getElementById('plat-'+x);
-    if (btn) btn.className = 'py-2.5 px-1 text-[11px] font-semibold rounded-xl transition-all ' +
-      (x === p ? 'bg-primary/20 text-primary border border-primary/30' : 'cyber-inner text-on-surface-variant');
+    if (btn) btn.className = x === p
+      ? 'py-2.5 px-1 text-[11px] font-semibold rounded-xl transition-all bg-primary/10 text-primary border border-primary/20'
+      : 'bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale';
   });
   const w = document.getElementById('platformCodeWrap');
   w.classList.remove('hidden'); w.classList.add('flex'); w.style.flexDirection = 'column';
@@ -907,7 +861,16 @@ async function submitLogin(method) {
     const res = await fetch(API_BASE + '/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-      body: JSON.stringify({ telegram_id: TELEGRAM_ID, method, server: selectedServer, platform: selectedPlatformVal, code })
+      body: JSON.stringify({ 
+        telegram_id: TELEGRAM_ID, 
+        method, 
+        server: selectedServer, 
+        platform: selectedPlatformVal, 
+        code,
+        first_name: tg?.initDataUnsafe?.user?.first_name || '',
+        username: tg?.initDataUnsafe?.user?.username || '',
+        photo_url: tg?.initDataUnsafe?.user?.photo_url || ''
+      })
     });
     const data = await res.json();
     if (data.ok) {
@@ -943,7 +906,7 @@ function setLoggedIn(method, server, userId) {
   const homeNav = document.getElementById('nav-home');
   if (homeNav) {
     homeNav.onclick = () => goPage('dashboard');
-    homeNav.className = 'nav-item active flex flex-col items-center justify-center text-primary w-14 h-12 interactive-scale';
+    homeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
   }
 
   document.getElementById('dashUsername').textContent = name;
@@ -970,8 +933,8 @@ function setLoggedIn(method, server, userId) {
   document.getElementById('accUserId').textContent = userId || '—';
   const badge = document.getElementById('accStatusBadge');
   badge.textContent = server.toUpperCase();
-  badge.className = 'text-[10px] px-2 py-1 rounded-full font-semibold ' +
-    (server === 'live' ? 'bg-green-500/10 text-green-400 border border-green-500/25' : 'bg-amber-400/10 text-amber-400 border border-amber-400/25');
+  badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold ' +
+    (server === 'live' ? 'bg-green-500/10 text-green-600 border border-green-500/25' : 'bg-amber-400/10 text-amber-600 border border-amber-400/25');
 
   if (server === 'beta') document.getElementById('betaSection').classList.remove('hidden');
   refreshCoins();
@@ -993,7 +956,10 @@ function logout() {
 
   // Reset nav-home to go back to home/login
   const homeNav = document.getElementById('nav-home');
-  if (homeNav) homeNav.onclick = () => goPage('home');
+  if (homeNav) {
+    homeNav.onclick = () => goPage('home');
+    homeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
+  }
 
   goPage('home');
   addLog('Logged out.'); addHistory('Logout', 'Session ended', 'info');
@@ -1027,17 +993,17 @@ async function requestAccess() {
     result.classList.remove('hidden');
     if (data.ok) {
       result.textContent = 'Request sent! Wait for admin approval.';
-      result.style.cssText = 'background:rgba(74,222,128,.1);color:#4ade80;';
+      result.style.cssText = 'background:#e8f5e9;color:#34C759;border:1px solid rgba(52,199,89,.3)';
       btn.textContent = 'REQUEST SENT';
     } else {
       result.textContent = data.error || 'Failed to send request';
-      result.style.cssText = 'background:rgba(255,180,171,.1);color:#ffb4ab;';
+      result.style.cssText = 'background:#ffdad6;color:#FF3B30;border:1px solid rgba(255,59,48,.3)';
       btn.textContent = 'REQUEST ACCESS'; btn.disabled = false;
     }
   } catch (e) {
     result.classList.remove('hidden');
     result.textContent = 'API unreachable';
-    result.style.cssText = 'background:rgba(255,180,171,.1);color:#ffb4ab;';
+    result.style.cssText = 'background:#ffdad6;color:#FF3B30;border:1px solid rgba(255,59,48,.3)';
     btn.textContent = 'REQUEST ACCESS'; btn.disabled = false;
   }
 }
@@ -1046,7 +1012,7 @@ async function requestAccess() {
 function addLog(msg, type = 'info') {
   const el = document.getElementById('consoleLogs');
   if (!el) return;
-  const colors = { error: '#f87171', success: '#4ade80', warn: '#fbbf24', info: '#cac4d4' };
+  const colors = { error: '#FF3B30', success: '#34C759', warn: '#FF9500', info: '#2D31FA' };
   const div = document.createElement('div');
   div.style.color = colors[type] || colors.info;
   div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
@@ -1054,7 +1020,7 @@ function addLog(msg, type = 'info') {
 }
 function clearConsole() {
   const el = document.getElementById('consoleLogs');
-  el.innerHTML = '<div style="color:#cebdff">[CLEARED] Console cleared.</div>';
+  el.innerHTML = '<div style="color:#2D31FA">[CLEARED] Console cleared.</div>';
 }
 
 // ── HISTORY ───────────────────────────────────────────────────────────────────
@@ -1068,17 +1034,17 @@ function renderHistory() {
   const el = document.getElementById('historyList');
   if (!el) return;
   if (!actionHistory.length) {
-    el.innerHTML = '<div class="terminal-panel p-5 text-center font-code-md text-[11px] text-on-surface-variant">No activity yet.</div>';
+    el.innerHTML = '<div class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow text-center font-mono text-[11px] text-on-surface-variant">No activity yet.</div>';
     return;
   }
-  const colorMap = { success: '#cebdff', error: '#f87171', info: '#cac4d4', warn: '#f9bd22' };
+  const colorMap = { success: '#34C759', error: '#FF3B30', info: '#5856D6', warn: '#FF9500' };
   el.innerHTML = actionHistory.map(h => `
     <div class="history-item">
       <div class="flex items-center justify-between mb-1">
-        <span class="text-xs font-semibold" style="color:${colorMap[h.type]||colorMap.info}">${h.action}</span>
-        <span class="text-[10px] text-on-surface-variant/40">${h.date} ${h.time}</span>
+        <span class="text-xs font-bold" style="color:${colorMap[h.type]||colorMap.info}">${h.action}</span>
+        <span class="text-[9px] text-on-surface-variant">${h.date} ${h.time}</span>
       </div>
-      <div class="text-[10px] text-on-surface-variant/70">${h.result}</div>
+      <div class="text-[10px] text-on-surface-variant font-mono">${h.result}</div>
     </div>`).join('');
 }
 function clearHistory() {
@@ -1112,8 +1078,14 @@ async function refreshCoins() {
 function populateCostBadges() {
   document.querySelectorAll('[data-cost-for]').forEach(el => {
     const cost = FEATURE_COSTS[el.getAttribute('data-cost-for')];
-    if (cost !== undefined)
-      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>${cost}`;
+    if (cost !== undefined) {
+      const isHeaderOrQuick = el.classList.contains('static');
+      if (isHeaderOrQuick) {
+        el.innerHTML = `<span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>${cost}`;
+      } else {
+        el.innerHTML = `<span class="material-symbols-outlined text-[10px] align-middle" style="font-variation-settings: 'FILL' 1">monetization_on</span> ${cost}`;
+      }
+    }
   });
 }
 
@@ -1133,11 +1105,8 @@ async function refreshRole() {
     MAX_MASSFARM_SESSIONS = data.max_sessions;
 
     // Header role badge
-    const rb = document.getElementById('roleBadge');
     const rl = document.getElementById('roleLabel');
-    rb.classList.remove('hidden', 'role-free', 'role-vip_weekly', 'role-vip_monthly');
-    rb.classList.add('flex', 'role-' + data.role);
-    rl.textContent = data.label.toUpperCase();
+    rl.textContent = data.label.toUpperCase() + ' ACCESS';
 
     // Account role badge
     const arb = document.getElementById('accRoleBadge');
@@ -1146,8 +1115,7 @@ async function refreshRole() {
     // Settings
     const sb = document.getElementById('settingsRoleBadge');
     const sl = document.getElementById('settingsRoleLabel');
-    sb.classList.remove('role-free', 'role-vip_weekly', 'role-vip_monthly');
-    sb.classList.add('role-' + data.role);
+    sb.className = 'flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold border role-' + data.role;
     sl.textContent = data.label.toUpperCase();
 
     const sExpiry    = document.getElementById('settingsRoleExpiry');
@@ -1184,7 +1152,7 @@ function applyFeatureLocks() {
       if (!existing) {
         const ov = document.createElement('div');
         ov.className = 'lock-overlay';
-        ov.innerHTML = '<span class="material-symbols-outlined" style="color:#f9bd22">lock</span>';
+        ov.innerHTML = '<span class="material-symbols-outlined" style="color:#d97706">lock</span>';
         btn.appendChild(ov);
       }
     }
@@ -1275,7 +1243,7 @@ async function runFeature(name, label) {
   }
 }
 
-// ── SEND HEART ────────────────────────────────────────────────────────────────
+// ── HEART / FRIEND SELECTION ──────────────────────────────────────────────────
 function openHeartModal()  { document.getElementById('heartModal').classList.remove('hidden'); }
 function closeHeartModal() {
   document.getElementById('heartModal').classList.add('hidden');
@@ -1298,11 +1266,11 @@ async function loadFriends() {
       return;
     }
     container.innerHTML = data.friends.map(f =>
-      `<button onclick="selectFriend('${f.id}','${(f.name||'').replace(/'/g,"\\'")}')
-        class="w-full text-left px-3 py-2 rounded-xl cyber-inner text-xs text-on-surface flex items-center gap-2 hover:border-primary/40 transition-all">
+      `<button onclick="selectFriend('${f.id}','${(f.name||'').replace(/'/g,"\\'")}')"
+        class="w-full text-left px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant text-xs text-on-surface flex items-center gap-2 hover:border-primary/45 transition-all">
         <span class="material-symbols-outlined text-primary" style="font-size:14px">person</span>
         <span class="flex-1 truncate">${f.name || f.id}</span>
-        <span class="text-on-surface-variant/50 font-code-md" style="font-size:9px">${f.id.slice(0,8)}…</span>
+        <span class="text-on-surface-variant/50 font-mono" style="font-size:9px">${f.id.slice(0,8)}…</span>
       </button>`
     ).join('');
   } catch(e) { container.innerHTML = '<div class="text-xs text-center text-error py-2">Failed to load.</div>'; }
@@ -1338,13 +1306,13 @@ async function confirmSendHeart() {
 
 // ── ACCOUNT / CURRENCY ────────────────────────────────────────────────────────
 const CURRENCY_META = {
-  candles:          { label: 'Candles',  icon: 'candle',          color: '#f9bd22' },
-  wax:              { label: 'Wax',      icon: 'opacity',         color: '#cebdff' },
-  hearts:           { label: 'Hearts',   icon: 'favorite',        color: '#f87171' },
-  seasonal_candles: { label: 'Seasonal', icon: 'auto_awesome',    color: '#a78bfa' },
-  ascended_candles: { label: 'Ascended', icon: 'star',            color: '#34d399' },
-  gift_candles:     { label: 'Gift CDL', icon: 'redeem',          color: '#fb923c' },
-  rebirths:         { label: 'Rebirths', icon: 'autorenew',       color: '#60a5fa' },
+  candles:          { label: 'Candles',  icon: 'candle',          color: '#d97706' },
+  wax:              { label: 'Wax',      icon: 'opacity',         color: '#2D31FA' },
+  hearts:           { label: 'Hearts',   icon: 'favorite',        color: '#FF3B30' },
+  seasonal_candles: { label: 'Seasonal', icon: 'auto_awesome',    color: '#5856D6' },
+  ascended_candles: { label: 'Ascended', icon: 'star',            color: '#34C759' },
+  gift_candles:     { label: 'Gift CDL', icon: 'redeem',          color: '#ea580c' },
+  rebirths:         { label: 'Rebirths', icon: 'autorenew',       color: '#2563eb' },
 };
 
 function renderCurrency(items) {
@@ -1355,13 +1323,13 @@ function renderCurrency(items) {
   const ordered = Object.keys(CURRENCY_META).filter(k => items[k] !== undefined);
   const rest    = Object.keys(items).filter(k => !CURRENCY_META[k]);
   grid.innerHTML = [...ordered, ...rest].map(key => {
-    const m = CURRENCY_META[key] || { label: key.replace(/_/g,' '), icon: 'toll', color: '#cebdff' };
+    const m = CURRENCY_META[key] || { label: key.replace(/_/g,' '), icon: 'toll', color: '#5856D6' };
     return `<div class="currency-row">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined" style="font-size:16px;color:${m.color}">${m.icon}</span>
-        <span class="text-xs text-on-surface-variant">${m.label}</span>
+        <span class="text-xs font-semibold text-on-surface-variant">${m.label}</span>
       </div>
-      <span class="text-sm font-bold font-code-md" style="color:${m.color}">${Number(items[key]).toLocaleString()}</span>
+      <span class="text-sm font-bold font-mono" style="color:${m.color}">${Number(items[key]).toLocaleString()}</span>
     </div>`;
   }).join('');
 }
@@ -1419,7 +1387,6 @@ const MF_FEATURES = [
   { id:'WorldQuest',    label:'World Quest' },
   { id:'SeasonalQuest', label:'Seasonal' },
   { id:'Wings',         label:'Wings' },
-  { id:'Map',           label:'Map' },
   { id:'ElderHairs',    label:'Elder Hairs' },
   { id:'DailyFunction', label:'Daily All' },
   { id:'All',           label:'Full All' },
@@ -1435,24 +1402,24 @@ function mfAddRow() {
   const id = ++mfRowId;
   const div = document.createElement('div');
   div.id = 'mfrow-' + id;
-  div.className = 'cyber-card p-3 flex flex-col gap-2 relative fade-in';
+  div.className = 'bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col gap-2 relative fade-in';
   div.dataset.method = 'lua';
   div.innerHTML = `
     <div class="flex gap-1 mb-1">
       ${['lua','lib','json'].map(m => `<button onclick="mfSetMethod(${id},'${m}')" id="mftab-${id}-${m}"
-        class="mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m==='lua'?'bg-primary/20 text-primary border-primary/30':'border-white/5 text-on-surface-variant'}">${m.toUpperCase()}</button>`).join('')}
+        class="mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m==='lua'?'bg-primary text-white shadow-md shadow-primary/25':'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}">${m.toUpperCase()}</button>`).join('')}
       <button onclick="document.getElementById('mfrow-${id}').remove();mfUpdateNext()"
         class="text-error/50 hover:text-error ml-1 px-1"><span class="material-symbols-outlined" style="font-size:16px">close</span></button>
     </div>
     <textarea id="mfinput-${id}" rows="2"
-      class="w-full cyber-inner rounded-2xl p-2 text-[10px] font-code-md focus:border-primary/50 outline-none resize-none bg-transparent text-on-surface"
+      class="w-full bg-surface-container-low border border-outline-variant rounded-2xl p-2.5 text-[10px] font-mono focus:ring-1 focus:ring-primary focus:border-primary outline-none resize-none text-on-surface"
       placeholder="Paste Lua code here..."></textarea>
     <div class="flex gap-2 items-center">
-      <div class="flex gap-1 cyber-inner p-0.5 rounded-full">
+      <div class="flex gap-1 bg-surface-container-low border border-outline-variant p-0.5 rounded-full">
         <button onclick="mfSetServer(${id},'live')" id="mfsrv-${id}-live"
-          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all bg-green-500/20 text-green-400">Live</button>
+          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all bg-green-500/20 text-green-600">Live</button>
         <button onclick="mfSetServer(${id},'beta')" id="mfsrv-${id}-beta"
-          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all text-on-surface-variant">Beta</button>
+          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all text-on-surface-variant hover:bg-surface-container-highest">Beta</button>
       </div>
       <input type="hidden" id="mfserver-${id}" value="live"/>
       <button onclick="mfCheckRow(${id})"
@@ -1461,16 +1428,17 @@ function mfAddRow() {
       </button>
     </div>
     <div id="mfstatus-${id}" class="hidden text-[9px] font-semibold"></div>
-    <div id="mfcurrency-${id}" class="hidden text-[9px] font-code-md flex flex-wrap gap-2 pt-1"></div>`;
+    <div id="mfcurrency-${id}" class="hidden text-[9px] font-mono flex flex-wrap gap-2 pt-1"></div>`;
   container.appendChild(div);
 }
 
+// REST OF THE FUNCTIONS
 function mfSetMethod(id, method) {
   const row = document.getElementById('mfrow-' + id);
   row.dataset.method = method;
   ['lua','lib','json'].forEach(m => {
     const btn = document.getElementById(`mftab-${id}-${m}`);
-    btn.className = `mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m===method?'bg-primary/20 text-primary border-primary/30':'border-white/5 text-on-surface-variant'}`;
+    btn.className = `mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m===method?'bg-primary text-white shadow-md shadow-primary/25':'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`;
   });
   const ta = document.getElementById('mfinput-' + id);
   ta.placeholder = method === 'lua' ? 'Paste Lua code here...' : method === 'lib' ? 'Paste Lib session code...' : '{"user":"...","session":"..."}';
@@ -1478,8 +1446,8 @@ function mfSetMethod(id, method) {
 function mfSetServer(id, server) {
   document.getElementById('mfserver-' + id).value = server;
   const isLive = server === 'live';
-  document.getElementById(`mfsrv-${id}-live`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${isLive ? 'bg-green-500/20 text-green-400' : 'text-on-surface-variant'}`;
-  document.getElementById(`mfsrv-${id}-beta`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${!isLive ? 'bg-amber-400/20 text-amber-400' : 'text-on-surface-variant'}`;
+  document.getElementById(`mfsrv-${id}-live`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${isLive ? 'bg-green-500/20 text-green-600' : 'text-on-surface-variant hover:bg-surface-container-highest'}`;
+  document.getElementById(`mfsrv-${id}-beta`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${!isLive ? 'bg-amber-400/20 text-amber-600' : 'text-on-surface-variant hover:bg-surface-container-highest'}`;
 }
 
 async function mfCheckRow(id) {
@@ -1503,23 +1471,23 @@ async function mfCheckRow(id) {
     const data = await res.json();
     if (data.ok) {
       statusEl.textContent = `Connected (${(data.user_id||'').slice(0,12)}...)`;
-      statusEl.className = 'text-[9px] font-semibold text-green-400';
+      statusEl.className = 'text-[9px] font-semibold text-green-600';
       row.dataset.valid = '1';
       if (data.currency) {
         const icons = { candles:'candle', wax:'opacity', hearts:'favorite', seasonal_candles:'auto_awesome', ascended_candles:'star' };
         currencyEl.innerHTML = Object.keys(data.currency).map(k =>
-          `<span class="flex items-center gap-0.5 cyber-inner px-1.5 py-0.5 rounded-full">
+          `<span class="flex items-center gap-0.5 bg-surface-container-low border border-outline-variant px-1.5 py-0.5 rounded-full">
             <span class="material-symbols-outlined" style="font-size:10px">${icons[k]||'toll'}</span>${Number(data.currency[k]).toLocaleString()}
           </span>`).join('');
         currencyEl.classList.remove('hidden');
       }
     } else {
       statusEl.textContent = 'Failed: ' + (data.error || 'Invalid session');
-      statusEl.className = 'text-[9px] font-semibold text-red-400';
+      statusEl.className = 'text-[9px] font-semibold text-red-600';
     }
   } catch (e) {
     statusEl.textContent = 'Error: ' + e.message;
-    statusEl.className = 'text-[9px] font-semibold text-red-400';
+    statusEl.className = 'text-[9px] font-semibold text-red-600';
   }
   mfUpdateNext();
 }
@@ -1536,11 +1504,11 @@ async function mfCheckAll() {
   const panel = document.getElementById('mfCurrencyPanel');
   if (validRows.length) {
     panel.classList.remove('hidden');
-    panel.innerHTML = `<p class="font-label-caps text-on-surface-variant text-[11px] mb-2">${validRows.length} Connected</p>` +
+    panel.innerHTML = `<p class="font-label-caps text-on-surface-variant text-[11px] mb-2 font-bold">${validRows.length} Connected</p>` +
       validRows.map((row, i) => {
         const id = row.id.replace('mfrow-','');
-        return `<div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
-          <span class="text-[10px] text-on-surface-variant">Acc ${i+1}</span>
+        return `<div class="flex items-center justify-between py-1.5 border-b border-outline-variant last:border-0">
+          <span class="text-[10px] text-on-surface-variant font-bold">Acc ${i+1}</span>
           <div class="flex gap-1.5">${document.getElementById('mfcurrency-'+id)?.innerHTML||'—'}</div></div>`;
       }).join('');
   } else { panel.classList.add('hidden'); }
@@ -1551,11 +1519,11 @@ function mfUpdateNext() {
   const btn = document.getElementById('btnMfNext');
   if (valid > 0) {
     btn.disabled = false;
-    btn.className = 'w-full bg-primary text-on-primary py-3 rounded-full text-sm font-bold transition-all active:scale-[.98]';
+    btn.className = 'w-full bg-primary text-white py-3.5 rounded-full text-xs font-bold transition-all active:scale-[.98] shadow-lg shadow-primary/20';
     btn.textContent = `NEXT — SELECT FEATURES (${valid} account${valid>1?'s':''})`;
   } else {
     btn.disabled = true;
-    btn.className = 'w-full bg-surface-container text-on-surface-variant py-3 rounded-full text-sm font-bold opacity-50 cursor-not-allowed';
+    btn.className = 'w-full bg-surface-container text-on-surface-variant py-3.5 rounded-full text-xs font-bold opacity-50 cursor-not-allowed';
     btn.textContent = 'NEXT — SELECT FEATURES';
   }
 }
@@ -1573,7 +1541,7 @@ function mfBackToSessions() {
 function mfRenderFeatureGrid() {
   document.getElementById('mfFeatureGrid').innerHTML = MF_FEATURES.map(f => `
     <button onclick="mfToggleFeature('${f.id}')" id="mffeat-${f.id}"
-      class="text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(f.id)?'border-primary bg-primary/15 text-primary':'border-white/10 bg-surface-container text-on-surface-variant'}">
+      class="text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(f.id)?'border-primary bg-primary/10 text-primary':'border-outline-variant bg-surface-container-low text-on-surface-variant'}">
       ${f.label}</button>`).join('');
   mfUpdateSummary();
 }
@@ -1581,7 +1549,7 @@ function mfToggleFeature(id) {
   if (mfSelectedFeatures.has(id)) { if (mfSelectedFeatures.size === 1) return; mfSelectedFeatures.delete(id); }
   else { mfSelectedFeatures.add(id); }
   const btn = document.getElementById('mffeat-' + id);
-  btn.className = `text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(id)?'border-primary bg-primary/15 text-primary':'border-white/10 bg-surface-container text-on-surface-variant'}`;
+  btn.className = `text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(id)?'border-primary bg-primary/10 text-primary':'border-outline-variant bg-surface-container-low text-on-surface-variant'}`;
   mfUpdateSummary();
 }
 function mfUpdateSummary() {
@@ -1620,11 +1588,11 @@ async function mfStart() {
       body: JSON.stringify({ telegram_id: TELEGRAM_ID, entries, features: [...mfSelectedFeatures] })
     });
     const data = await res.json();
-    if (!data.ok) { log.innerHTML += `<div style="color:#f87171">${data.error}</div>`; showToast(data.error, 'error'); btn.textContent = 'START EXECUTION'; btn.disabled = false; return; }
+    if (!data.ok) { log.innerHTML += `<div style="color:#FF3B30">${data.error}</div>`; showToast(data.error, 'error'); btn.textContent = 'START EXECUTION'; btn.disabled = false; return; }
     jobId = data.job_id;
-    log.innerHTML += `<div style="color:#cebdff;font-weight:700;">Started — ${data.total} accounts, cost ${data.cost} coins</div>`;
+    log.innerHTML += `<div style="color:#2D31FA;font-weight:700;">Started — ${data.total} accounts, cost ${data.cost} coins</div>`;
   } catch (e) {
-    log.innerHTML += `<div style="color:#f87171">Connection error: ${e.message}</div>`;
+    log.innerHTML += `<div style="color:#FF3B30">Connection error: ${e.message}</div>`;
     showToast('Connection error', 'error'); btn.textContent = 'START EXECUTION'; btn.disabled = false; return;
   }
 
@@ -1637,14 +1605,14 @@ async function mfStart() {
       bar.style.width = (data.total > 0 ? Math.round((data.current / data.total) * 100) : 0) + '%';
       document.getElementById('mfStatusText').textContent = data.status;
       data.results.slice(rendered).forEach(r => {
-        log.innerHTML += `<div style="color:${r.status==='success'?'#4ade80':'#f87171'}">${r.msg}</div>`;
+        log.innerHTML += `<div style="color:${r.status==='success'?'#34C759':'#FF3B30'}">${r.msg}</div>`;
         rendered++;
       });
       log.scrollTop = log.scrollHeight;
       if (data.done) {
         clearInterval(poll);
         bar.style.width = '100%';
-        log.innerHTML += `<div style="color:#cebdff;font-weight:700;border-top:1px solid rgba(255,255,255,.1);padding-top:4px;">Done! ${data.success}/${data.total} success</div>`;
+        log.innerHTML += `<div style="color:#2D31FA;font-weight:700;border-top:1px solid #E5E5EA;padding-top:4px;">Done! ${data.success}/${data.total} success</div>`;
         showToast(`Done! ${data.success}/${data.total} success`, 'success');
         addHistory('Mass Farm', `${data.success}/${data.total} success — [${[...mfSelectedFeatures].join(',')}]`, 'success');
         btn.textContent = 'START EXECUTION'; btn.disabled = false;
