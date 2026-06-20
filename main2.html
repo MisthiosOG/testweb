@@ -368,7 +368,7 @@
           <p class="text-xs font-bold text-on-surface">Daily Check-in</p>
           <p class="text-[9px] text-on-surface-variant">Log in daily to claim free koin</p>
         </div>
-        <button onclick="claimQuest('checkin', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
+        <button id="btn-quest-checkin" onclick="claimQuest('checkin', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
           +2 Coins
         </button>
       </div>
@@ -382,7 +382,7 @@
           </div>
           <p class="text-[9px] text-on-surface-variant">Join channel to stay updated</p>
         </div>
-        <button onclick="claimQuest('tg_channel', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
+        <button id="btn-quest-tg_channel" onclick="claimQuest('tg_channel', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
           +10 Coins
         </button>
       </div>
@@ -393,7 +393,7 @@
           <p class="text-xs font-bold text-on-surface">Invite 3 Friends</p>
           <p class="text-[9px] text-on-surface-variant" id="inviteQuestProgress">Undang teman lewat link di atas (0/3)</p>
         </div>
-        <button onclick="claimQuest('invite_friends', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
+        <button id="btn-quest-invite_friends" onclick="claimQuest('invite_friends', this)" class="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all">
           +15 Coins
         </button>
       </div>
@@ -424,7 +424,7 @@
     <div>
       <p class="font-headline-sm text-[16px] font-bold text-on-surface leading-tight">TrashGameCompany</p>
       <div class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+        <span id="headerStatusDot" class="w-2 h-2 rounded-full bg-tertiary transition-all duration-300"></span>
         <span class="text-[10px] font-label-caps uppercase tracking-wider text-tertiary" id="headerStatus">System Operational</span>
       </div>
     </div>
@@ -1607,8 +1607,8 @@ function openQuestModal() {
       });
   }
   
-  // Update referral invite count progress
-  updateInviteProgress();
+  // Load quest completed/claimed statuses
+  loadQuestStatus();
   
   document.getElementById('questModal').classList.remove('hidden');
 }
@@ -1627,20 +1627,64 @@ function copyRefLink() {
   });
 }
 
-async function updateInviteProgress() {
+async function loadQuestStatus() {
   if (!TELEGRAM_ID) return;
   try {
-    const res = await fetch(API_BASE + '/api/quests/claim', {
+    const res = await fetch(API_BASE + '/api/quests/status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-      body: JSON.stringify({ telegram_id: TELEGRAM_ID, quest_id: 'invite_friends' })
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
     });
     const data = await res.json();
-    const progressEl = document.getElementById('inviteQuestProgress');
-    if (!data.ok && typeof data.invited !== 'undefined' && progressEl) {
-      progressEl.textContent = `Undang teman lewat link di atas (${data.invited}/3)`;
+    if (data.ok) {
+      // Update checkin
+      const btnCheckin = document.getElementById('btn-quest-checkin');
+      if (btnCheckin) {
+        if (data.quests.checkin.claimed) {
+          btnCheckin.textContent = 'CLAIMED';
+          btnCheckin.className = "bg-green-500/10 text-green-600 px-4 py-2 rounded-xl text-[10px] font-bold border border-green-500/25";
+          btnCheckin.disabled = true;
+        } else {
+          btnCheckin.textContent = '+2 Coins';
+          btnCheckin.className = "bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all";
+          btnCheckin.disabled = false;
+        }
+      }
+
+      // Update tg_channel
+      const btnTg = document.getElementById('btn-quest-tg_channel');
+      if (btnTg) {
+        if (data.quests.tg_channel.claimed) {
+          btnTg.textContent = 'CLAIMED';
+          btnTg.className = "bg-green-500/10 text-green-600 px-4 py-2 rounded-xl text-[10px] font-bold border border-green-500/25";
+          btnTg.disabled = true;
+        } else {
+          btnTg.textContent = '+10 Coins';
+          btnTg.className = "bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all";
+          btnTg.disabled = false;
+        }
+      }
+
+      // Update invite_friends
+      const btnInvite = document.getElementById('btn-quest-invite_friends');
+      const progressEl = document.getElementById('inviteQuestProgress');
+      const invited = data.quests.invite_friends.invited || 0;
+      if (progressEl) {
+        progressEl.textContent = `Undang teman lewat link di atas (${invited}/3)`;
+      }
+      if (btnInvite) {
+        if (data.quests.invite_friends.claimed) {
+          btnInvite.textContent = 'CLAIMED';
+          btnInvite.className = "bg-green-500/10 text-green-600 px-4 py-2 rounded-xl text-[10px] font-bold border border-green-500/25";
+          btnInvite.disabled = true;
+        } else {
+          btnInvite.textContent = '+15 Coins';
+          btnInvite.className = "bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-primary/10 hover:opacity-90 active:scale-95 transition-all";
+          btnInvite.disabled = false;
+        }
+      }
     }
-  } catch(e) {}
+  } catch (e) {}
 }
 
 async function claimQuest(questId, btn) {
@@ -1658,9 +1702,8 @@ async function claimQuest(questId, btn) {
     const data = await res.json();
     if (data.ok) {
       showToast(data.message, 'success');
-      btn.textContent = 'CLAIMED';
-      btn.className = "bg-green-500/10 text-green-600 px-4 py-2 rounded-xl text-[10px] font-bold border border-green-500/25";
       refreshCoins();
+      loadQuestStatus();
     } else {
       showToast(data.error || 'Failed to claim', 'error');
       btn.innerHTML = origText;
@@ -2249,6 +2292,55 @@ async function mfStart() {
   }, 3000);
 }
 
+let isServerOnline = true;
+let offlineChecksCount = 0;
+
+async function checkServerHeartbeat() {
+  try {
+    const res = await fetch(API_BASE + '/api/health', { headers: { 'ngrok-skip-browser-warning': '1' } });
+    if (res.ok) {
+      offlineChecksCount = 0;
+      if (!isServerOnline) {
+        isServerOnline = true;
+        const dot = document.getElementById('headerStatusDot');
+        const text = document.getElementById('headerStatus');
+        if (dot) { dot.className = 'w-2 h-2 rounded-full bg-tertiary transition-all duration-300'; }
+        if (text) {
+          text.textContent = isLoggedIn ? 'CONNECTED' : 'System Operational';
+          text.className = 'text-[10px] font-label-caps uppercase tracking-wider text-tertiary';
+        }
+        showToast('Server is back online!', 'success');
+      }
+      
+      // Sync coins balance in real-time in the background if logged in
+      if (isLoggedIn) {
+        refreshCoins();
+      }
+    } else {
+      throw new Error('Offline');
+    }
+  } catch (e) {
+    offlineChecksCount++;
+    if (isServerOnline) {
+      isServerOnline = false;
+      const dot = document.getElementById('headerStatusDot');
+      const text = document.getElementById('headerStatus');
+      if (dot) { dot.className = 'w-2 h-2 rounded-full bg-error transition-all duration-300 animate-pulse'; }
+      if (text) {
+        text.textContent = 'OFFLINE';
+        text.className = 'text-[10px] font-label-caps uppercase tracking-wider text-error';
+      }
+      showToast('Connection to server lost!', 'error');
+    }
+    
+    // Auto logout if offline for more than 3 checks (15 seconds)
+    if (isLoggedIn && offlineChecksCount >= 3) {
+      showToast('Disconnected from server. Logged out.', 'error');
+      logout();
+    }
+  }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Show home page, hide all others
@@ -2275,6 +2367,9 @@ document.addEventListener('DOMContentLoaded', () => {
   refreshCoins();
   refreshRole();
   mfAddRow(); // seed one mass farm row
+
+  // Heartbeat check every 5 seconds
+  setInterval(checkServerHeartbeat, 5000);
 
   // Haptic feedback
   document.querySelectorAll('button, .interactive-scale').forEach(el => {
