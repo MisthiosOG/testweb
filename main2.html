@@ -10,8 +10,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TrashGameCompany Dashboard</title>
-<link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
-<link rel="shortcut icon" type="image/jpeg" href="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
+<link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff"/>
+<link rel="shortcut icon" type="image/png" href="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff"/>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -351,8 +351,8 @@
     </div>
     <!-- User Avatar at Pojok Kanan Atas -->
     <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
-      <img id="dashAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
-      <img id="dashAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src=""/>
+      <img id="headerAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
+      <img id="headerAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
     </div>
   </div>
 </header>
@@ -704,7 +704,7 @@
       <div class="bg-white p-6 text-center relative overflow-hidden rounded-3xl border border-outline-variant card-shadow">
         <div class="relative inline-block mb-4">
           <div class="w-20 h-20 rounded-full border border-outline-variant p-0.5 bg-surface">
-            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src=""/>
+            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
           </div>
           <div id="accRoleBadge" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded-full text-[9px] font-bold shadow-md">VIP</div>
         </div>
@@ -1070,10 +1070,22 @@ function setLoggedIn(method, server, userId) {
   // Telegram photo
   const photoUrl = user.photo_url || (API_BASE + '/api/telegram/avatar/' + TELEGRAM_ID);
   if (photoUrl) {
-    const img = document.getElementById('dashAvatar');
-    img.src = photoUrl;
-    img.classList.remove('hidden');
-    document.getElementById('dashAvatarFallback').classList.add('hidden');
+    const headerImg = document.getElementById('headerAvatar');
+    if (headerImg) {
+      headerImg.src = photoUrl;
+      headerImg.classList.remove('hidden');
+    }
+    const headerFallback = document.getElementById('headerAvatarFallback');
+    if (headerFallback) headerFallback.classList.add('hidden');
+
+    const dashImg = document.getElementById('dashAvatar');
+    if (dashImg) {
+      dashImg.src = photoUrl;
+      dashImg.classList.remove('hidden');
+    }
+    const dashFallback = document.getElementById('dashAvatarFallback');
+    if (dashFallback) dashFallback.classList.add('hidden');
+
     const accImg = document.getElementById('accAvatar');
     if (accImg) accImg.src = photoUrl;
   }
@@ -1107,6 +1119,26 @@ function logout() {
   document.getElementById('currencyGrid').innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>';
   document.getElementById('headerStatus').textContent = 'SYS.ACTIVE';
   document.getElementById('coinBalance').textContent = '—';
+
+  // Reset avatars
+  const headerImg = document.getElementById('headerAvatar');
+  if (headerImg) {
+    headerImg.src = '';
+    headerImg.classList.add('hidden');
+  }
+  const headerFallback = document.getElementById('headerAvatarFallback');
+  if (headerFallback) headerFallback.classList.remove('hidden');
+
+  const dashImg = document.getElementById('dashAvatar');
+  if (dashImg) {
+    dashImg.src = '';
+    dashImg.classList.add('hidden');
+  }
+  const dashFallback = document.getElementById('dashAvatarFallback');
+  if (dashFallback) dashFallback.classList.remove('hidden');
+
+  const accImg = document.getElementById('accAvatar');
+  if (accImg) accImg.src = 'https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';
 
   // Reset nav-home to go back to home/login
   const homeNav = document.getElementById('nav-home');
