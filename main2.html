@@ -106,6 +106,29 @@
             transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
         }
 
+        /* Premium Global Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 5, 102, 0.12);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 5, 102, 0.25);
+        }
+        html.dark ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         body {
             background-color: var(--background);
         }
@@ -338,8 +361,8 @@
   <!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
   <div class="layer space-y-stack-lg" id="page-home">
     <div class="flex flex-col items-center justify-center py-8 relative shimmer-entrance" style="animation-delay: 0.1s;">
-      <div class="w-20 h-20 mb-4 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20">
-        <span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings:'FILL' 1;">terminal</span>
+      <div class="w-20 h-20 mb-4 bg-surface rounded-3xl flex items-center justify-center border border-outline-variant card-shadow overflow-hidden">
+        <img src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg" alt="Logo" class="w-full h-full object-cover"/>
       </div>
       <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
       <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
