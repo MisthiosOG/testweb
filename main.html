@@ -10,8 +10,8 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>TrashGameCompany Dashboard</title>
-<link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff"/>
-<link rel="shortcut icon" type="image/png" href="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff"/>
+<link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg"/>
+<link rel="shortcut icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg"/>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -351,8 +351,8 @@
     </div>
     <!-- User Avatar at Pojok Kanan Atas -->
     <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
-      <img id="headerAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
-      <img id="headerAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
+      <img id="headerAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
+      <img id="headerAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
     </div>
   </div>
 </header>
@@ -704,7 +704,7 @@
       <div class="bg-white p-6 text-center relative overflow-hidden rounded-3xl border border-outline-variant card-shadow">
         <div class="relative inline-block mb-4">
           <div class="w-20 h-20 rounded-full border border-outline-variant p-0.5 bg-surface">
-            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src="https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';"/>
+            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
           </div>
           <div id="accRoleBadge" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded-full text-[9px] font-bold shadow-md">VIP</div>
         </div>
@@ -1138,7 +1138,7 @@ function logout() {
   if (dashFallback) dashFallback.classList.remove('hidden');
 
   const accImg = document.getElementById('accAvatar');
-  if (accImg) accImg.src = 'https://ui-avatars.com/api/?name=TGC&background=2D31FA&color=ffffff';
+  if (accImg) accImg.src = 'https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';
 
   // Reset nav-home to go back to home/login
   const homeNav = document.getElementById('nav-home');
