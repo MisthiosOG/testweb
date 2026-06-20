@@ -186,6 +186,8 @@
         .role-free    { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
         .role-vip_weekly  { background: #fffbeb; color: #d97706; border-color: #fde68a; }
         .role-vip_monthly { background: #f5f3ff; color: #7c3aed; border-color: #ddd6fe; }
+        .role-admin       { background: #fef2f2; color: #dc2626; border-color: #fca5a5; }
+        .role-founder     { background: #f0fdfa; color: #0d9488; border-color: #5eead4; }
         
         .currency-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E5E5EA; }
         .currency-row:last-child { border-bottom: none; }
@@ -280,6 +282,16 @@
             color: #a78bfa !important;
             border-color: rgba(139, 92, 246, 0.25) !important;
         }
+        html.dark .role-admin {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #fca5a5 !important;
+            border-color: rgba(239, 68, 68, 0.25) !important;
+        }
+        html.dark .role-founder {
+            background: rgba(13, 148, 136, 0.15) !important;
+            color: #5eead4 !important;
+            border-color: rgba(13, 148, 136, 0.25) !important;
+        }
         html.dark .currency-row {
             border-bottom-color: var(--outline-variant) !important;
         }
@@ -328,6 +340,11 @@
 <!-- TopAppBar -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-x h-16 bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
   <div class="flex items-center gap-3">
+    <!-- User Avatar at Pojok Kiri Atas -->
+    <div class="w-10 h-10 rounded-2xl bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
+      <img id="headerAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
+      <img id="headerAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
+    </div>
     <div>
       <p class="font-headline-sm text-[16px] font-bold text-on-surface leading-tight">TrashGameCompany</p>
       <div class="flex items-center gap-1.5">
@@ -348,11 +365,6 @@
         <span class="font-bold text-sm text-on-surface" id="coinBalance">—</span>
       </div>
       <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
-    </div>
-    <!-- User Avatar at Pojok Kanan Atas -->
-    <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
-      <img id="headerAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
-      <img id="headerAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';"/>
     </div>
   </div>
 </header>
@@ -680,6 +692,98 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════ BALANCE ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-balance">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">My Wallet</h2>
+      <button onclick="refreshCoins(); refreshRole(); refreshAccount();" class="text-[10px] text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10 transition-all font-semibold">
+        <span class="material-symbols-outlined align-middle text-xs">refresh</span> Sync
+      </button>
+    </div>
+
+    <!-- Credit Card -->
+    <div id="creditCard" class="relative w-full aspect-[1.586/1] rounded-[24px] bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#020617] text-white p-6 shadow-2xl border border-white/10 overflow-hidden flex flex-col justify-between group transform hover:scale-[1.02] transition-all duration-300">
+      
+      <!-- Ambient light effect inside card -->
+      <div id="cardLightRight" class="absolute -right-10 -top-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none group-hover:bg-primary/30 transition-all"></div>
+      <div id="cardLightLeft" class="absolute -left-10 -bottom-10 w-40 h-40 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Top Row -->
+      <div class="flex justify-between items-start relative z-10">
+        <div>
+          <p class="text-[10px] font-label-caps text-white/50 tracking-widest uppercase">Obsidian Intelligence</p>
+          <h3 class="text-sm font-bold tracking-tight text-white mt-0.5" id="cardTitle">TGC Obsidian Card</h3>
+        </div>
+        <!-- Contactless icon -->
+        <div class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-white/80" style="font-size:24px;">wifi_tethering</span>
+        </div>
+      </div>
+
+      <!-- Chip & Contactless -->
+      <div class="flex justify-between items-center relative z-10">
+        <!-- Holographic Chip -->
+        <div class="w-11 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-yellow-200 to-amber-500 border border-yellow-300/30 flex flex-col justify-between p-1 shadow-inner relative overflow-hidden">
+          <div class="absolute inset-0 bg-white/10 opacity-30 flex flex-col justify-between">
+            <div class="border-b border-black/10 w-full h-[1px]"></div>
+            <div class="border-b border-black/10 w-full h-[1px]"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-0.5 w-full h-full">
+            <div class="border-r border-black/10"></div>
+            <div class="border-r border-black/10"></div>
+            <div></div>
+          </div>
+        </div>
+        
+        <!-- Role Badge -->
+        <span id="cardRoleBadge" class="text-[9px] font-label-caps px-3 py-1 rounded-full border border-white/20 bg-white/5 uppercase tracking-wider">—</span>
+      </div>
+
+      <!-- Middle Row: Coins Balance -->
+      <div class="relative z-10 my-1">
+        <p class="text-[9px] font-label-caps text-white/40 tracking-wider uppercase">Available Coins</p>
+        <div class="flex items-baseline gap-1.5 mt-0.5">
+          <span class="text-2xl font-numeral-lg font-black tracking-tight" id="cardCoinBalance">0</span>
+          <span class="text-[10px] font-bold text-primary-container bg-primary/20 px-2 py-0.5 rounded-md">COINS</span>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Card Details -->
+      <div class="flex justify-between items-end relative z-10">
+        <div>
+          <p class="text-[9px] font-label-caps text-white/30 tracking-wider uppercase">Card Holder</p>
+          <p class="text-xs font-semibold tracking-wide text-white/90 mt-0.5 truncate max-w-[150px]" id="cardHolderName">—</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[9px] font-label-caps text-white/30 tracking-wider uppercase">Card Number</p>
+          <p class="text-xs font-mono tracking-widest text-white/90 mt-0.5" id="cardNumber">—</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sky Currency pocket details -->
+    <div class="space-y-stack-sm">
+      <div class="flex justify-between items-center px-1">
+        <h3 class="font-label-caps text-on-surface-variant tracking-widest text-[11px] uppercase">Pocket Balances</h3>
+        <span class="text-[9px] text-on-surface-variant/50 font-mono" id="lastUpdatedCard">Updated just now</span>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-outline-variant card-shadow overflow-hidden divide-y divide-outline-variant" id="balanceCurrencyRows">
+        <div class="text-[11px] text-on-surface-variant/40 text-center py-6">Please login to load wallet contents.</div>
+      </div>
+    </div>
+
+    <!-- Wallet Quick Action Row -->
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="goPage('topup')" class="bg-primary text-white py-3.5 rounded-2xl text-xs font-bold shadow-lg shadow-primary/20 hover:opacity-95 transition-all flex items-center justify-center gap-2 interactive-scale">
+        <span class="material-symbols-outlined" style="font-size:16px;">add_card</span> TOP UP COINS
+      </button>
+      <button onclick="goPage('account')" class="bg-surface border border-outline-variant text-on-surface py-3.5 rounded-2xl text-xs font-bold hover:bg-surface-container-low transition-all flex items-center justify-center gap-2 interactive-scale">
+        <span class="material-symbols-outlined" style="font-size:16px;">account_circle</span> VIEW PROFILE
+      </button>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════ HISTORY ═══════════════════════════════ -->
   <div class="layer layer-hidden space-y-stack-lg" id="page-history">
     <div class="flex items-center justify-between">
@@ -864,6 +968,9 @@
   <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-mass-farm" onclick="goPage('mass-farm')">
     <span class="material-symbols-outlined">terminal</span>
   </button>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-balance" onclick="goPage('balance')">
+    <span class="material-symbols-outlined">credit_card</span>
+  </button>
   <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-account" onclick="goPage('account')">
     <span class="material-symbols-outlined">account_balance_wallet</span>
   </button>
@@ -899,8 +1006,15 @@ let CURRENT_ROLE = 'free';
 let ALLOWED_FEATURES = new Set();
 let MAX_MASSFARM_SESSIONS = 3;
 let FEATURE_COSTS = {};
+const ROLE_LABELS = {
+  'free': 'Free Access',
+  'vip_weekly': 'Weekly VIP',
+  'vip_monthly': 'Monthly VIP',
+  'admin': 'Admin Access',
+  'founder': 'Founder Access'
+};
 
-const ALL_PAGES = ['home','dashboard','mass-farm','history','account','settings','topup'];
+const ALL_PAGES = ['home','dashboard','mass-farm','balance','history','account','settings','topup'];
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
 function goPage(name) {
@@ -926,6 +1040,11 @@ function goPage(name) {
     if (icon) icon.style.fontVariationSettings = "'FILL' 1";
   }
   if (name === 'settings') refreshRole();
+  if (name === 'balance' && isLoggedIn) {
+    refreshCoins();
+    refreshRole();
+    refreshBalanceCard();
+  }
   if (name === 'account' && isLoggedIn) { /* stay */ }
 }
 
@@ -1105,6 +1224,7 @@ function setLoggedIn(method, server, userId) {
   if (server === 'beta') document.getElementById('betaSection').classList.remove('hidden');
   refreshCoins();
   refreshRole();
+  refreshBalanceCard();
 }
 
 // ── LOGOUT ────────────────────────────────────────────────────────────────────
@@ -1139,6 +1259,18 @@ function logout() {
 
   const accImg = document.getElementById('accAvatar');
   if (accImg) accImg.src = 'https://cdn.jsdelivr.net/gh/MisthiosOG/testweb@main/images/icon.jpg';
+
+  // Reset credit card UI
+  const cardBal = document.getElementById('cardCoinBalance');
+  if (cardBal) cardBal.textContent = '0';
+  const cardHolder = document.getElementById('cardHolderName');
+  if (cardHolder) cardHolder.textContent = '—';
+  const cardNum = document.getElementById('cardNumber');
+  if (cardNum) cardNum.textContent = '—';
+  const cardRole = document.getElementById('cardRoleBadge');
+  if (cardRole) cardRole.textContent = '—';
+  const balRows = document.getElementById('balanceCurrencyRows');
+  if (balRows) balRows.innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-6">Please login to load wallet contents.</div>';
 
   // Reset nav-home to go back to home/login
   const homeNav = document.getElementById('nav-home');
@@ -1254,11 +1386,127 @@ async function refreshCoins() {
       document.getElementById('coinBalance').textContent = data.balance;
       FEATURE_COSTS = data.costs || {};
       populateCostBadges();
+      if (isLoggedIn) refreshBalanceCard();
     } else {
       document.getElementById('coinBalance').textContent = '0';
     }
   } catch (e) {
     document.getElementById('coinBalance').textContent = '?';
+  }
+}
+
+function refreshBalanceCard() {
+  const user = tg?.initDataUnsafe?.user || {};
+  const name = user.first_name || 'User';
+  
+  // Card Holder Name
+  const holderEl = document.getElementById('cardHolderName');
+  if (holderEl) holderEl.textContent = name.toUpperCase();
+
+  // Card Number: masked telegram ID (e.g. •••• •••• 1234)
+  const numberEl = document.getElementById('cardNumber');
+  if (numberEl && TELEGRAM_ID) {
+    const idStr = String(TELEGRAM_ID);
+    const lastFour = idStr.slice(-4);
+    numberEl.textContent = `•••• •••• ${lastFour}`;
+  } else if (numberEl) {
+    numberEl.textContent = '•••• •••• ••••';
+  }
+
+  // Coin Balance
+  const balEl = document.getElementById('cardCoinBalance');
+  const coinBalObj = document.getElementById('coinBalance');
+  if (balEl && coinBalObj) {
+    const coinBal = coinBalObj.textContent;
+    balEl.textContent = coinBal === '—' ? '0' : coinBal;
+  }
+
+  // Role config dynamic styling
+  const cardEl = document.getElementById('creditCard');
+  const lightRight = document.getElementById('cardLightRight');
+  const lightLeft = document.getElementById('cardLightLeft');
+  const cardTitle = document.getElementById('cardTitle');
+  const roleEl = document.getElementById('cardRoleBadge');
+
+  if (cardEl) {
+    const baseClasses = "relative w-full aspect-[1.586/1] rounded-[24px] text-white p-6 shadow-2xl border overflow-hidden flex flex-col justify-between group transform hover:scale-[1.02] transition-all duration-300";
+    
+    let gradientClasses = "bg-gradient-to-br from-[#334155] via-[#1E293B] to-[#0F172A] border-slate-700/30";
+    let rightLightClass = "absolute -right-10 -top-10 w-40 h-40 bg-slate-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-slate-500/30 transition-all";
+    let leftLightClass = "absolute -left-10 -bottom-10 w-40 h-40 bg-slate-600/10 rounded-full blur-3xl pointer-events-none";
+    let titleText = "TGC Slate Card";
+    let roleBadgeClass = "bg-slate-800/60 border-slate-700/50 text-slate-300";
+
+    if (CURRENT_ROLE === 'vip_weekly') {
+      gradientClasses = "bg-gradient-to-br from-[#D97706] via-[#78350F] to-[#451A03] border-amber-500/20";
+      rightLightClass = "absolute -right-10 -top-10 w-40 h-40 bg-amber-400/20 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-400/30 transition-all";
+      leftLightClass = "absolute -left-10 -bottom-10 w-40 h-40 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none";
+      titleText = "TGC Bronze VIP Card";
+      roleBadgeClass = "bg-amber-950/40 border-amber-500/30 text-amber-400";
+    } else if (CURRENT_ROLE === 'vip_monthly') {
+      gradientClasses = "bg-gradient-to-br from-[#7C3AED] via-[#4C1D95] to-[#1E1B4B] border-purple-500/20";
+      rightLightClass = "absolute -right-10 -top-10 w-40 h-40 bg-purple-500/25 rounded-full blur-3xl pointer-events-none group-hover:bg-purple-500/35 transition-all";
+      leftLightClass = "absolute -left-10 -bottom-10 w-40 h-40 bg-fuchsia-500/15 rounded-full blur-3xl pointer-events-none";
+      titleText = "TGC Amethyst VIP Card";
+      roleBadgeClass = "bg-purple-950/40 border-purple-500/30 text-purple-400";
+    } else if (CURRENT_ROLE === 'admin') {
+      gradientClasses = "bg-gradient-to-br from-[#DC2626] via-[#7F1D1D] to-[#450A0A] border-red-500/20";
+      rightLightClass = "absolute -right-10 -top-10 w-40 h-40 bg-red-500/30 rounded-full blur-3xl pointer-events-none group-hover:bg-red-500/40 transition-all";
+      leftLightClass = "absolute -left-10 -bottom-10 w-40 h-40 bg-rose-600/20 rounded-full blur-3xl pointer-events-none";
+      titleText = "TGC Crimson Admin Card";
+      roleBadgeClass = "bg-red-950/40 border-red-500/30 text-red-400";
+    } else if (CURRENT_ROLE === 'founder') {
+      gradientClasses = "bg-gradient-to-br from-[#0D9488] via-[#0F766E] to-[#042F2E] border-teal-500/20";
+      rightLightClass = "absolute -right-10 -top-10 w-40 h-40 bg-cyan-400/30 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-400/40 transition-all";
+      leftLightClass = "absolute -left-10 -bottom-10 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl pointer-events-none";
+      titleText = "TGC Emerald Founder Card";
+      roleBadgeClass = "bg-teal-950/40 border-teal-500/30 text-teal-400";
+    }
+
+    cardEl.className = `${baseClasses} ${gradientClasses}`;
+    if (lightRight) lightRight.className = rightLightClass;
+    if (lightLeft) lightLeft.className = leftLightClass;
+    if (cardTitle) cardTitle.textContent = titleText;
+    if (roleEl) {
+      roleEl.textContent = ROLE_LABELS[CURRENT_ROLE] || 'Free Access';
+      roleEl.className = `text-[9px] font-label-caps px-3 py-1 rounded-full border uppercase tracking-wider ${roleBadgeClass}`;
+    }
+  }
+
+  // Sky currencies in pocket balances
+  const container = document.getElementById('balanceCurrencyRows');
+  if (container) {
+    if (!isLoggedIn) {
+      container.innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-6">Please login to load wallet contents.</div>';
+      return;
+    }
+    if (!lastCurrencyData || !Object.keys(lastCurrencyData).length) {
+      container.innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-6">No pocket balances loaded. Tap Sync/Refresh to load.</div>';
+      return;
+    }
+    const ordered = Object.keys(CURRENCY_META).filter(k => lastCurrencyData[k] !== undefined);
+    const rest    = Object.keys(lastCurrencyData).filter(k => !CURRENCY_META[k]);
+    container.innerHTML = [...ordered, ...rest].map(key => {
+      const m = CURRENCY_META[key] || { label: key.replace(/_/g,' '), icon: 'toll', color: '#5856D6' };
+      return `
+        <div class="flex justify-between items-center p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:${m.color}15">
+              <span class="material-symbols-outlined text-[18px]" style="color:${m.color}">${m.icon}</span>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-on-surface">${m.label}</p>
+              <p class="text-[9px] text-on-surface-variant/70 font-medium">Sky Pocket</p>
+            </div>
+          </div>
+          <span class="text-sm font-bold font-mono text-on-surface">${Number(lastCurrencyData[key]).toLocaleString()}</span>
+        </div>`;
+    }).join('');
+
+    const timeEl = document.getElementById('lastUpdatedCard');
+    if (timeEl) {
+      timeEl.textContent = 'Updated at ' + new Date().toLocaleTimeString();
+    }
   }
 }
 function populateCostBadges() {
@@ -1534,7 +1782,7 @@ async function refreshAccount() {
     });
     const data = await res.json();
     loading.classList.add('hidden'); loading.style.display = 'none';
-    if (data.ok) { lastCurrencyData = data.currency; renderCurrency(data.currency); showToast('Balance updated', 'success'); }
+    if (data.ok) { lastCurrencyData = data.currency; renderCurrency(data.currency); showToast('Balance updated', 'success'); if (isLoggedIn) refreshBalanceCard(); }
     else { showToast(data.error, 'error'); }
   } catch (e) {
     loading.classList.add('hidden'); loading.style.display = 'none';
