@@ -328,10 +328,6 @@
 <!-- TopAppBar -->
 <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-x h-16 bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
   <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant">
-      <img id="dashAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
-      <img id="dashAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src=""/>
-    </div>
     <div>
       <p class="font-headline-sm text-[16px] font-bold text-on-surface leading-tight">TrashGameCompany</p>
       <div class="flex items-center gap-1.5">
@@ -353,6 +349,11 @@
       </div>
       <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
     </div>
+    <!-- User Avatar at Pojok Kanan Atas -->
+    <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
+      <img id="dashAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
+      <img id="dashAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src=""/>
+    </div>
   </div>
 </header>
 
@@ -361,8 +362,8 @@
   <!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
   <div class="layer space-y-stack-lg" id="page-home">
     <div class="flex flex-col items-center justify-center py-8 relative shimmer-entrance" style="animation-delay: 0.1s;">
-      <div class="w-20 h-20 mb-4 bg-surface rounded-3xl flex items-center justify-center border border-outline-variant card-shadow overflow-hidden">
-        <img src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg" alt="Logo" class="w-full h-full object-cover"/>
+      <div class="w-20 h-20 mb-4 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20">
+        <span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings: 'FILL' 1;">terminal</span>
       </div>
       <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
       <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
