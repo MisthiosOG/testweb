@@ -1,1207 +1,1826 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-    <title>TrashGameCompany Admin Panel | Obsidian Intelligence</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Manrope:wght@200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-              "primary": "#2D31FA", // Vibrant blue
-              "primary-container": "#E7E8FF",
-              "on-primary-container": "#000566",
-              "background": "#F5F5F7",
-              "surface": "#FFFFFF",
-              "on-surface": "#1C1C1E",
-              "on-surface-variant": "#636366",
-              "outline": "#D1D1D6",
-              "outline-variant": "#E5E5EA",
-              "secondary": "#5856D6",
-              "tertiary": "#34C759",
-              "error": "#FF3B30",
-              "surface-container-lowest": "#FFFFFF",
-              "surface-container-low": "#F2F2F7",
-              "surface-container": "#FFFFFF",
-              "surface-container-high": "#E5E5EA",
-              "surface-container-highest": "#D1D1D6"
+<script>
+  (function() {
+    const theme = localStorage.getItem('theme') || 'light';
+    document.documentElement.className = theme;
+  })();
+</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TrashGameCompany Dashboard</title>
+<link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
+<link rel="shortcut icon" type="image/jpeg" href="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg"/>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Geist:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#2D31FA", // Vibrant blue
+                        "primary-container": "var(--primary-container)",
+                        "on-primary-container": "var(--on-primary-container)",
+                        "background": "var(--background)", 
+                        "surface": "var(--surface)",
+                        "on-surface": "var(--on-surface)",
+                        "on-surface-variant": "var(--on-surface-variant)",
+                        "outline": "var(--outline)",
+                        "outline-variant": "var(--outline-variant)",
+                        "secondary": "#5856D6",
+                        "tertiary": "#34C759", // Status green
+                        "error": "#FF3B30",
+                        "surface-container": "var(--surface-container)",
+                        "surface-container-low": "var(--surface-container-low)",
+                        "surface-container-highest": "var(--surface-container-highest)"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "gutter": "12px",
+                        "stack-md": "16px",
+                        "margin-x": "20px",
+                        "stack-lg": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "label-caps": ["Geist"],
+                        "body-md": ["Geist"],
+                        "numeral-lg": ["Manrope"],
+                        "headline-sm": ["Manrope"],
+                        "body-lg": ["Geist"],
+                        "display-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "numeral-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
             },
-            "borderRadius": {
-              "DEFAULT": "0.5rem",
-              "lg": "1rem",
-              "xl": "1.5rem",
-              "2xl": "2rem",
-              "full": "9999px"
-            },
-            "spacing": {
-              "margin-page": "20px",
-              "gutter": "16px",
-              "stack-sm": "8px",
-              "stack-md": "16px",
-              "stack-lg": "24px",
-              "base": "16px"
-            },
-            "fontFamily": {
-              "body-lg": ["Geist"],
-              "headline-lg": ["Manrope"],
-              "status-sm": ["Geist"],
-              "code-md": ["Geist"],
-              "label-caps": ["Geist"],
-              "headline-md": ["Manrope"],
-              "headline-sm": ["Manrope"],
-              "body-md": ["Geist"]
-            },
-            "fontSize": {
-              "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-              "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-              "status-sm": ["11px", {"lineHeight": "12px", "fontWeight": "700"}],
-              "code-md": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
-              "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-              "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-              "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-              "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
-            }
-          },
-        },
-      }
+        }
     </script>
-    <style>
+<style>
+        :root {
+            --primary-container: #E7E8FF;
+            --on-primary-container: #000566;
+            --background: #F5F5F7;
+            --surface: #FFFFFF;
+            --on-surface: #1C1C1E;
+            --on-surface-variant: #636366;
+            --outline: #D1D1D6;
+            --outline-variant: #E5E5EA;
+            --surface-container: #FFFFFF;
+            --surface-container-low: #F2F2F7;
+            --surface-container-highest: #E5E5EA;
+        }
+
+        html.dark {
+            --primary-container: #1b1c3c;
+            --on-primary-container: #e0e2ff;
+            --background: #0b0c10;
+            --surface: #15161e;
+            --on-surface: #f4f5f8;
+            --on-surface-variant: #9ea2b0;
+            --outline: #2c2e3d;
+            --outline-variant: #1f212d;
+            --surface-container: #15161e;
+            --surface-container-low: #0f1015;
+            --surface-container-highest: #282b3d;
+        }
+
+        body, header, nav, button, div, span, p, textarea, input, select {
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* Premium Global Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 5, 102, 0.12);
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 5, 102, 0.25);
+        }
+        html.dark ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         body {
-            background-color: #F5F5F7;
-            color: #1C1C1E;
-            -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--background);
         }
-        .silk-glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid #E5E5EA;
-        }
-        .silk-glass-card {
-            background: #FFFFFF;
-            border: 1px solid #E5E5EA;
-            border-radius: 24px;
+        .card-shadow {
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
         }
-        .status-pulse {
-            box-shadow: 0 0 8px rgba(52, 199, 89, 0.4);
-            animation: pulse 2s infinite;
+        .terminal-light {
+            background: #1C1C1E;
+            color: #FFFFFF;
         }
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+        .interactive-scale:active {
+            transform: scale(0.96);
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(45, 49, 250, 0.1); border-radius: 10px; }
-        .layer {
-            animation: fadeIn 0.22s ease forwards;
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes shimmer {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        /* Hide browser up/down number spinners */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .shimmer-entrance {
+            animation: shimmer 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        input[type=number] {
-            -moz-appearance: textfield;
+
+        /* Feat states */
+        .feat-btn { cursor: pointer; position: relative; }
+        .feat-btn.running { pointer-events: none; opacity: 0.8; }
+        .feat-btn.running::after {
+            content: ''; position: absolute; top: 8px; right: 8px;
+            width: 8px; height: 8px; background: #4ade80; border-radius: 50%;
+            animation: running-dot 1.2s ease-in-out infinite; box-shadow: 0 0 6px #4ade80;
+        }
+        @keyframes running-dot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.4; transform: scale(0.6); }
+        }
+        .feat-btn.locked { opacity: 0.5; }
+        .lock-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.45); border-radius: 24px; backdrop-filter: blur(1px);
+        }
+        .cost-badge {
+            position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 700;
+            color: #b25e00; background: #fffbeb; border: 1px solid #fde68a;
+            border-radius: 99px; padding: 1px 6px; line-height: 1.4; display: flex; align-items: center; gap: 2px;
+        }
+        .cost-badge.static {
+            position: static;
+        }
+        .role-free    { background: #f3f4f6; color: #4b5563; border-color: #e5e7eb; }
+        .role-vip_weekly  { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+        .role-vip_monthly { background: #f5f3ff; color: #7c3aed; border-color: #ddd6fe; }
+        
+        .currency-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E5E5EA; }
+        .currency-row:last-child { border-bottom: none; }
+        
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+            padding: 8px 18px; border-radius: 12px; font-size: 11px; font-weight: 600;
+            z-index: 9999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap;
+        }
+        .toast.show { opacity: 1; }
+        
+        /* Spinner */
+        .spinner {
+            width: 14px; height: 14px; border: 2px solid rgba(0,0,0,.15);
+            border-top-color: #2D31FA; border-radius: 50%; animation: spin .6s linear infinite;
+            display: inline-block; margin-right: 6px; vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .layer { transition: opacity 0.4s ease, transform 0.4s ease; }
+        .layer-hidden { display: none; opacity: 0; transform: scale(0.98) translateY(10px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        .history-item { padding: 12px; border-radius: 16px; background: #ffffff; border: 1px solid #E5E5EA; margin-bottom: 8px; }
+
+        /* Premium Theme Toggle Animations */
+        #themeToggleBtn .sun-icon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        #themeToggleBtn .moon-icon {
+            transform: rotate(-90deg) scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        html.dark #themeToggleBtn .sun-icon {
+            transform: rotate(90deg) scale(0);
+            opacity: 0;
+        }
+        html.dark #themeToggleBtn .moon-icon {
+            transform: rotate(0deg) scale(1);
+            opacity: 1;
+        }
+
+        /* Glassmorphism Header & Navigation in Light/Dark Modes */
+        header {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        html.dark header {
+            background: rgba(11, 12, 16, 0.8) !important;
+        }
+        nav {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        html.dark nav {
+            background: rgba(21, 22, 30, 0.95) !important;
+        }
+
+        /* Overrides to prevent dead / light colors in dark mode */
+        html.dark .bg-white {
+            background-color: var(--surface) !important;
+        }
+        html.dark .cost-badge {
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: #fbbf24 !important;
+            border-color: rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .lock-overlay {
+            background: rgba(11, 12, 16, 0.65) !important;
+        }
+        html.dark .role-free {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: #9ea2b0 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        html.dark .role-vip_weekly {
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: #fbbf24 !important;
+            border-color: rgba(245, 158, 11, 0.25) !important;
+        }
+        html.dark .role-vip_monthly {
+            background: rgba(139, 92, 246, 0.15) !important;
+            color: #a78bfa !important;
+            border-color: rgba(139, 92, 246, 0.25) !important;
+        }
+        html.dark .currency-row {
+            border-bottom-color: var(--outline-variant) !important;
+        }
+        html.dark .history-item {
+            background: var(--surface) !important;
+            border-color: var(--outline-variant) !important;
         }
     </style>
 </head>
-<body class="font-body-md min-h-screen pb-24 relative overflow-x-hidden bg-background text-on-surface">
+<body class="bg-background text-on-surface font-body-md selection:bg-primary/20 min-h-screen pb-32 overflow-x-hidden">
 
-<!-- Toast Notification -->
-<div id="toast" class="fixed bottom-24 left-5 right-5 z-[999] p-4 rounded-xl text-xs font-semibold shadow-xl translate-y-10 opacity-0 pointer-events-none transition-all duration-300"></div>
+<!-- Toast -->
+<div id="toast" class="toast"></div>
 
 <!-- Confirm Modal -->
-<div id="confirmModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
-  <div class="silk-glass-card p-6 mx-margin-page w-full max-w-sm flex flex-col gap-4">
+<div id="confirmModal" class="fixed inset-0 z-[99] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+  <div class="bg-white p-5 mx-4 w-full max-w-xs flex flex-col gap-4 rounded-3xl border border-outline-variant card-shadow fade-in">
     <p id="confirmMsg" class="text-sm font-semibold text-center text-on-surface"></p>
     <div class="flex gap-2">
-      <button id="confirmNo" class="flex-1 py-3 rounded-xl text-xs font-bold bg-surface-container-low border border-outline-variant text-on-surface-variant hover:bg-surface-container-high active:scale-95 transition-all">Cancel</button>
-      <button id="confirmYes" class="flex-1 py-3 rounded-xl text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">Yes, Proceed</button>
+      <button id="confirmNo" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-surface-container-low border border-outline-variant text-on-surface-variant hover:bg-surface-container-highest transition-all interactive-scale">Cancel</button>
+      <button id="confirmYes" class="flex-1 py-2.5 rounded-full text-xs font-bold bg-primary text-white shadow-md shadow-primary/20 hover:opacity-90 transition-all interactive-scale">Run</button>
     </div>
   </div>
 </div>
 
-<!-- Top App Bar -->
-<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-page py-stack-sm bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
-  <div class="flex items-center gap-3">
-    <div class="w-10 h-10 rounded-full border border-outline-variant overflow-hidden shadow-sm bg-surface-container-low">
-      <img id="adminAvatar" alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDt1W0NOPsRyFC507vnTkuGnOp5T5Vm-fni44D5fWR2YySTvk4jrO1muN4Maw7F-Oqdqw5OmpDz1J-a67JDQq7IRHGaBmtJ_mcGsIp9FlRZLEJxaaJ7IeQ31EM9h-XAE_PUEAjMNpvr5e85x1IWhc8HfK69fCoiLikTs4QQ7tqBFxCgIU8qiFgqDJbcj5oWu7_VZ0RG1oHHv76lvOjX4QA4O_HQyS9pSDpZWbH2ojUIgG8NgQUbVMpQywAOdZT3q8SnWSv0cOqTadA"/>
+<!-- Heart Modal -->
+<div id="heartModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+  <div class="bg-white w-full max-w-xs p-5 flex flex-col gap-3 rounded-3xl border border-outline-variant card-shadow">
+    <div class="flex justify-between items-center">
+      <span class="font-bold text-sm text-on-surface">Send Heart</span>
+      <button onclick="closeHeartModal()" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-all">close</button>
     </div>
-    <div class="flex flex-col">
-      <span id="adminName" class="font-headline-sm text-[15px] leading-tight font-bold text-on-surface">TrashGameCompany</span>
-      <span class="font-code-md text-[10px] text-primary tracking-widest uppercase">Admin Panel</span>
+    <!-- Friend list -->
+    <div id="friendListContainer" class="flex flex-col gap-2 max-h-52 overflow-y-auto no-scrollbar">
+      <button onclick="loadFriends()" class="w-full py-2.5 rounded-full text-xs font-bold border border-primary/30 text-primary hover:bg-primary/10 transition-all">
+        <span class="material-symbols-outlined align-middle" style="font-size:14px">group</span> Load Friends
+      </button>
+    </div>
+    <!-- Manual fallback -->
+    <input type="text" id="heartTargetId" placeholder="Or enter Sky ID manually..."
+      class="bg-surface-container-low border border-outline-variant px-4 py-3 text-xs outline-none focus:border-primary/50 bg-transparent text-on-surface w-full rounded-2xl"/>
+    <button onclick="confirmSendHeart()" class="bg-primary text-white py-3 rounded-full text-xs font-bold shadow-lg shadow-primary/25 hover:opacity-90 transition-all interactive-scale">SEND HEART (5 Coins)</button>
+  </div>
+</div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-x h-16 bg-white/80 backdrop-blur-xl border-b border-outline-variant shadow-sm">
+  <div class="flex items-center gap-3">
+    <div>
+      <p class="font-headline-sm text-[16px] font-bold text-on-surface leading-tight">TrashGameCompany</p>
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+        <span class="text-[10px] font-label-caps uppercase tracking-wider text-tertiary" id="headerStatus">System Operational</span>
+      </div>
     </div>
   </div>
-  <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-low rounded-full border border-outline-variant">
-    <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1">paid</span>
-    <span id="headerTotalCoins" class="font-code-md text-code-md text-on-surface font-bold">—</span>
+  <div class="flex items-center gap-3">
+    <!-- Theme Toggle -->
+    <button id="themeToggleBtn" onclick="toggleTheme()" class="relative w-9 h-9 rounded-full flex items-center justify-center border border-outline-variant bg-surface text-on-surface hover:bg-surface-container-low transition-all duration-300 interactive-scale shrink-0 overflow-hidden" aria-label="Toggle Theme">
+      <span class="material-symbols-outlined absolute transition-all duration-500 transform sun-icon" style="font-size: 20px;">light_mode</span>
+      <span class="material-symbols-outlined absolute transition-all duration-500 transform moon-icon" style="font-size: 20px;">dark_mode</span>
+    </button>
+    <div class="flex flex-col items-end cursor-pointer" onclick="goPage('topup')">
+      <div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant">
+        <span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">monetization_on</span>
+        <span class="font-bold text-sm text-on-surface" id="coinBalance">—</span>
+      </div>
+      <span class="text-[9px] font-label-caps text-on-surface-variant mt-1" id="roleLabel">FREE ACCESS</span>
+    </div>
+    <!-- User Avatar at Pojok Kanan Atas -->
+    <div class="w-10 h-10 rounded-full bg-surface-container-low overflow-hidden border border-outline-variant shrink-0 cursor-pointer" onclick="goPage('account')">
+      <img id="dashAvatarFallback" alt="User Avatar" class="w-full h-full object-cover" src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg';"/>
+      <img id="dashAvatar" alt="User Avatar" class="w-full h-full object-cover hidden" src="" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg';"/>
+    </div>
   </div>
 </header>
 
-<main class="pt-24 px-margin-page space-y-stack-lg">
+<main class="pt-24 px-margin-x space-y-stack-lg max-w-lg mx-auto relative z-10">
 
-  <!-- ═══════════════════════════════ TAB: USERS ═══════════════════════════════ -->
-  <div id="page-users" class="layer space-y-stack-lg">
-    <!-- System Stats Grid -->
-    <section class="grid grid-cols-3 gap-gutter">
-      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
-        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Total Users</span>
-        <span id="statUsers" class="font-headline-md text-headline-sm text-primary">—</span>
+  <!-- ═══════════════════════════════ HOME / LOGIN ═══════════════════════════════ -->
+  <div class="layer space-y-stack-lg" id="page-home">
+    <div class="flex flex-col items-center justify-center py-8 relative shimmer-entrance" style="animation-delay: 0.1s;">
+      <div class="w-20 h-20 mb-4 bg-primary/10 rounded-3xl flex items-center justify-center border border-primary/20">
+        <span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings: 'FILL' 1;">terminal</span>
       </div>
-      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
-        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Total Coins</span>
-        <span id="statCoins" class="font-headline-md text-headline-sm text-tertiary">—</span>
+      <h2 class="font-headline-lg text-headline-lg text-center tracking-tight text-on-surface">Login</h2>
+      <p class="font-body-md text-on-surface-variant text-center px-4 mt-2">Choose server and login method to continue</p>
+    </div>
+
+    <!-- Server Toggle -->
+    <div class="bg-white p-1 flex gap-1 rounded-full border border-outline-variant card-shadow max-w-sm mx-auto shimmer-entrance" style="animation-delay: 0.2s;">
+      <button class="flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale" id="btn-live" onclick="selectServer('live')">Live</button>
+      <button class="flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale" id="btn-beta" onclick="selectServer('beta')">Beta</button>
+    </div>
+
+    <!-- Login Tabs -->
+    <div class="space-y-stack-md shimmer-entrance" style="animation-delay: 0.3s;">
+      <div class="flex border-b border-outline-variant justify-center gap-4">
+        <button id="ltab-lua" class="py-3 px-4 text-center font-bold text-xs border-b-2 border-primary text-primary transition-all" onclick="switchLoginTab('lua')">LUA</button>
+        <button id="ltab-lib" class="py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all" onclick="switchLoginTab('lib')">LIB</button>
+        <button id="ltab-platform" class="py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all" onclick="switchLoginTab('platform')">PLATFORM</button>
       </div>
-      <div class="silk-glass-card p-stack-md flex flex-col items-center justify-center text-center">
-        <span class="font-label-caps text-[10px] text-on-surface-variant uppercase mb-1 text-center">Live Sessions</span>
-        <div class="flex items-center gap-1.5 justify-center">
-          <div class="w-1.5 h-1.5 rounded-full bg-[#4ADE80] status-pulse"></div>
-          <span id="statLive" class="font-headline-md text-headline-sm text-on-surface">—</span>
+
+      <!-- LUA tab -->
+      <div id="loginTab-lua" class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">LUA SESSION CODE</label>
+          <textarea id="luaInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder="Paste Lua base64 code here..."></textarea>
+        </div>
+        <button id="btn-lua-submit" onclick="submitLogin('lua')"
+          class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+          CONNECT <span class="material-symbols-outlined text-[16px]">bolt</span>
+        </button>
+      </div>
+
+      <!-- LIB tab -->
+      <div id="loginTab-lib" class="hidden bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">Lib Code</label>
+          <textarea id="libInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder="Paste Lib session code here..."></textarea>
+        </div>
+        <button id="btn-lib-submit" onclick="submitLogin('lib')"
+          class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+          CONNECT <span class="material-symbols-outlined text-[16px]">bolt</span>
+        </button>
+      </div>
+
+      <!-- PLATFORM tab -->
+      <div id="loginTab-platform" class="hidden bg-white p-6 rounded-3xl border border-outline-variant card-shadow space-y-4">
+        <div class="space-y-2">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">SELECT PLATFORM</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectPlatform('Nintendo')" id="plat-Nintendo" class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Nintendo</button>
+            <button onclick="selectPlatform('Google')"   id="plat-Google"   class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Google</button>
+            <button onclick="selectPlatform('Steam')"    id="plat-Steam"    class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Steam</button>
+            <button onclick="selectPlatform('Sony')"     id="plat-Sony"     class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Sony</button>
+            <button onclick="selectPlatform('Facebook')" id="plat-Facebook" class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Facebook</button>
+            <button onclick="selectPlatform('Huawei')"   id="plat-Huawei"   class="bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale">Huawei</button>
+          </div>
+        </div>
+        <div id="platformCodeWrap" class="hidden space-y-3">
+          <label class="font-label-caps text-on-surface-variant text-[11px] uppercase tracking-wider">OAuth JSON</label>
+          <textarea id="platformInput" rows="3"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-2xl px-4 py-3 text-body-lg text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono resize-none"
+            placeholder='{"id":"...","token":"..."}'></textarea>
+          <button id="btn-plat-submit" onclick="submitLogin('platform')"
+            class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+            CONNECT <span class="material-symbols-outlined text-[20px]">bolt</span>
+          </button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- User Management -->
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">User Management</h2>
-      <div class="silk-glass-card p-base space-y-base">
-        <!-- Search and Select User -->
-        <div class="relative group">
-          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
-          <input id="userSearchInput" onfocus="showUserList()" onblur="hideUserList()" oninput="filterUserList(this.value)" class="w-full bg-surface-container-lowest border border-outline rounded-xl pl-11 pr-4 py-3 font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search Telegram ID or Name..." type="text"/>
-          <!-- Dropdown User List -->
-          <div id="userDropdown" class="hidden absolute left-0 right-0 mt-2 bg-surface border border-outline-variant rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-[99] p-2 flex flex-col gap-1"></div>
-        </div>
-
-        <!-- User Profile Preview -->
-        <div class="flex items-center justify-between p-4 bg-surface-container-low/50 rounded-2xl border border-outline-variant shadow-inner">
-          <div class="flex items-center gap-4 min-w-0">
-            <!-- Avatar Container -->
-            <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-outline-variant shrink-0 flex items-center justify-center bg-surface-container-highest relative">
-              <span id="previewAvatarFallback" class="text-xl text-primary font-bold uppercase">U</span>
-              <img id="previewAvatar" alt="User Avatar" class="w-full h-full object-cover absolute inset-0 hidden" src="" onerror="this.classList.add('hidden'); document.getElementById('previewAvatarFallback').classList.remove('hidden')"/>
-            </div>
-            
-            <!-- Text Stack -->
-            <div class="flex flex-col min-w-0">
-              <div class="flex items-center gap-2">
-                <h3 id="previewName" class="font-headline-sm text-[18px] leading-tight font-bold text-on-surface truncate">Select a user</h3>
-                <span id="previewUsername" class="text-primary text-xs font-normal truncate"></span>
-              </div>
-              <p id="previewId" class="font-code-md text-xs text-on-surface-variant/80 mt-1">ID: —</p>
-            </div>
-          </div>
-          
-          <!-- Badge and Coins Stack -->
-          <div class="flex flex-col items-end shrink-0 gap-2 ml-4">
-            <span id="previewRole" class="px-3 py-1 bg-primary/10 border border-primary/20 text-primary rounded-full font-label-caps text-[10px] tracking-wider font-bold whitespace-nowrap uppercase shadow-sm">—</span>
-            <div class="flex items-center gap-1 text-tertiary">
-              <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1">paid</span>
-              <span id="previewCoins" class="font-code-md text-sm font-bold">—</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Actions Grid -->
-        <div class="space-y-base pt-2">
-          <!-- Set Coins -->
-          <div class="space-y-2">
-            <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Update Coin Balance</label>
-            <div class="flex gap-2">
-              <input id="coinInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors animate-none" type="number" value="0"/>
-              <button onclick="updateCoins()" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SET COINS</button>
-            </div>
-          </div>
-
-          <!-- Role & Ban & Bypass -->
-          <div class="space-y-2">
-            <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Access & Roles Controls</label>
-            <div class="flex gap-2 items-center">
-              <div class="flex-1 flex gap-1 bg-surface-container-lowest p-1 rounded-xl border border-outline">
-                <button id="roleBtn-FREE" onclick="assignRole('FREE')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">FREE</button>
-                <button id="roleBtn-VIP_WEEKLY" onclick="assignRole('VIP_WEEKLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP W</button>
-                <button id="roleBtn-VIP_MONTHLY" onclick="assignRole('VIP_MONTHLY')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors">VIP M</button>
-                <button id="roleBtn-FOUNDER" onclick="assignRole('FOUNDER')" class="flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors font-bold text-primary">FOUNDER</button>
-              </div>
-              
-              <!-- Bypass Toggle -->
-              <button id="bypassBtn" onclick="toggleBypass()" class="h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-outline text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container-lowest">
-                <span class="material-symbols-outlined text-[20px]">vpn_key</span>
-                <span id="bypassLabel" class="text-[10px] font-bold font-label-caps">BYPASS</span>
-              </button>
-
-              <!-- Ban Button -->
-              <button id="banBtn" onclick="toggleBan()" class="h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/30 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0">
-                <span class="material-symbols-outlined">block</span>
-              </button>
-            </div>
-          </div>
-
-        </div>
+    <!-- Access Denied Card -->
+    <div id="reqAccessCard" class="hidden bg-white p-6 rounded-3xl border border-error/20 card-shadow flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-error" style="font-size:20px">lock</span>
+        <span class="text-sm font-bold text-error">Access Denied</span>
       </div>
-    </section>
+      <p class="text-[11px] text-on-surface-variant">Your Telegram ID is not authorized. Request access from the bot owner.</p>
+      <div class="bg-surface-container-low border border-outline-variant rounded-2xl p-3 flex items-center justify-between">
+        <span class="text-[10px] text-on-surface-variant">Your Telegram ID</span>
+        <span class="text-xs font-mono text-primary font-bold" id="reqTgId">—</span>
+      </div>
+      <button onclick="requestAccess()" id="btnReqAccess"
+        class="w-full bg-error text-white py-3 rounded-full text-xs font-bold hover:bg-error/90 transition-all interactive-scale">
+        REQUEST ACCESS VIA BOT
+      </button>
+      <div id="reqAccessResult" class="text-[11px] text-center py-2 rounded-xl hidden"></div>
+      <button onclick="hideReqAccess()" class="text-[11px] text-on-surface-variant text-center hover:text-primary transition-all">← Back to Login</button>
+    </div>
   </div>
 
-  <!-- ═══════════════════════════════ TAB: REQUESTS ═══════════════════════════════ -->
-  <div id="page-requests" class="layer space-y-stack-lg hidden">
-    <!-- Access Requests (Bypass queue) -->
-    <section class="space-y-stack-md">
-      <div class="flex justify-between items-end px-1">
-        <h2 class="font-headline-sm text-headline-sm text-on-surface">Bypass Requests</h2>
-        <span id="accessReqCount" class="font-label-caps text-[11px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">0 PENDING</span>
+  <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-dashboard">
+    <div class="flex items-center justify-between shimmer-entrance" style="animation-delay: 0.1s;">
+      <h1 class="font-headline-lg text-headline-lg text-on-surface">Dashboard</h1>
+      <div class="flex items-center gap-2">
+        <span id="dashServer" class="text-primary bg-primary-container text-on-primary-container px-3 py-1 rounded-full border border-primary/20 text-[11px] font-bold">—</span>
+        <button onclick="logout()" class="text-[10px] text-error hover:bg-error/10 border border-error/30 rounded-full px-3 py-1 font-semibold transition-all">LOGOUT</button>
       </div>
-      <div id="accessRequestsList" class="space-y-3">
-        <!-- Dyn list -->
-      </div>
-    </section>
+    </div>
 
-    <!-- Topup Requests -->
-    <section class="space-y-stack-md">
-      <div class="flex justify-between items-end px-1">
-        <h2 class="font-headline-sm text-headline-sm text-on-surface">Topup Claims</h2>
-        <span id="topupReqCount" class="font-label-caps text-[11px] text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">0 CLAIMS</span>
+    <!-- User info -->
+    <div class="bg-white px-4 py-3 rounded-2xl border border-outline-variant card-shadow flex items-center gap-3 shimmer-entrance" style="animation-delay: 0.15s;">
+      <img id="dashAvatar" src="" alt="" class="w-8 h-8 rounded-full object-cover border border-outline-variant hidden">
+      <div id="dashAvatarFallback" class="w-8 h-8 rounded-full bg-surface-container-low border border-outline-variant flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary text-[18px]">person</span>
       </div>
-      <div id="topupRequestsList" class="space-y-3">
-        <!-- Dyn list -->
-      </div>
-    </section>
-  </div>
+      <span class="font-bold text-sm text-on-surface" id="dashUsername">—</span>
+    </div>
 
-  <!-- ═══════════════════════════════ TAB: ACTIVITY ═══════════════════════════════ -->
-  <div id="page-activity" class="layer space-y-stack-md hidden pb-8">
-    <div class="flex justify-between items-center px-1">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">System Coin Logs</h2>
-      <button onclick="loadActivity()" class="text-xs text-primary font-bold flex items-center gap-1">
-        <span class="material-symbols-outlined text-[16px]">refresh</span> Refresh Logs
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-2 gap-gutter shimmer-entrance" style="animation-delay: 0.2s;">
+      <button class="bg-primary p-5 rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-lg shadow-primary/20 feat-btn text-white" id="feat-DailyFunction" onclick="runFeature('DailyFunction','Daily Function')">
+        <div class="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-md">
+          <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+        </div>
+        <div class="flex items-end justify-between w-full">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-[15px] leading-tight truncate">Daily Function</p>
+            <p class="text-[11px] text-white/75 mt-0.5 truncate">Resets in 12h 40m</p>
+          </div>
+          <span class="static flex items-center gap-1 bg-white/25 px-2 py-0.5 rounded-full text-[10px] font-bold text-white shrink-0 ml-1.5" data-cost-for="DailyFunction">
+            <span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—
+          </span>
+        </div>
+      </button>
+      <button class="bg-white p-5 rounded-[24px] text-left relative overflow-hidden interactive-scale group cursor-pointer h-40 flex flex-col justify-between shadow-md border border-outline-variant feat-btn animate-none" id="feat-All" onclick="runFeature('All','Run All')">
+        <div class="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+        </div>
+        <div class="flex items-end justify-between w-full">
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-on-surface text-[15px] leading-tight truncate">Run All</p>
+            <p class="text-[11px] text-on-surface-variant mt-0.5 truncate">Execute all queues</p>
+          </div>
+          <span class="static flex items-center gap-1 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-full text-[10px] font-bold text-amber-600 shrink-0 ml-1.5" data-cost-for="All">
+            <span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—
+          </span>
+        </div>
       </button>
     </div>
-    <div id="activityLogsList" class="silk-glass-card max-h-[500px] overflow-y-auto divide-y divide-white/5">
-      <!-- Dynamic stream entries -->
+
+    <!-- Features Grid -->
+    <div class="space-y-stack-sm shimmer-entrance" style="animation-delay: 0.3s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Features</h3>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="runFeature('Farm','Farm')" id="feat-Farm" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Farm"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Agriculture</span>
+          <span class="text-[12px] font-semibold text-on-surface">Farm</span>
+        </button>
+        <button onclick="runFeature('Quest','Daily Quest')" id="feat-Quest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Quest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Assignment</span>
+          <span class="text-[12px] font-semibold text-on-surface">Daily Quest</span>
+        </button>
+        <button onclick="runFeature('WorldQuest','World Quest')" id="feat-WorldQuest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="WorldQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">public</span>
+          <span class="text-[12px] font-semibold text-on-surface">World Quest</span>
+        </button>
+        <button onclick="runFeature('SeasonalQuest','Seasonal Quest')" id="feat-SeasonalQuest" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SeasonalQuest"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
+          <span class="text-[12px] font-semibold text-on-surface">Seasonal</span>
+        </button>
+        <button onclick="runFeature('Eden','Eden')" id="feat-Eden" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Eden"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-error/80 text-[24px]">local_fire_department</span>
+          <span class="text-[12px] font-semibold text-on-surface">Eden</span>
+        </button>
+        <button onclick="runFeature('Wings','Wings')" id="feat-Wings" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Wings"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">Flight</span>
+          <span class="text-[12px] font-semibold text-on-surface">Wings</span>
+        </button>
+        <button onclick="runFeature('Emotes','Emotes')" id="feat-Emotes" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Emotes"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">emoji_emotions</span>
+          <span class="text-[12px] font-semibold text-on-surface">Emotes</span>
+        </button>
+        <button onclick="runFeature('LitCollect','Lit &amp; Collect')" id="feat-LitCollect" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="LitCollect"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">wb_sunny</span>
+          <span class="text-[12px] font-semibold text-on-surface">Lit Collect</span>
+        </button>
+        <button onclick="openHeartModal()" id="feat-SendHeart" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SendHeart"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">favorite</span>
+          <span class="text-[12px] font-semibold text-on-surface">Send Heart</span>
+        </button>
+        <button onclick="runFeature('SendHeartsAll','Send Hearts All')" id="feat-SendHeartsAll" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="SendHeartsAll"><span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">favorite_border</span>
+          <span class="text-[12px] font-semibold text-on-surface">Hearts All</span>
+        </button>
+        <button onclick="runFeature('ClaimAchievements','Claim Achievements')" id="feat-ClaimAchievements" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ClaimAchievements"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">emoji_events</span>
+          <span class="text-[12px] font-semibold text-on-surface">Achievements</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Elder Cosmetics -->
+    <div class="space-y-stack-sm shimmer-entrance" style="animation-delay: 0.35s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Elder Cosmetics</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="runFeature('ElderHairs','Elder Hairs')" id="feat-ElderHairs" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ElderHairs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">face_retouching_natural</span>
+          <span class="text-[12px] font-semibold text-on-surface">Elder Hairs</span>
+        </button>
+        <button onclick="runFeature('ElderMask','Elder Mask')" id="feat-ElderMask" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="ElderMask"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">theater_comedy</span>
+          <span class="text-[12px] font-semibold text-on-surface">Elder Mask</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Beta Only -->
+    <div id="betaSection" class="hidden space-y-stack-sm shimmer-entrance" style="animation-delay: 0.38s;">
+      <h3 class="font-label-caps text-on-surface-variant ml-1 tracking-widest text-[11px] uppercase">Beta Only</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="runFeature('IAPs','Unlock IAPs')" id="feat-IAPs" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="IAPs"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">redeem</span>
+          <span class="text-[12px] font-semibold text-on-surface">Unlock IAPs</span>
+        </button>
+        <button onclick="runFeature('Candles','300 Candles')" id="feat-Candles" class="bg-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 interactive-scale border border-outline-variant card-shadow feat-btn relative">
+          <span class="cost-badge" data-cost-for="Candles"><span class="material-symbols-outlined" style="font-size:10px">monetization_on</span>—</span>
+          <span class="material-symbols-outlined text-primary text-[24px]">candle</span>
+          <span class="text-[12px] font-semibold text-on-surface">300 Candles</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Terminal Log -->
+    <div class="terminal-light rounded-[24px] overflow-hidden flex flex-col shimmer-entrance shadow-xl" style="animation-delay: 0.4s;">
+      <div class="bg-white/5 px-4 py-3 border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+          <span class="text-[10px] font-label-caps text-white/60 ml-2">SYSTEM CONSOLE</span>
+        </div>
+        <button onclick="clearConsole()" class="text-[10px] text-white/40 hover:text-white transition-all flex items-center gap-1 font-semibold">
+          <span class="material-symbols-outlined text-sm">terminal</span> Clear
+        </button>
+      </div>
+      <div class="p-4 h-48 overflow-y-auto terminal-scroll font-mono text-[12px] leading-relaxed" id="consoleLogs">
+        <div class="text-tertiary">&gt;&gt; Initializing TGC.Core...</div>
+      </div>
     </div>
   </div>
 
-  <!-- ═══════════════════════════════ TAB: SETTINGS ═══════════════════════════════ -->
-  <div id="page-settings" class="layer space-y-stack-lg hidden pb-8">
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">System Status</h2>
-      <div class="silk-glass-card p-base space-y-3 font-code-md text-xs text-on-surface-variant">
-        <div class="flex justify-between py-1 border-b border-outline-variant">
-          <span>Backend Server Status</span>
-          <span class="text-green-400 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>Operational</span>
+  <!-- ═══════════════════════════════ MASS FARM ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-mass-farm">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Mass Operations</h2>
+    </div>
+
+    <!-- Step 1: Sessions -->
+    <div id="mf-step-sessions" class="space-y-3">
+      <div class="flex justify-between items-center px-1">
+        <span class="font-label-caps text-on-surface-variant tracking-widest text-[11px]">TARGET ACCOUNTS</span>
+        <button onclick="mfAddRow()" class="text-primary hover:text-primary/80 transition-all font-bold text-xs bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full interactive-scale">+ ADD ACCOUNT</button>
+      </div>
+
+      <div id="mfContainer" class="space-y-3 max-h-72 overflow-y-auto no-scrollbar"></div>
+
+      <button onclick="mfCheckAll()" id="btnMfCheck"
+        class="w-full bg-white border border-outline-variant hover:bg-surface-container-low text-on-surface py-3.5 rounded-full text-xs font-bold transition-all interactive-scale card-shadow">
+        CHECK ALL CONNECTIONS
+      </button>
+      <div id="mfCurrencyPanel" class="hidden bg-white p-4 rounded-2xl border border-outline-variant card-shadow flex flex-col gap-2"></div>
+
+      <button onclick="mfGoFeature()" id="btnMfNext"
+        class="w-full bg-surface-container text-on-surface-variant py-3.5 rounded-full text-xs font-bold opacity-50 cursor-not-allowed" disabled>
+        NEXT — SELECT FEATURES
+      </button>
+    </div>
+
+    <!-- Step 2: Features -->
+    <div id="mf-step-features" class="hidden space-y-3">
+      <div class="flex items-center gap-3 px-1">
+        <button onclick="mfBackToSessions()" class="text-[10px] text-on-surface-variant bg-white border border-outline-variant px-3 py-1 rounded-full hover:bg-surface-container-low transition-all">← Back</button>
+        <span class="font-label-caps text-on-surface-variant tracking-widest text-[11px]">SELECT FEATURES</span>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <p class="text-[10px] text-on-surface-variant">Select one or more features. Will run in sequence per account.</p>
+        <div class="grid grid-cols-3 gap-2" id="mfFeatureGrid"></div>
+      </div>
+      <div id="mfSelectedSummary" class="text-[10px] text-on-surface-variant px-1 font-semibold"></div>
+      <button onclick="mfStart()" id="btnMfStart"
+        class="w-full bg-primary text-white py-3.5 rounded-full font-bold text-xs shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">
+        START EXECUTION
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div id="mfProgressPanel" class="hidden bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+      <div class="flex justify-between items-center">
+        <p class="font-bold text-xs text-on-surface">Progress</p>
+        <span id="mfStatusText" class="text-[10px] text-on-surface-variant">Starting...</span>
+      </div>
+      <div class="w-full bg-surface-container-low rounded-full h-1.5">
+        <div id="mfProgressBar" class="bg-primary h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+      <div id="mfLog" class="font-mono text-[10px] max-h-52 overflow-auto p-3 rounded-2xl flex flex-col gap-1 no-scrollbar terminal-light"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ HISTORY ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-history">
+    <div class="flex items-center justify-between">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Execution Logs</h2>
+      <button onclick="clearHistory()" class="text-[10px] text-error hover:bg-error/10 border border-error/30 rounded-full px-3 py-1 font-semibold transition-all">Clear</button>
+    </div>
+    <div id="historyList" class="space-y-3">
+      <div class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow text-center font-mono text-[11px] text-on-surface-variant">No activity yet.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ ACCOUNT ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-account">
+    <!-- Not logged in -->
+    <div id="accountNotLoggedIn" class="bg-white p-6 text-center space-y-4 rounded-3xl border border-outline-variant card-shadow">
+      <span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">person_off</span>
+      <p class="text-xs text-on-surface-variant">Login first to see your account info.</p>
+    </div>
+
+    <!-- Logged in -->
+    <div id="accountLoggedIn" class="hidden space-y-4">
+      <div class="bg-white p-6 text-center relative overflow-hidden rounded-3xl border border-outline-variant card-shadow">
+        <div class="relative inline-block mb-4">
+          <div class="w-20 h-20 rounded-full border border-outline-variant p-0.5 bg-surface">
+            <img id="accAvatar" alt="User Profile" class="w-full h-full object-cover rounded-full" src="https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/MisthiosOG/testweb/main/images/icon.jpg';"/>
+          </div>
+          <div id="accRoleBadge" class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded-full text-[9px] font-bold shadow-md">VIP</div>
         </div>
-        <div class="flex justify-between py-1 border-b border-outline-variant">
-          <span>Active Connections</span>
-          <span id="settActiveSessions" class="text-primary font-bold">— sessions</span>
+        <h2 class="font-headline-lg text-[22px] tracking-tight text-on-surface" id="accUsername">—</h2>
+        <p class="font-mono text-[11px] text-primary mt-1 bg-primary/10 inline-block px-3 py-1 rounded-full border border-primary/20">
+          UID: <span id="accUserId">—</span>
+        </p>
+        <div class="flex items-center justify-center gap-2 mt-3">
+          <span id="accStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-green-500/10 text-green-600 border border-green-500/25">LIVE</span>
+          <span id="accServer" class="text-[10px] text-on-surface-variant font-mono">—</span>
         </div>
-        <div class="flex justify-between py-1 border-b border-outline-variant">
-          <span>SQLite Database size</span>
-          <span class="text-tertiary">Connected (coins.db)</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-3xl border border-outline-variant card-shadow">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-label-caps text-on-surface-variant tracking-widest text-[12px] uppercase">Balance</h3>
+          <button onclick="refreshAccount()" id="refreshBtn"
+            class="flex items-center gap-1 text-[10px] text-primary border border-primary/30 rounded-full px-3 py-1 hover:bg-primary/10 transition-all font-semibold">
+            <span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh
+          </button>
         </div>
-        <div class="flex justify-between py-1">
-          <span>Web App Interface</span>
-          <span>v1.2 (Premium Mesh UI)</span>
+        <div id="currencyLoading" class="hidden items-center justify-center py-4 gap-2">
+          <div class="spinner"></div><span class="text-[11px] text-on-surface-variant">Fetching balance...</span>
         </div>
+        <div id="currencyGrid" class="divide-y divide-outline-variant">
+          <div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-on-surface">Auto Refresh</p>
+          <p class="text-[10px] text-on-surface-variant">Update every 30 seconds</p>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="autoRefreshToggle" onchange="toggleAutoRefresh()" class="sr-only peer"/>
+          <div class="w-11 h-6 bg-surface-container-low peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ SETTINGS ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-settings">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">System Parameters</h2>
+    </div>
+
+    <!-- Membership -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps text-on-surface-variant mb-1 ml-1 tracking-widest text-[11px] uppercase">MEMBERSHIP</h3>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <div class="flex justify-between items-center text-[11px]">
+          <span class="text-on-surface-variant font-medium">Status</span>
+          <span id="settingsRoleBadge" class="flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold border role-free">
+            <span id="settingsRoleLabel">FREE</span>
+          </span>
+        </div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Active Since</span><span id="settingsRoleSince" class="text-primary font-mono font-bold">—</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Expires On</span><span id="settingsRoleExpiry" class="text-primary font-mono font-bold">Never</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Time Remaining</span><span id="settingsRoleRemaining" class="text-primary font-mono font-bold">—</span></div>
       </div>
     </section>
 
-    <!-- Game Data Sync Panel -->
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">Game Data Synchronization</h2>
-      <div class="silk-glass-card p-base space-y-base">
-        <p class="text-xs text-on-surface-variant">Update the bot's static level and wing databases directly from your local Sky game installation folder.</p>
-        <div class="space-y-2">
-          <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Sky Installation Directory</label>
-          <input id="syncGamePath" class="w-full bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors text-xs" type="text" value="C:\Program Files (x86)\Steam\steamapps\common\Sky Children of the Light" placeholder="C:\Program Files (x86)\Steam\steamapps\common\Sky Children of the Light"/>
-        </div>
-        <button id="btnSyncResources" onclick="triggerSyncResources()" class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS
+    <!-- About -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps text-on-surface-variant mb-1 ml-1 tracking-widest text-[11px] uppercase">ABOUT</h3>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow space-y-3">
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Developer</span><span class="text-primary font-mono font-bold">WaterFlai | iPowfu</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Project</span><span class="text-primary font-bold">TrashGameCompany</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Version</span><span class="text-primary font-mono font-bold">1.2.0</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Telegram ID</span><span id="settingsTgId" class="text-primary font-mono font-bold">—</span></div>
+        <div class="flex justify-between text-[11px]"><span class="text-on-surface-variant font-medium">Status</span><span class="text-tertiary font-mono font-bold">● Online</span></div>
+      </div>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="space-y-stack-sm">
+      <h3 class="font-label-caps mb-1 ml-1 tracking-widest text-[11px] uppercase text-error">DANGER ZONE</h3>
+      <div class="bg-white p-4 rounded-3xl border border-error/20 card-shadow space-y-3">
+        <button onclick="logout()" class="w-full border border-error/30 text-error py-2.5 rounded-full text-xs font-bold hover:bg-error/10 transition-all flex items-center justify-center gap-2 interactive-scale">
+          <span class="material-symbols-outlined text-[18px]">logout</span> Logout Current Session
         </button>
-        <div id="syncResultContainer" class="hidden silk-glass p-3 rounded-xl border border-outline-variant font-code-md text-[11px] space-y-1.5 max-h-[160px] overflow-y-auto">
-          <!-- Result logs -->
-        </div>
-      </div>
-    </section>
-
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">Feature Prices Configuration</h2>
-      <div class="silk-glass-card divide-y divide-outline-variant">
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Daily Function (Farm + Quest)</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 5 coins</span>
-        </div>
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Mass Farm (Multi-Accounts)</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
-        </div>
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Single Farm Job</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
-        </div>
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Eden Rebirth / Wings / Maps</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 2 coins</span>
-        </div>
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Constellation Emotes Unlock</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 3 coins</span>
-        </div>
-        <div class="p-3 flex justify-between items-center">
-          <span class="font-body-md text-sm text-on-surface">Closet Unlock (Beta Only)</span>
-          <span class="text-tertiary font-bold flex items-center gap-1"><span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1">paid</span> 5 coins</span>
-        </div>
+        <button onclick="clearAllData()" class="w-full border border-error/15 text-error/50 py-2.5 rounded-full text-xs font-bold hover:bg-error/5 transition-all interactive-scale">Clear All Local Data</button>
       </div>
     </section>
   </div>
 
-  <!-- ═══════════════════════════════ TAB: GLOBAL ═══════════════════════════════ -->
-  <div id="page-global" class="layer space-y-stack-lg hidden pb-8">
-    
-    <!-- Announcement Section -->
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">Channel Announcement</h2>
-      <div class="silk-glass-card p-base space-y-base">
-        <div class="space-y-2">
-          <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Target Telegram Channel</label>
-          <input id="broadcastTarget" class="w-full bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none" type="text" value="-1003786505211" placeholder="Channel ID (e.g. -1003786505211)"/>
-          <p class="text-[11px] text-on-surface-variant/50 ml-1">Target channel URL: <a href="https://web.telegram.org/k/#-3786505211" target="_blank" class="text-primary hover:underline font-bold">Telegram Web Channel</a></p>
-        </div>
-        
-        <div class="space-y-2">
-          <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Announcement Message (HTML format)</label>
-          <textarea id="broadcastMessage" rows="5" class="w-full bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-body-md text-on-surface outline-none focus:border-primary transition-colors resize-none" placeholder="Type your announcement message here... You can use HTML tag like <b>bold</b>, <i>italic</i>, etc."></textarea>
-        </div>
-        
-        <button onclick="sendBroadcast()" class="w-full bg-primary text-on-primary py-3.5 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
-          <span class="material-symbols-outlined text-[18px]">send</span> SEND ANNOUNCEMENT
-        </button>
+  <!-- ═══════════════════════════════ TOPUP ═══════════════════════════════ -->
+  <div class="layer layer-hidden space-y-stack-lg" id="page-topup">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Coin Store</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1">paid</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">1,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">100k</a>
       </div>
-    </section>
-
-    <!-- Global Activity & Giveaway -->
-    <section class="space-y-stack-md">
-      <h2 class="font-headline-sm text-headline-sm text-on-surface">Global Activities</h2>
-      <div class="silk-glass-card p-base space-y-stack-lg">
-        
-        <!-- Gift Coins to All Users -->
-        <div class="space-y-3">
-          <div class="flex items-center gap-2 text-primary">
-            <span class="material-symbols-outlined">celebration</span>
-            <span class="font-headline-sm text-[16px] font-bold">Event Giveaway (Gift All Users)</span>
-          </div>
-          <p class="text-xs text-on-surface-variant">Gift a specific amount of coins to every single user registered in the system (e.g. for birthday/anniversary events).</p>
-          <div class="flex gap-2">
-            <input id="giftAllAmount" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors" type="number" placeholder="Enter coins amount..."/>
-            <button onclick="triggerGlobalAction('gift_all')" class="bg-tertiary text-on-surface px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-yellow-500 transition-all active:scale-95 shadow-lg shadow-tertiary/10">GIFT COIN ALL</button>
-          </div>
-        </div>
-
-        <div class="border-t border-outline-variant my-4"></div>
-
-        <!-- Danger Zone -->
-        <div class="space-y-4">
-          <div class="flex items-center gap-2 text-error">
-            <span class="material-symbols-outlined">warning</span>
-            <span class="font-headline-sm text-[16px] font-bold">Danger Zone</span>
-          </div>
-          <p class="text-xs text-on-surface-variant">Perform destructive operations across all users in the system. Use with extreme caution!</p>
-          
-          <div class="flex flex-col gap-3">
-            <!-- Reset All Coins -->
-            <div class="flex items-center justify-between p-3.5 bg-error/5 border border-error/15 rounded-2xl">
-              <div class="flex-1 min-w-0 pr-4">
-                <h4 class="font-body-md font-bold text-error text-sm">Delete/Reset All Coins</h4>
-                <p class="text-[11px] text-on-surface-variant">Set all user coin balances to 0 in the database.</p>
-              </div>
-              <button onclick="triggerGlobalAction('reset_coins')" class="bg-error text-on-primary px-4 py-2.5 rounded-xl font-label-caps text-[10px] font-bold hover:bg-red-500 transition-all active:scale-95 shadow-lg shrink-0">DELETE ALL COIN</button>
-            </div>
-
-            <!-- Reset All Roles -->
-            <div class="flex items-center justify-between p-3.5 bg-error/5 border border-error/15 rounded-2xl">
-              <div class="flex-1 min-w-0 pr-4">
-                <h4 class="font-body-md font-bold text-error text-sm">Reset All Roles</h4>
-                <p class="text-[11px] text-on-surface-variant">Downgrade all user roles back to Free (excluding Founder).</p>
-              </div>
-              <button onclick="triggerGlobalAction('reset_roles')" class="bg-error text-on-primary px-4 py-2.5 rounded-xl font-label-caps text-[10px] font-bold hover:bg-red-500 transition-all active:scale-95 shadow-lg shrink-0">RESET ALL ROLES</button>
-            </div>
-          </div>
-        </div>
-
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">database</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">2,500</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">240k</a>
       </div>
-    </section>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">savings</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">5,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">450k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col items-center gap-2 hover:border-amber-500/30 transition-all group relative">
+        <span class="material-symbols-outlined text-tertiary text-3xl group-hover:scale-110 transition-transform">workspace_premium</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface">10,000</div><div class="text-[9px] text-on-surface-variant font-bold uppercase tracking-wider">Coins</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-tertiary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-tertiary/20 hover:opacity-90 block">850k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-primary/20 bg-primary/5 flex flex-col items-center gap-2 hover:border-primary/40 transition-all group relative">
+        <span class="material-symbols-outlined text-primary text-3xl group-hover:rotate-12 transition-transform">workspace_premium</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface uppercase tracking-tighter">Weekly VIP</div><div class="text-[9px] text-primary/60 font-bold uppercase tracking-wider">7 Days Access</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-primary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-primary/25 hover:opacity-90 block">100k</a>
+      </div>
+      <div class="bg-white p-4 rounded-3xl border border-secondary/20 bg-secondary/5 flex flex-col items-center gap-2 hover:border-secondary/40 transition-all group relative">
+        <span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">stars</span>
+        <div class="text-center"><div class="text-base font-bold text-on-surface uppercase tracking-tighter">Monthly VIP</div><div class="text-[9px] text-secondary/60 font-bold uppercase tracking-wider">30 Days Access</div></div>
+        <a href="https://t.me/dieforcringes" target="_blank" class="w-full mt-2 bg-secondary text-white py-2 rounded-full text-[11px] font-bold text-center shadow-md shadow-secondary/25 hover:opacity-90 block">350k</a>
+      </div>
+      <div class="bg-white p-5 rounded-3xl border border-primary/25 bg-primary/5 flex flex-col gap-3 col-span-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-primary/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">edit_note</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-on-surface uppercase tracking-wider">Custom Amount</div>
+            <div class="text-[9px] text-primary/60 font-bold uppercase tracking-wider">Rate: Rp 100 / Coin</div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <input type="number" id="customCoinInput" oninput="calcCustomPrice(this.value)" placeholder="Enter amount..."
+            class="flex-1 bg-white border border-outline-variant px-3 py-2 text-xs outline-none focus:border-primary/50 transition-all font-mono text-on-surface rounded-2xl"/>
+          <div class="bg-white border border-outline-variant px-4 flex items-center justify-center min-w-[90px] rounded-2xl">
+            <span id="customPriceLabel" class="text-[11px] font-bold text-primary">Rp 0</span>
+          </div>
+        </div>
+        <button onclick="orderCustom()" class="w-full bg-primary text-white py-3 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 transition-all interactive-scale">Order Custom Amount</button>
+      </div>
+    </div>
+    <div class="bg-white p-4 rounded-3xl border border-outline-variant card-shadow">
+      <p class="text-[10px] text-on-surface-variant text-center leading-relaxed">Setelah pembayaran berhasil, koin akan otomatis ditambahkan ke ID Telegram kamu. Hubungi admin jika ada kendala.</p>
+    </div>
   </div>
 
 </main>
 
-<!-- Navigation Dock -->
-<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-gutter pb-safe h-20 bg-white/95 backdrop-blur-xl border-t border-outline-variant shadow-2xl">
-    <a id="nav-users" onclick="goTab('users')" class="flex flex-col items-center justify-center text-primary group cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">group</span>
-        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Users</span>
-    </a>
-    <a id="nav-requests" onclick="goTab('requests')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">pending_actions</span>
-        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Requests</span>
-    </a>
-    <a id="nav-activity" onclick="goTab('activity')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">list_alt</span>
-        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Activity</span>
-    </a>
-    <a id="nav-global" onclick="goTab('global')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">campaign</span>
-        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Global</span>
-    </a>
-    <a id="nav-settings" onclick="goTab('settings')" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer">
-        <span class="material-symbols-outlined text-[24px]">settings</span>
-        <span class="font-label-caps text-[11px] mt-1 tracking-tight">Settings</span>
-    </a>
+<!-- Navigation -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] z-50 flex justify-between items-center px-4 py-2 max-w-sm bg-white/95 backdrop-blur-lg border border-outline-variant shadow-2xl rounded-full">
+  <button class="bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale" id="nav-home" onclick="goPage('home')">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+  </button>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-mass-farm" onclick="goPage('mass-farm')">
+    <span class="material-symbols-outlined">terminal</span>
+  </button>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-account" onclick="goPage('account')">
+    <span class="material-symbols-outlined">account_balance_wallet</span>
+  </button>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-history" onclick="goPage('history')">
+    <span class="material-symbols-outlined">hub</span>
+  </button>
+  <button class="text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale" id="nav-settings" onclick="goPage('settings')">
+    <span class="material-symbols-outlined">settings</span>
+  </button>
 </nav>
 
-<!-- Logic and Micro-interaction Scripts -->
 <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-        tg.ready();
-        tg.expand();
+// ── TELEGRAM + API ──────────────────────────────────────────────────────────
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+const TELEGRAM_ID = tg?.initDataUnsafe?.user?.id || null;
+
+const API_BASE = (() => {
+  const h = location.hostname;
+  if (h.includes('ngrok')) return 'https://' + h;
+  if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
+  return 'https://bright-toad-brightly.ngrok-free.app';
+})();
+
+let selectedServer = 'live';
+let selectedPlatformVal = null;
+let isLoggedIn = false;
+let autoRefreshInterval = null;
+let lastCurrencyData = null;
+let lastCoinBalance = null;
+let actionHistory = JSON.parse(localStorage.getItem('action_history') || '[]');
+let CURRENT_ROLE = 'free';
+let ALLOWED_FEATURES = new Set();
+let MAX_MASSFARM_SESSIONS = 3;
+let FEATURE_COSTS = {};
+
+const ALL_PAGES = ['home','dashboard','mass-farm','history','account','settings','topup'];
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function goPage(name) {
+  ALL_PAGES.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) { el.classList.add('layer-hidden'); }
+    const nav = document.getElementById('nav-' + p);
+    if (nav) {
+      nav.className = 'text-on-surface-variant w-12 h-12 flex items-center justify-center hover:bg-surface-container-low rounded-full transition-all interactive-scale';
+      const icon = nav.querySelector('.material-symbols-outlined');
+      if (icon) icon.style.fontVariationSettings = "'FILL' 0";
     }
+  });
+  const target = document.getElementById('page-' + name);
+  if (target) {
+    target.classList.remove('layer-hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  const activeNav = document.getElementById('nav-' + name);
+  if (activeNav) {
+    activeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
+    const icon = activeNav.querySelector('.material-symbols-outlined');
+    if (icon) icon.style.fontVariationSettings = "'FILL' 1";
+  }
+  if (name === 'settings') refreshRole();
+  if (name === 'account' && isLoggedIn) { /* stay */ }
+}
 
-    const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
+// ── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg, type = 'primary') {
+  const t = document.getElementById('toast');
+  const styles = {
+    error:   ['#ffdad6', '#FF3B30', 'rgba(255,59,48,.3)'],
+    success: ['#e8f5e9', '#34C759', 'rgba(52,199,89,.3)'],
+    primary: ['#e7e8ff', '#2D31FA', 'rgba(45,49,250,.3)'],
+  };
+  const [bg, fg, br] = styles[type] || styles.primary;
+  Object.assign(t.style, { background: bg, color: fg, border: `1px solid ${br}` });
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
 
-    const API_BASE = (() => {
-      const h = location.hostname;
-      if (h.includes('ngrok')) return 'https://' + h;
-      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
-      return 'https://bright-toad-brightly.ngrok-free.app';
-    })();
+// ── CONFIRM MODAL ────────────────────────────────────────────────────────────
+function showConfirm(msg) {
+  return new Promise(resolve => {
+    const modal = document.getElementById('confirmModal');
+    document.getElementById('confirmMsg').innerHTML = msg;
+    modal.classList.remove('hidden');
+    const yes = document.getElementById('confirmYes');
+    const no  = document.getElementById('confirmNo');
+    const cleanup = val => { modal.classList.add('hidden'); yes.onclick = no.onclick = null; resolve(val); };
+    yes.onclick = () => cleanup(true);
+    no.onclick  = () => cleanup(false);
+  });
+}
 
-    let users = [];
-    let selectedUser = null;
+// ── SERVER SELECT ────────────────────────────────────────────────────────────
+function selectServer(s) {
+  selectedServer = s;
+  const live = document.getElementById('btn-live');
+  const beta = document.getElementById('btn-beta');
+  if (s === 'live') {
+    live.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale';
+    beta.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale';
+  } else {
+    beta.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs transition-all bg-primary text-white shadow-md shadow-primary/25 interactive-scale';
+    live.className = 'flex-1 py-2.5 rounded-full font-semibold text-xs text-on-surface-variant hover:bg-surface-container-low transition-all interactive-scale';
+  }
+}
 
-    // Toast Notifications Setup
-    function showToast(msg, type = 'primary') {
-      const t = document.getElementById('toast');
-      const styles = {
-        error:   ['#ffdad6', '#FF3B30', 'rgba(255,59,48,.3)'],
-        success: ['#e8f5e9', '#34C759', 'rgba(52,199,89,.3)'],
-        primary: ['#e7e8ff', '#2D31FA', 'rgba(45,49,250,.3)'],
-      };
-      const [bg, fg, br] = styles[type] || styles.primary;
-      Object.assign(t.style, { background: bg, color: fg, border: `1px solid ${br}`, backdropFilter: 'blur(16px)' });
-      t.textContent = msg;
-      t.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
-      t.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => {
-        t.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
-        t.classList.remove('translate-y-0', 'opacity-100');
-      }, 2800);
+// ── LOGIN TABS ───────────────────────────────────────────────────────────────
+function switchLoginTab(tab) {
+  ['lua','lib','platform'].forEach(t => {
+    document.getElementById('loginTab-'+t).classList.toggle('hidden', t !== tab);
+    const btn = document.getElementById('ltab-'+t);
+    if (btn) {
+      btn.className = t === tab
+        ? 'py-3 px-4 text-center font-bold text-xs border-b-2 border-primary text-primary transition-all'
+        : 'py-3 px-4 text-center font-semibold text-xs border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-all';
     }
+  });
+}
 
-    // Confirmation Setup
-    function showConfirm(msg) {
-      return new Promise(resolve => {
-        const modal = document.getElementById('confirmModal');
-        document.getElementById('confirmMsg').innerHTML = msg;
-        modal.classList.remove('hidden');
-        const yes = document.getElementById('confirmYes');
-        const no  = document.getElementById('confirmNo');
-        const cleanup = val => { modal.classList.add('hidden'); yes.onclick = no.onclick = null; resolve(val); };
-        yes.onclick = () => cleanup(true);
-        no.onclick  = () => cleanup(false);
-      });
-    }
+function selectPlatform(p) {
+  selectedPlatformVal = p;
+  ['Nintendo','Google','Steam','Sony','Facebook','Huawei'].forEach(x => {
+    const btn = document.getElementById('plat-'+x);
+    if (btn) btn.className = x === p
+      ? 'py-2.5 px-1 text-[11px] font-semibold rounded-xl transition-all bg-primary/10 text-primary border border-primary/20'
+      : 'bg-surface-container-low hover:bg-surface-container-highest py-2.5 px-1 text-[11px] font-semibold text-on-surface-variant rounded-xl border border-outline-variant transition-all interactive-scale';
+  });
+  const w = document.getElementById('platformCodeWrap');
+  w.classList.remove('hidden'); w.classList.add('flex'); w.style.flexDirection = 'column';
+}
 
-    // Dynamic Navigation Tab switching
-    function goTab(name) {
-      ['users', 'requests', 'activity', 'global', 'settings'].forEach(n => {
-        const el = document.getElementById('page-' + n);
-        if (el) el.classList.add('hidden');
-        const nav = document.getElementById('nav-' + n);
-        if (nav) {
-          nav.className = 'flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors group cursor-pointer';
-          const icon = nav.querySelector('.material-symbols-outlined');
-          if (icon) icon.style.fontVariationSettings = "'FILL' 0";
-        }
-      });
-      const target = document.getElementById('page-' + name);
-      if (target) {
-        target.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      const activeNav = document.getElementById('nav-' + name);
-      if (activeNav) {
-        activeNav.className = 'flex flex-col items-center justify-center text-primary group cursor-pointer';
-        const icon = activeNav.querySelector('.material-symbols-outlined');
-        if (icon) icon.style.fontVariationSettings = "'FILL' 1";
-      }
-      
-      if (name === 'requests') loadRequests();
-      if (name === 'activity') loadActivity();
-    }
+// ── SUBMIT LOGIN ─────────────────────────────────────────────────────────────
+async function submitLogin(method) {
+  if (!TELEGRAM_ID) { showToast('Cannot get Telegram ID', 'error'); return; }
+  const code = method === 'lua'      ? document.getElementById('luaInput').value.trim()
+             : method === 'lib'      ? document.getElementById('libInput').value.trim()
+             : document.getElementById('platformInput').value.trim();
+  if (!code) { showToast('Code is empty!', 'error'); return; }
 
-    // Load Admin metadata from Telegram
-    if (tg) {
-      const user = tg.initDataUnsafe?.user;
-      if (user) {
-        document.getElementById('adminName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-        if (user.photo_url) {
-          document.getElementById('adminAvatar').src = user.photo_url;
-        }
-      }
-    }
+  const btnId = method === 'platform' ? 'btn-plat-submit' : 'btn-'+method+'-submit';
+  const btn = document.getElementById(btnId);
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span>Connecting...'; btn.disabled = true;
+  addLog('Connecting via ' + method.toUpperCase() + ' on ' + selectedServer.toUpperCase() + '...');
 
-    // Load all Users from database
-    async function loadUsers() {
-      try {
-        const res = await fetch(API_BASE + '/api/admin/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
-          body: JSON.stringify({ admin_id: ADMIN_ID })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          users = data.users;
-          
-          // Render Dynamic Statistics
-          document.getElementById('statUsers').textContent = users.length.toLocaleString();
-          const totalCoins = users.reduce((acc, u) => acc + (parseInt(u.balance) || 0), 0);
-          document.getElementById('statCoins').textContent = totalCoins.toLocaleString();
-          document.getElementById('headerTotalCoins').textContent = totalCoins.toLocaleString();
-          document.getElementById('statLive').textContent = data.live_count || 0;
-          document.getElementById('settActiveSessions').textContent = (data.live_count || 0) + ' active sessions';
-
-          // Prevent dropdown refresh if user is currently typing search filter
-          const query = document.getElementById('userSearchInput').value.trim();
-          if (query && document.activeElement === document.getElementById('userSearchInput')) {
-            filterUserList(query);
-          } else {
-            renderDropdown();
-          }
-
-          if (users.length > 0 && !selectedUser) {
-            selectUser(users[0], false);
-          } else if (selectedUser) {
-            const refreshed = users.find(u => u.telegram_id === selectedUser.telegram_id);
-            if (refreshed) selectUser(refreshed, true);
-          }
-        } else {
-          console.error(data.error);
-        }
-      } catch (e) {
-        console.error("Failed to load users:", e);
-      }
-    }
-
-    function renderDropdown() {
-      const dropdown = document.getElementById('userDropdown');
-      dropdown.innerHTML = users.map(u => {
-        const photoUrl = u.photo_url || (API_BASE + '/api/telegram/avatar/' + u.telegram_id);
-        const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
-        return `
-          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-outline-variant last:border-0">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-outline-variant bg-surface-container-low flex items-center justify-center shadow-sm relative">
-                <span class="text-xs text-primary uppercase font-bold">${initial}</span>
-                <img class="w-full h-full object-cover absolute inset-0 hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.classList.add('hidden'); this.previousElementSibling.classList.remove('hidden')"/>
-              </div>
-              <div class="flex flex-col min-w-0">
-                <div class="flex items-center gap-1.5 min-w-0">
-                  <span class="font-bold text-on-surface truncate text-sm leading-tight">${u.first_name || 'User'}</span>
-                  ${u.username ? `<span class="text-primary font-normal text-xs truncate">@${u.username}</span>` : ''}
-                </div>
-                <span class="text-[10px] text-on-surface-variant font-code-md tracking-wider mt-0.5">ID: ${u.telegram_id}</span>
-              </div>
-            </div>
-            <div class="flex flex-col items-end shrink-0 gap-1 ml-4">
-              <span class="px-2.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold tracking-wider uppercase font-label-caps">${u.role_label}</span>
-              <span class="text-tertiary font-bold text-xs flex items-center gap-0.5">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1">paid</span>
-                ${Number(u.balance).toLocaleString()}
-              </span>
-            </div>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function selectUserById(id) {
-      const user = users.find(u => u.telegram_id === id);
-      if (user) selectUser(user, false);
-      hideUserList();
-    }
-
-    function selectUser(user, isBackground = false) {
-      selectedUser = user;
-      
-      // Update search input only if not background refresh or if input is not focused
-      if (!isBackground || document.activeElement !== document.getElementById('userSearchInput')) {
-         document.getElementById('userSearchInput').value = user.telegram_id;
-      }
-      
-      document.getElementById('previewName').textContent = user.first_name || 'User';
-      document.getElementById('previewUsername').textContent = user.username ? '@' + user.username : '';
-      document.getElementById('previewId').textContent = "ID: " + user.telegram_id;
-      document.getElementById('previewRole').textContent = user.role_label;
-      document.getElementById('previewCoins').textContent = Number(user.balance).toLocaleString();
-      
-      // Focus check: do not revert the value typed by user if they are currently editing
-      if (!isBackground || document.activeElement !== document.getElementById('coinInput')) {
-        document.getElementById('coinInput').value = user.balance;
-      }
-
-      const previewAvatar = document.getElementById('previewAvatar');
-      const fallback = document.getElementById('previewAvatarFallback');
-      
-      fallback.textContent = user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U';
-      fallback.className = "text-xl text-primary font-bold uppercase";
-      
-      const photoUrl = user.photo_url || (API_BASE + '/api/telegram/avatar/' + user.telegram_id);
-      previewAvatar.src = photoUrl;
-      previewAvatar.classList.add('hidden');
-      fallback.classList.remove('hidden');
-      
-      previewAvatar.onload = () => {
-        previewAvatar.classList.remove('hidden');
-        fallback.classList.add('hidden');
-      };
-      previewAvatar.onerror = () => {
-        previewAvatar.classList.add('hidden');
-        fallback.classList.remove('hidden');
-      };
-
-      const roles = ['FREE', 'VIP_WEEKLY', 'VIP_MONTHLY', 'FOUNDER'];
-      roles.forEach(r => {
-        const btn = document.getElementById('roleBtn-' + r);
-        if (!btn) return;
-        if (user.role === r) {
-          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg bg-primary text-white shadow-sm font-bold';
-        } else {
-          btn.className = 'flex-1 py-2 font-label-caps text-[10px] rounded-lg text-on-surface-variant hover:text-on-surface transition-colors';
-        }
-      });
-
-      const bypassBtn = document.getElementById('bypassBtn');
-      const bypassLabel = document.getElementById('bypassLabel');
-      if (user.bypass) {
-        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-primary/30 text-primary bg-primary/10 transition-colors shadow-sm font-bold';
-        bypassLabel.textContent = 'BYPASS: ON';
-      } else {
-        bypassBtn.className = 'h-[52px] px-3 flex items-center gap-1.5 rounded-xl border border-outline text-on-surface-variant hover:text-on-surface transition-colors bg-surface-container-lowest';
-        bypassLabel.textContent = 'BYPASS: OFF';
-      }
-
-      const banBtn = document.getElementById('banBtn');
-      if (user.banned) {
-        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl bg-error text-white transition-colors shrink-0 shadow-md';
-        banBtn.innerHTML = '<span class="material-symbols-outlined">gavel</span>';
-      } else {
-        banBtn.className = 'h-[52px] w-[52px] flex items-center justify-center rounded-xl border border-error/20 text-error hover:bg-error/10 transition-colors bg-surface-container-lowest shrink-0';
-        banBtn.innerHTML = '<span class="material-symbols-outlined">block</span>';
-      }
-    }
-
-    function showUserList() {
-      document.getElementById('userDropdown').classList.remove('hidden');
-    }
-
-    function hideUserList() {
-      setTimeout(() => {
-        document.getElementById('userDropdown').classList.add('hidden');
-      }, 200);
-    }
-
-    function filterUserList(val) {
-      const dropdown = document.getElementById('userDropdown');
-      const filtered = users.filter(u => 
-        String(u.telegram_id).includes(val) || 
-        u.name.toLowerCase().includes(val.toLowerCase())
-      );
-      dropdown.innerHTML = filtered.map(u => {
-        const photoUrl = u.photo_url || (API_BASE + '/api/telegram/avatar/' + u.telegram_id);
-        const initial = u.first_name ? u.first_name.charAt(0).toUpperCase() : 'U';
-        return `
-          <button onclick="selectUserById(${u.telegram_id})" class="w-full text-left px-3.5 py-3 hover:bg-surface-container-high rounded-xl flex justify-between items-center transition-colors border-b border-white/[0.03] last:border-0">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 ring-1 ring-white/10 bg-surface-container-highest flex items-center justify-center shadow-md relative">
-                <span class="text-xs text-primary uppercase font-bold">${initial}</span>
-                <img class="w-full h-full object-cover absolute inset-0 hidden" src="${photoUrl}" onload="this.classList.remove('hidden'); this.previousElementSibling.classList.add('hidden')" onerror="this.classList.add('hidden'); this.previousElementSibling.classList.remove('hidden')"/>
-              </div>
-              <div class="flex flex-col min-w-0">
-                <div class="flex items-center gap-1.5 min-w-0">
-                  <span class="font-bold text-on-surface truncate text-sm leading-tight">${u.first_name || 'User'}</span>
-                  ${u.username ? `<span class="text-primary font-normal text-xs truncate">@${u.username}</span>` : ''}
-                </div>
-                <span class="text-[10px] text-on-surface-variant font-code-md tracking-wider mt-0.5">ID: ${u.telegram_id}</span>
-              </div>
-            </div>
-            <div class="flex flex-col items-end shrink-0 gap-1 ml-4">
-              <span class="px-2.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[9px] font-bold tracking-wider uppercase font-label-caps">${u.role_label}</span>
-              <span class="text-tertiary font-bold text-xs flex items-center gap-0.5">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1">paid</span>
-                ${Number(u.balance).toLocaleString()}
-              </span>
-            </div>
-          </button>
-        `;
-      }).join('');
-    }
-
-    // Set Coins Action
-    async function updateCoins() {
-      if (!selectedUser) return;
-      const val = parseInt(document.getElementById('coinInput').value) || 0;
-      const confirmed = await showConfirm(`Set coins to <b>${val.toLocaleString()}</b> for ${selectedUser.name}?`);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_coins', target_id: selectedUser.telegram_id, amount: val })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          selectedUser.balance = val;
-          selectUser(selectedUser);
-          loadUsers();
-          showToast("Coins updated successfully!", "success");
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    // Assign Role Action
-    async function assignRole(role) {
-      if (!selectedUser) return;
-      const roleLabel = role === 'FREE' ? 'Free' : (role === 'VIP_WEEKLY' ? 'Weekly VIP' : (role === 'VIP_MONTHLY' ? 'Monthly VIP' : 'Founder'));
-      const confirmed = await showConfirm(`Assign role <b>${roleLabel}</b> to user?`);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, action: 'set_role', target_id: selectedUser.telegram_id, role: role.toLowerCase() })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          selectedUser.role = role;
-          selectedUser.role_label = roleLabel;
-          selectUser(selectedUser);
-          loadUsers();
-          showToast("Role assigned successfully!", "success");
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    // Toggle Ban Action
-    async function toggleBan() {
-      if (!selectedUser) return;
-      const action = selectedUser.banned ? 'unban' : 'ban';
-      const confirmed = await showConfirm(`Are you sure you want to <b>${action.toUpperCase()}</b> this user?`);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          selectedUser.banned = !selectedUser.banned;
-          selectUser(selectedUser);
-          loadUsers();
-          showToast(action === 'ban' ? "User banned successfully!" : "User unbanned successfully!", "success");
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    // Toggle Bypass Action
-    async function toggleBypass() {
-      if (!selectedUser) return;
-      const action = selectedUser.bypass ? 'revoke_access' : 'grant_access';
-      const confirmTxt = selectedUser.bypass ? 'Revoke bypass access for user?' : 'Grant bypass access to user? (Starts with 30 coins)';
-      const confirmed = await showConfirm(confirmTxt);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, action: action, target_id: selectedUser.telegram_id })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          selectedUser.bypass = !selectedUser.bypass;
-          if (action === 'grant_access') {
-            selectedUser.balance = Math.max(selectedUser.balance, 30);
-          }
-          selectUser(selectedUser);
-          loadUsers();
-          showToast(action === 'grant_access' ? "Bypass access granted!" : "Bypass access revoked!", "success");
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    // Load Access and Topup requests
-    async function loadRequests() {
-      try {
-        const res = await fetch(API_BASE + '/api/admin/requests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          renderRequests(data.access_requests, data.topup_requests);
-        }
-      } catch (e) {
-        console.error("Failed to load requests:", e);
-      }
-    }
-
-    function renderRequests(accessReqs, topupReqs) {
-      document.getElementById('accessReqCount').textContent = accessReqs.length + ' PENDING';
-      document.getElementById('topupReqCount').textContent = topupReqs.length + ' CLAIMS';
-
-      const accessList = document.getElementById('accessRequestsList');
-      if (accessReqs.length === 0) {
-        accessList.innerHTML = `<div class="silk-glass-card p-5 text-center text-xs text-on-surface-variant/40">No pending bypass requests.</div>`;
-      } else {
-        accessList.innerHTML = accessReqs.map(req => `
-          <div class="silk-glass-card p-4 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary shadow-md">
-              <span class="material-symbols-outlined text-[20px]">person_add</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-body-md font-bold text-on-surface truncate">${req.name}</p>
-              <p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">ID: ${req.telegram_id} • ${new Date(req.ts).toLocaleDateString()}</p>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="handleAccessReq(${req.telegram_id}, 'decline')" class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-error hover:bg-error/10 transition-colors">
-                <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
-              <button onclick="handleAccessReq(${req.telegram_id}, 'approve')" class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
-              </button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      const topupList = document.getElementById('topupRequestsList');
-      if (topupReqs.length === 0) {
-        topupList.innerHTML = `<div class="silk-glass-card p-5 text-center text-xs text-on-surface-variant/40">No pending topup claims.</div>`;
-      } else {
-        topupList.innerHTML = topupReqs.map(req => `
-          <div class="silk-glass-card p-4 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-tertiary shadow-md">
-              <span class="material-symbols-outlined text-[20px]">payments</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-body-md font-bold text-on-surface truncate">${req.package} Claim</p>
-              <p class="font-label-caps text-[10px] text-on-surface-variant uppercase mt-0.5">User ID: ${req.telegram_id} (${req.name})</p>
-              <p class="text-[11px] text-tertiary font-bold mt-1">+${req.coins.toLocaleString()} Coins (Rp ${req.price.toLocaleString()})</p>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="handleTopupReq(${req.id}, 'reject')" class="w-10 h-10 rounded-xl border border-outline flex items-center justify-center text-error hover:bg-error/10 transition-colors">
-                <span class="material-symbols-outlined text-[20px]">close</span>
-              </button>
-              <button onclick="handleTopupReq(${req.id}, 'approve')" class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
-              </button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    async function handleAccessReq(targetId, action) {
-      const actionVal = action === 'approve' ? 'grant_access' : 'decline_access';
-      const confirmTxt = action === 'approve' ? `Approve bypass access for ID ${targetId}?` : `Decline access request for ID ${targetId}?`;
-      const confirmed = await showConfirm(confirmTxt);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, action: actionVal, target_id: targetId })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          showToast(action === 'approve' ? "Access request approved!" : "Access request declined.", "success");
-          loadRequests();
-          loadUsers();
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    async function handleTopupReq(reqId, action) {
-      const confirmTxt = action === 'approve' ? `Approve topup claim #${reqId}?` : `Reject topup claim #${reqId}?`;
-      const confirmed = await showConfirm(confirmTxt);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/topup/confirm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, req_id: reqId, action: action })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          showToast(action === 'approve' ? "Topup claim approved!" : "Topup claim rejected.", "success");
-          loadRequests();
-          loadUsers();
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error", "error");
-      }
-    }
-
-    // Load Activity Logs
-    async function loadActivity() {
-      const list = document.getElementById('activityLogsList');
-      list.innerHTML = `<div class="p-5 text-center text-xs"><span class="animate-spin inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full mr-2"></span>Loading logs...</div>`;
-      try {
-        const res = await fetch(API_BASE + '/api/admin/activity', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          if (data.activities.length === 0) {
-            list.innerHTML = `<div class="p-5 text-center text-xs text-on-surface-variant/40">No system coin activity logs found.</div>`;
-            return;
-          }
-          list.innerHTML = data.activities.map(act => {
-            let colorClass = 'primary';
-            let iconSymbol = 'info';
-            if (act.delta > 0) {
-              colorClass = 'tertiary';
-              iconSymbol = 'add_circle';
-            } else if (act.delta < 0) {
-              colorClass = 'error';
-              iconSymbol = 'remove_circle';
-            }
-            if (act.reason.includes('topup')) {
-              colorClass = 'secondary';
-              iconSymbol = 'payments';
-            }
-            const sign = act.delta > 0 ? '+' : '';
-            return `
-              <div class="p-4 flex gap-4 hover:bg-surface-container-low transition-colors">
-                <div class="w-8 h-8 rounded-full bg-${colorClass}/10 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-[16px] text-${colorClass}">${iconSymbol}</span>
-                </div>
-                <div class="min-w-0 flex-1">
-                  <p class="font-body-md text-on-surface leading-snug">
-                    <span class="text-primary font-bold">${act.name} (ID: ${act.telegram_id})</span> 
-                    <span class="text-on-surface-variant">${act.delta !== 0 ? `received ${sign}${act.delta.toLocaleString()} coins` : `modified balance`}</span>
-                  </p>
-                  <p class="text-[11px] text-on-surface-variant/70 mt-1">Reason: ${act.reason}</p>
-                  <p class="font-label-caps text-[9px] text-on-surface-variant/40 mt-1 tracking-wider uppercase">${new Date(act.ts).toLocaleString()}</p>
-                </div>
-              </div>
-            `;
-          }).join('');
-        } else {
-          list.innerHTML = `<div class="p-5 text-center text-xs text-error">Failed to load: ${data.error}</div>`;
-        }
-      } catch (e) {
-        list.innerHTML = `<div class="p-5 text-center text-xs text-error">Failed to load logs.</div>`;
-      }
-    }
-
-    // Initial Load & Real-Time Syncing Loop
-    loadUsers();
-    setInterval(() => {
-      loadUsers();
-      const activeTab = ['users', 'requests', 'activity', 'global', 'settings'].find(t => !document.getElementById('page-' + t).classList.contains('hidden'));
-      if (activeTab === 'requests') {
-        loadRequests();
-      }
-    }, 5000);
-
-    // Send Broadcast Announcement
-    async function sendBroadcast() {
-      const targetChat = document.getElementById('broadcastTarget').value.trim();
-      const message = document.getElementById('broadcastMessage').value.trim();
-
-      if (!targetChat || !message) {
-        showToast("Target channel and message cannot be empty!", "error");
-        return;
-      }
-
-      const confirmed = await showConfirm(`Are you sure you want to send this announcement to <b>${targetChat}</b>?`);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/broadcast', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, target_chat: targetChat, message: message })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          showToast("Announcement broadcasted successfully!", "success");
-          document.getElementById('broadcastMessage').value = '';
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error sending announcement", "error");
-      }
-    }
-
-    // Trigger Global Actions (gift_all, reset_coins, reset_roles)
-    async function triggerGlobalAction(action) {
-      let payload = { admin_id: ADMIN_ID, action: action };
-      let confirmMsg = "";
-
-      if (action === 'gift_all') {
-        const amount = parseInt(document.getElementById('giftAllAmount').value) || 0;
-        if (amount <= 0) {
-          showToast("Enter a valid gift amount greater than 0!", "error");
-          return;
-        }
-        payload.amount = amount;
-        confirmMsg = `Are you sure you want to gift <b>${amount.toLocaleString()} coins</b> to ALL users?`;
-      } else if (action === 'reset_coins') {
-        confirmMsg = `<span class="text-error font-bold">WARNING:</span> This will reset coin balances for <span class="text-error font-bold">ALL</span> users to 0. Proceed?`;
-      } else if (action === 'reset_roles') {
-        confirmMsg = `<span class="text-error font-bold">WARNING:</span> This will reset roles for <span class="text-error font-bold">ALL</span> users (except Founder) back to Free. Proceed?`;
-      } else {
-        return;
-      }
-
-      const confirmed = await showConfirm(confirmMsg);
-      if (!confirmed) return;
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/global_action', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (data.ok) {
-          showToast(data.message || "Action executed successfully!", "success");
-          if (action === 'gift_all') {
-            document.getElementById('giftAllAmount').value = '';
-          }
-          loadUsers();
-        } else {
-          showToast("Error: " + data.error, "error");
-        }
-      } catch (e) {
-        showToast("API error executing global action", "error");
-      }
-    }
-
-    // Trigger Resource Synchronization & Database Rebuilding
-    async function triggerSyncResources() {
-      const path = document.getElementById('syncGamePath').value.trim();
-      if (!path) {
-        showToast("Game path cannot be empty!", "error");
-        return;
-      }
-
-      const confirmed = await showConfirm("Rebuild bot databases and sync game configs from Steam directory?");
-      if (!confirmed) return;
-
-      const btn = document.getElementById('btnSyncResources');
-      const container = document.getElementById('syncResultContainer');
-      
-      btn.disabled = true;
-      btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full mr-2"></span> SYNCING ASSETS...`;
-      container.classList.add('hidden');
-      container.innerHTML = '';
-
-      try {
-        const res = await fetch(API_BASE + '/api/admin/sync_resources', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin_id: ADMIN_ID, game_path: path })
-        });
-        const data = await res.json();
-        
-        btn.disabled = false;
-        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS`;
-        
-        container.classList.remove('hidden');
-        if (data.ok) {
-          showToast("Sync and database rebuild complete!", "success");
-          container.innerHTML = `
-            <div class="text-[#4ADE80] font-bold mb-1">✓ Synchronization Succeeded</div>
-            <div>• Synced files: ${data.synced_files}</div>
-            <div>• Scanned levels: ${data.scanned_levels}</div>
-            <div>• Total pickup IDs: ${data.total_pickup_ids}</div>
-            <div>• Wings found: ${data.total_wings} (Spirit: ${data.spirit_wings}, Level: ${data.level_wings})</div>
-            <div class="border-t border-outline-variant my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
-              ${data.logs.map(log => `<div>${log}</div>`).join('')}
-            </div>
-          `;
-        } else {
-          showToast("Sync failed: " + data.error, "error");
-          container.innerHTML = `
-            <div class="text-error font-bold mb-1">✗ Synchronization Failed</div>
-            <div class="text-error">${data.error}</div>
-            <div class="border-t border-outline-variant my-1.5 pt-1 text-on-surface-variant/70 leading-normal">
-              ${data.logs ? data.logs.map(log => `<div>${log}</div>`).join('') : ''}
-            </div>
-          `;
-        }
-      } catch (e) {
-        btn.disabled = false;
-        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">sync</span> SYNC GAME ASSETS`;
-        showToast("Network error triggering sync", "error");
-      }
-    }
-
-    // Micro-interactions scaling
-    document.querySelectorAll('button, a').forEach(el => {
-        el.addEventListener('mousedown', () => { el.style.transform = 'scale(0.96)'; });
-        el.addEventListener('mouseup', () => { el.style.transform = ''; });
-        el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  try {
+    const res = await fetch(API_BASE + '/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ 
+        telegram_id: TELEGRAM_ID, 
+        method, 
+        server: selectedServer, 
+        platform: selectedPlatformVal, 
+        code,
+        first_name: tg?.initDataUnsafe?.user?.first_name || '',
+        username: tg?.initDataUnsafe?.user?.username || '',
+        photo_url: tg?.initDataUnsafe?.user?.photo_url || ''
+      })
     });
+    const data = await res.json();
+    if (data.ok) {
+      addLog('LOGIN SUCCESS: ' + data.message, 'success');
+      addHistory('Login', method.toUpperCase() + ' on ' + selectedServer.toUpperCase(), 'success');
+      showToast('Connected!', 'success');
+      setLoggedIn(method, selectedServer, data.user_id);
+    } else {
+      addLog('ERROR: ' + data.error, 'error');
+      addHistory('Login Failed', data.error, 'error');
+      showToast(data.error, 'error');
+      btn.innerHTML = orig; btn.disabled = false;
+      if (res.status === 403) showReqAccess();
+    }
+  } catch (e) {
+    addLog('ERROR: API unreachable — ' + e.message, 'error');
+    showToast('API unreachable', 'error');
+    btn.innerHTML = orig; btn.disabled = false;
+  }
+}
+
+// ── SET LOGGED IN ─────────────────────────────────────────────────────────────
+function setLoggedIn(method, server, userId) {
+  isLoggedIn = true;
+  const user = tg?.initDataUnsafe?.user || {};
+  const name = user.first_name || 'User';
+
+  // Switch home → dashboard
+  document.getElementById('page-home').classList.add('layer-hidden');
+  document.getElementById('page-dashboard').classList.remove('layer-hidden');
+
+  // Update nav: home nav now points to dashboard
+  const homeNav = document.getElementById('nav-home');
+  if (homeNav) {
+    homeNav.onclick = () => goPage('dashboard');
+    homeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
+  }
+
+  document.getElementById('dashUsername').textContent = name;
+  document.getElementById('dashServer').textContent = server.toUpperCase() + ' · ' + method.toUpperCase();
+  document.getElementById('headerStatus').textContent = 'CONNECTED';
+
+  // Telegram photo
+  const photoUrl = user.photo_url || (API_BASE + '/api/telegram/avatar/' + TELEGRAM_ID);
+  if (photoUrl) {
+    const img = document.getElementById('dashAvatar');
+    img.src = photoUrl;
+    img.classList.remove('hidden');
+    document.getElementById('dashAvatarFallback').classList.add('hidden');
+    const accImg = document.getElementById('accAvatar');
+    if (accImg) accImg.src = photoUrl;
+  }
+
+  // Account page
+  document.getElementById('accountNotLoggedIn').classList.add('hidden');
+  const acc = document.getElementById('accountLoggedIn');
+  acc.classList.remove('hidden');
+  document.getElementById('accUsername').textContent = name;
+  document.getElementById('accServer').textContent = server.toUpperCase() + ' · ' + method.toUpperCase();
+  document.getElementById('accUserId').textContent = userId || '—';
+  const badge = document.getElementById('accStatusBadge');
+  badge.textContent = server.toUpperCase();
+  badge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold ' +
+    (server === 'live' ? 'bg-green-500/10 text-green-600 border border-green-500/25' : 'bg-amber-400/10 text-amber-600 border border-amber-400/25');
+
+  if (server === 'beta') document.getElementById('betaSection').classList.remove('hidden');
+  refreshCoins();
+  refreshRole();
+}
+
+// ── LOGOUT ────────────────────────────────────────────────────────────────────
+function logout() {
+  isLoggedIn = false;
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+  lastCurrencyData = null; lastCoinBalance = null;
+  document.getElementById('autoRefreshToggle').checked = false;
+  document.getElementById('betaSection').classList.add('hidden');
+  document.getElementById('accountNotLoggedIn').classList.remove('hidden');
+  document.getElementById('accountLoggedIn').classList.add('hidden');
+  document.getElementById('currencyGrid').innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">Press Refresh to load balance</div>';
+  document.getElementById('headerStatus').textContent = 'SYS.ACTIVE';
+  document.getElementById('coinBalance').textContent = '—';
+
+  // Reset nav-home to go back to home/login
+  const homeNav = document.getElementById('nav-home');
+  if (homeNav) {
+    homeNav.onclick = () => goPage('home');
+    homeNav.className = 'bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/30 interactive-scale';
+  }
+
+  goPage('home');
+  addLog('Logged out.'); addHistory('Logout', 'Session ended', 'info');
+}
+
+// ── REQUEST ACCESS ────────────────────────────────────────────────────────────
+function showReqAccess() {
+  document.getElementById('loginTab-lua').classList.add('hidden');
+  document.getElementById('loginTab-lib').classList.add('hidden');
+  document.getElementById('loginTab-platform').classList.add('hidden');
+  document.getElementById('reqAccessCard').classList.remove('hidden');
+  const el = document.getElementById('reqTgId');
+  if (el) el.textContent = TELEGRAM_ID || '—';
+}
+function hideReqAccess() {
+  document.getElementById('reqAccessCard').classList.add('hidden');
+  switchLoginTab('lua');
+}
+async function requestAccess() {
+  if (!TELEGRAM_ID) { showToast('Cannot get Telegram ID', 'error'); return; }
+  const btn = document.getElementById('btnReqAccess');
+  const result = document.getElementById('reqAccessResult');
+  btn.innerHTML = '<span class="spinner"></span>Sending...'; btn.disabled = true;
+  try {
+    const res = await fetch(API_BASE + '/api/request_access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, name: tg?.initDataUnsafe?.user?.first_name || 'Unknown' })
+    });
+    const data = await res.json();
+    result.classList.remove('hidden');
+    if (data.ok) {
+      result.textContent = 'Request sent! Wait for admin approval.';
+      result.style.cssText = 'background:#e8f5e9;color:#34C759;border:1px solid rgba(52,199,89,.3)';
+      btn.textContent = 'REQUEST SENT';
+    } else {
+      result.textContent = data.error || 'Failed to send request';
+      result.style.cssText = 'background:#ffdad6;color:#FF3B30;border:1px solid rgba(255,59,48,.3)';
+      btn.textContent = 'REQUEST ACCESS'; btn.disabled = false;
+    }
+  } catch (e) {
+    result.classList.remove('hidden');
+    result.textContent = 'API unreachable';
+    result.style.cssText = 'background:#ffdad6;color:#FF3B30;border:1px solid rgba(255,59,48,.3)';
+    btn.textContent = 'REQUEST ACCESS'; btn.disabled = false;
+  }
+}
+
+// ── CONSOLE LOG ───────────────────────────────────────────────────────────────
+function addLog(msg, type = 'info') {
+  const el = document.getElementById('consoleLogs');
+  if (!el) return;
+  const colors = { error: '#FF3B30', success: '#34C759', warn: '#FF9500', info: '#2D31FA' };
+  const div = document.createElement('div');
+  div.style.color = colors[type] || colors.info;
+  div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  el.prepend(div);
+}
+function clearConsole() {
+  const el = document.getElementById('consoleLogs');
+  el.innerHTML = '<div style="color:#2D31FA">[CLEARED] Console cleared.</div>';
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────────
+function addHistory(action, result, type = 'success') {
+  actionHistory.unshift({ action, result, type, time: new Date().toLocaleTimeString(), date: new Date().toLocaleDateString() });
+  if (actionHistory.length > 60) actionHistory.pop();
+  localStorage.setItem('action_history', JSON.stringify(actionHistory));
+  renderHistory();
+}
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!el) return;
+  if (!actionHistory.length) {
+    el.innerHTML = '<div class="bg-white p-6 rounded-3xl border border-outline-variant card-shadow text-center font-mono text-[11px] text-on-surface-variant">No activity yet.</div>';
+    return;
+  }
+  const colorMap = { success: '#34C759', error: '#FF3B30', info: '#5856D6', warn: '#FF9500' };
+  el.innerHTML = actionHistory.map(h => `
+    <div class="history-item">
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-xs font-bold" style="color:${colorMap[h.type]||colorMap.info}">${h.action}</span>
+        <span class="text-[9px] text-on-surface-variant">${h.date} ${h.time}</span>
+      </div>
+      <div class="text-[10px] text-on-surface-variant font-mono">${h.result}</div>
+    </div>`).join('');
+}
+function clearHistory() {
+  actionHistory = []; localStorage.removeItem('action_history'); renderHistory(); showToast('History cleared');
+}
+
+// ── COINS ─────────────────────────────────────────────────────────────────────
+async function refreshCoins() {
+  if (!TELEGRAM_ID) { document.getElementById('coinBalance').textContent = 'N/A'; return; }
+  try {
+    const res = await fetch(API_BASE + '/api/coins', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      if (lastCoinBalance !== null && lastCoinBalance !== data.balance)
+        addLog('Coins: ' + lastCoinBalance + ' → ' + data.balance, 'info');
+      lastCoinBalance = data.balance;
+      document.getElementById('coinBalance').textContent = data.balance;
+      FEATURE_COSTS = data.costs || {};
+      populateCostBadges();
+    } else {
+      document.getElementById('coinBalance').textContent = '0';
+    }
+  } catch (e) {
+    document.getElementById('coinBalance').textContent = '?';
+  }
+}
+function populateCostBadges() {
+  document.querySelectorAll('[data-cost-for]').forEach(el => {
+    const cost = FEATURE_COSTS[el.getAttribute('data-cost-for')];
+    if (cost !== undefined) {
+      const isHeaderOrQuick = el.classList.contains('static');
+      if (isHeaderOrQuick) {
+        el.innerHTML = `<span class="material-symbols-outlined" style="font-size:10px; font-variation-settings: 'FILL' 1">paid</span>${cost}`;
+      } else {
+        el.innerHTML = `<span class="material-symbols-outlined text-[10px] align-middle" style="font-variation-settings: 'FILL' 1">monetization_on</span> ${cost}`;
+      }
+    }
+  });
+}
+
+// ── ROLE ──────────────────────────────────────────────────────────────────────
+async function refreshRole() {
+  if (!TELEGRAM_ID) return;
+  try {
+    const res = await fetch(API_BASE + '/api/role', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (!data.ok) return;
+    CURRENT_ROLE = data.role;
+    ALLOWED_FEATURES = new Set(data.features);
+    MAX_MASSFARM_SESSIONS = data.max_sessions;
+
+    // Header role badge
+    const rl = document.getElementById('roleLabel');
+    rl.textContent = data.label.toUpperCase() + ' ACCESS';
+
+    // Account role badge
+    const arb = document.getElementById('accRoleBadge');
+    if (arb) arb.textContent = data.label.toUpperCase();
+
+    // Settings
+    const sb = document.getElementById('settingsRoleBadge');
+    const sl = document.getElementById('settingsRoleLabel');
+    sb.className = 'flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold border role-' + data.role;
+    sl.textContent = data.label.toUpperCase();
+
+    const sExpiry    = document.getElementById('settingsRoleExpiry');
+    const sSince     = document.getElementById('settingsRoleSince');
+    const sRemaining = document.getElementById('settingsRoleRemaining');
+    if (data.expires_at) {
+      const expiryDt = new Date(data.expires_at + 'Z');
+      sExpiry.textContent = expiryDt.toLocaleString();
+      const cfg = data.all_roles?.[data.role];
+      if (cfg?.duration_days) {
+        sSince.textContent = new Date(expiryDt.getTime() - cfg.duration_days * 86400000).toLocaleString();
+      } else { sSince.textContent = '—'; }
+      const diff = expiryDt - new Date();
+      if (diff <= 0) { sRemaining.textContent = 'Expired'; }
+      else {
+        const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000);
+        sRemaining.textContent = `${d}d ${h}h ${m}m`;
+      }
+    } else { sExpiry.textContent = 'Never'; sSince.textContent = '—'; sRemaining.textContent = '—'; }
+    applyFeatureLocks();
+  } catch (e) { /* silent */ }
+}
+function applyFeatureLocks() {
+  document.querySelectorAll('[data-cost-for]').forEach(badgeEl => {
+    const feature = badgeEl.getAttribute('data-cost-for');
+    const btn = badgeEl.closest('.feat-btn');
+    if (!btn) return;
+    const existing = btn.querySelector('.lock-overlay');
+    if (ALLOWED_FEATURES.has(feature)) {
+      btn.classList.remove('locked');
+      if (existing) existing.remove();
+    } else {
+      btn.classList.add('locked');
+      if (!existing) {
+        const ov = document.createElement('div');
+        ov.className = 'lock-overlay';
+        ov.innerHTML = '<span class="material-symbols-outlined" style="color:#d97706">lock</span>';
+        btn.appendChild(ov);
+      }
+    }
+  });
+}
+
+// ── RUN FEATURE ───────────────────────────────────────────────────────────────
+async function runFeature(name, label) {
+  if (!TELEGRAM_ID) { showToast('No Telegram ID', 'error'); return; }
+  if (!isLoggedIn) { showToast('Please login first', 'error'); return; }
+  const confirmed = await showConfirm(`Run <b>${label}</b>?`);
+  if (!confirmed) return;
+
+  if (ALLOWED_FEATURES.size > 0 && !ALLOWED_FEATURES.has(name)) {
+    addLog(`LOCKED: ${label} is VIP-only.`, 'error');
+    showToast(`${label} is VIP-only. Top Up to unlock.`, 'error');
+    return;
+  }
+  const cost = FEATURE_COSTS[name] ?? 1;
+  const curBal = parseInt(document.getElementById('coinBalance').textContent, 10);
+  if (!isNaN(curBal) && curBal < cost) {
+    showToast(`Need ${cost} coins, you have ${curBal}`, 'error'); return;
+  }
+
+  const btn = document.getElementById('feat-' + name);
+  if (btn) btn.classList.add('running');
+  addLog(`Running: ${label}... (-${cost} coin${cost > 1 ? 's' : ''})`);
+  showToast('Running ' + label + '...');
+
+  try {
+    const res = await fetch(API_BASE + '/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, feature: name, server: selectedServer })
+    });
+    const data = await res.json();
+    if (typeof data.balance !== 'undefined') {
+      document.getElementById('coinBalance').textContent = data.balance;
+      lastCoinBalance = data.balance;
+    }
+    if (data.ok) {
+      if (data.status === 'processing' && data.job_id) {
+        addLog(data.message, 'info');
+        let displayed = 1;
+        const pollId = setInterval(async () => {
+          try {
+            const sr = await fetch(`${API_BASE}/api/farm/status?job_id=${data.job_id}`, { headers: { 'ngrok-skip-browser-warning': '1' } });
+            const job = await sr.json();
+            if (job.ok && job.logs) {
+              for (let i = displayed; i < job.logs.length; i++) addLog(job.logs[i], job.logs[i].includes('ERROR') ? 'error' : 'info');
+              displayed = job.logs.length;
+            }
+            if (job.ok && job.done) {
+              clearInterval(pollId);
+              if (btn) btn.classList.remove('running');
+              if (job.success) { showToast(label + ' done!', 'success'); addHistory(label, job.logs[job.logs.length - 1] || 'Done', 'success'); }
+              else {
+                const lastLog = job.logs[job.logs.length - 1] || 'Failed';
+                showToast(job.session_expired ? '⚠️ Session expired — re-login required' : label + ' failed', 'error');
+                addHistory(label + ' Failed', lastLog, 'error');
+              }
+            }
+          } catch (e) { /* silent */ }
+        }, 10000);
+        return;
+      } else if (name === 'ClosetUnlock' && data.logs && data.logs.length) {
+        addLog('DONE: ' + label, 'success');
+        data.logs.forEach(l => addLog(l, l.startsWith('✅') ? 'success' : 'warn'));
+        addHistory(label, data.logs[data.logs.length-1], 'success');
+        showToast(label + ' done!', 'success');
+      } else {
+        addLog('SUCCESS: ' + label, 'success');
+        addHistory(label, 'Executed successfully', 'success');
+        showToast(label + ' done!', 'success');
+      }
+    } else {
+      const err = data.error || 'Unknown error';
+      addLog('ERROR: ' + err, 'error');
+      addHistory(label + ' Failed', err, 'error');
+      showToast(data.session_expired ? '⚠️ Session expired — re-login required' : err, 'error');
+      if (data.locked) refreshRole();
+    }
+  } catch (e) {
+    addLog('ERROR: ' + e.message, 'error');
+    showToast('Server unreachable', 'error');
+  } finally {
+    if (btn) btn.classList.remove('running');
+  }
+}
+
+// ── HEART / FRIEND SELECTION ──────────────────────────────────────────────────
+function openHeartModal()  { document.getElementById('heartModal').classList.remove('hidden'); }
+function closeHeartModal() {
+  document.getElementById('heartModal').classList.add('hidden');
+  document.getElementById('heartTargetId').value = '';
+  document.getElementById('friendListContainer').innerHTML =
+    `<button onclick="loadFriends()" class="w-full py-2.5 rounded-full text-xs font-bold border border-primary/30 text-primary hover:bg-primary/10 transition-all"><span class="material-symbols-outlined align-middle" style="font-size:14px">group</span> Load Friends</button>`;
+}
+async function loadFriends() {
+  const container = document.getElementById('friendListContainer');
+  container.innerHTML = '<div class="text-xs text-center text-on-surface-variant py-2">Loading...</div>';
+  try {
+    const res = await fetch(API_BASE + '/api/friends', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    if (!data.ok || !data.friends.length) {
+      container.innerHTML = '<div class="text-xs text-center text-on-surface-variant/60 py-2">No friends found.</div>';
+      return;
+    }
+    container.innerHTML = data.friends.map(f =>
+      `<button onclick="selectFriend('${f.id}','${(f.name||'').replace(/'/g,"\\'")}')"
+        class="w-full text-left px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant text-xs text-on-surface flex items-center gap-2 hover:border-primary/45 transition-all">
+        <span class="material-symbols-outlined text-primary" style="font-size:14px">person</span>
+        <span class="flex-1 truncate">${f.name || f.id}</span>
+        <span class="text-on-surface-variant/50 font-mono" style="font-size:9px">${f.id.slice(0,8)}…</span>
+      </button>`
+    ).join('');
+  } catch(e) { container.innerHTML = '<div class="text-xs text-center text-error py-2">Failed to load.</div>'; }
+}
+function selectFriend(id, name) {
+  document.getElementById('heartTargetId').value = id;
+  showToast('Selected: ' + (name || id), 'info');
+}
+async function confirmSendHeart() {
+  const targetId = document.getElementById('heartTargetId').value.trim();
+  if (!targetId || targetId.length < 5) { showToast('Enter valid Sky ID', 'error'); return; }
+  closeHeartModal();
+  if (!isLoggedIn) { showToast('Please login first', 'error'); return; }
+  const cost = FEATURE_COSTS['SendHeart'] ?? 5;
+  const curBal = parseInt(document.getElementById('coinBalance').textContent, 10);
+  if (!isNaN(curBal) && curBal < cost) { showToast(`Need ${cost} coins`, 'error'); return; }
+  const btn = document.getElementById('feat-SendHeart');
+  if (btn) btn.classList.add('running');
+  addLog(`Sending heart to ${targetId}...`);
+  try {
+    const res = await fetch(API_BASE + '/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, feature: 'SendHeart', server: selectedServer, target_id: targetId })
+    });
+    const data = await res.json();
+    if (typeof data.balance !== 'undefined') { document.getElementById('coinBalance').textContent = data.balance; lastCoinBalance = data.balance; }
+    if (data.ok) { showToast('Heart sent!', 'success'); addHistory('Send Heart to ' + targetId, 'Heart sent successfully', 'success'); }
+    else { showToast(data.error || 'Failed', 'error'); addHistory('Send Heart Failed', data.error || 'Failed', 'error'); }
+  } catch (e) { showToast('Server unreachable', 'error'); }
+  finally { if (btn) btn.classList.remove('running'); }
+}
+
+// ── ACCOUNT / CURRENCY ────────────────────────────────────────────────────────
+const CURRENCY_META = {
+  candles:          { label: 'Candles',  icon: 'candle',          color: '#d97706' },
+  wax:              { label: 'Wax',      icon: 'opacity',         color: '#2D31FA' },
+  hearts:           { label: 'Hearts',   icon: 'favorite',        color: '#FF3B30' },
+  seasonal_candles: { label: 'Seasonal', icon: 'auto_awesome',    color: '#5856D6' },
+  ascended_candles: { label: 'Ascended', icon: 'star',            color: '#34C759' },
+  gift_candles:     { label: 'Gift CDL', icon: 'redeem',          color: '#ea580c' },
+  rebirths:         { label: 'Rebirths', icon: 'autorenew',       color: '#2563eb' },
+};
+
+function renderCurrency(items) {
+  const grid = document.getElementById('currencyGrid');
+  if (!items || !Object.keys(items).length) {
+    grid.innerHTML = '<div class="text-[11px] text-on-surface-variant/40 text-center py-4">No currency data.</div>'; return;
+  }
+  const ordered = Object.keys(CURRENCY_META).filter(k => items[k] !== undefined);
+  const rest    = Object.keys(items).filter(k => !CURRENCY_META[k]);
+  grid.innerHTML = [...ordered, ...rest].map(key => {
+    const m = CURRENCY_META[key] || { label: key.replace(/_/g,' '), icon: 'toll', color: '#5856D6' };
+    return `<div class="currency-row">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined" style="font-size:16px;color:${m.color}">${m.icon}</span>
+        <span class="text-xs font-semibold text-on-surface-variant">${m.label}</span>
+      </div>
+      <span class="text-sm font-bold font-mono" style="color:${m.color}">${Number(items[key]).toLocaleString()}</span>
+    </div>`;
+  }).join('');
+}
+
+async function refreshAccount() {
+  if (!TELEGRAM_ID || !isLoggedIn) return;
+  const btn = document.getElementById('refreshBtn');
+  btn.innerHTML = '<span class="spinner"></span>Loading...'; btn.disabled = true;
+  const loading = document.getElementById('currencyLoading');
+  loading.classList.remove('hidden'); loading.style.display = 'flex';
+  try {
+    const res = await fetch(API_BASE + '/api/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID })
+    });
+    const data = await res.json();
+    loading.classList.add('hidden'); loading.style.display = 'none';
+    if (data.ok) { lastCurrencyData = data.currency; renderCurrency(data.currency); showToast('Balance updated', 'success'); }
+    else { showToast(data.error, 'error'); }
+  } catch (e) {
+    loading.classList.add('hidden'); loading.style.display = 'none';
+    showToast('API unreachable', 'error');
+  }
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px">refresh</span>Refresh';
+  btn.disabled = false;
+}
+
+function toggleAutoRefresh() {
+  const on = document.getElementById('autoRefreshToggle').checked;
+  if (on) { refreshAccount(); autoRefreshInterval = setInterval(refreshAccount, 30000); showToast('Auto refresh ON', 'success'); }
+  else { clearInterval(autoRefreshInterval); autoRefreshInterval = null; showToast('Auto refresh OFF'); }
+}
+
+// ── TOPUP ─────────────────────────────────────────────────────────────────────
+function calcCustomPrice(val) {
+  const amount = parseInt(val) || 0;
+  document.getElementById('customPriceLabel').textContent = 'Rp ' + (amount * 100).toLocaleString();
+}
+function orderCustom() {
+  const amount = document.getElementById('customCoinInput').value;
+  if (!amount || amount <= 0) { showToast('Enter valid amount', 'error'); return; }
+  window.open(`https://t.me/dieforcringes?text=Halo%20Admin,%20saya%20ingin%20topup%20custom%20${amount}%20koin`, '_blank');
+}
+function clearAllData() {
+  if (!confirm('Reset all local data?')) return;
+  localStorage.clear(); actionHistory = []; renderHistory(); showToast('All data cleared');
+}
+
+// ── MASS FARM ─────────────────────────────────────────────────────────────────
+const MF_FEATURES = [
+  { id:'Farm',          label:'Farm' },
+  { id:'Eden',          label:'Eden' },
+  { id:'Quest',         label:'Daily Quest' },
+  { id:'WorldQuest',    label:'World Quest' },
+  { id:'SeasonalQuest', label:'Seasonal' },
+  { id:'Wings',         label:'Wings' },
+  { id:'ElderHairs',    label:'Elder Hairs' },
+  { id:'DailyFunction', label:'Daily All' },
+  { id:'All',           label:'Full All' },
+];
+let mfSelectedFeatures = new Set(['Farm']);
+let mfRowId = 0;
+
+function mfAddRow() {
+  const container = document.getElementById('mfContainer');
+  if (container.children.length >= MAX_MASSFARM_SESSIONS) {
+    showToast(`Max ${MAX_MASSFARM_SESSIONS} accounts (${CURRENT_ROLE.toUpperCase()})`, 'error'); return;
+  }
+  const id = ++mfRowId;
+  const div = document.createElement('div');
+  div.id = 'mfrow-' + id;
+  div.className = 'bg-white p-4 rounded-3xl border border-outline-variant card-shadow flex flex-col gap-2 relative fade-in';
+  div.dataset.method = 'lua';
+  div.innerHTML = `
+    <div class="flex gap-1 mb-1">
+      ${['lua','lib','json'].map(m => `<button onclick="mfSetMethod(${id},'${m}')" id="mftab-${id}-${m}"
+        class="mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m==='lua'?'bg-primary text-white shadow-md shadow-primary/25':'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}">${m.toUpperCase()}</button>`).join('')}
+      <button onclick="document.getElementById('mfrow-${id}').remove();mfUpdateNext()"
+        class="text-error/50 hover:text-error ml-1 px-1"><span class="material-symbols-outlined" style="font-size:16px">close</span></button>
+    </div>
+    <textarea id="mfinput-${id}" rows="2"
+      class="w-full bg-surface-container-low border border-outline-variant rounded-2xl p-2.5 text-[10px] font-mono focus:ring-1 focus:ring-primary focus:border-primary outline-none resize-none text-on-surface"
+      placeholder="Paste Lua code here..."></textarea>
+    <div class="flex gap-2 items-center">
+      <div class="flex gap-1 bg-surface-container-low border border-outline-variant p-0.5 rounded-full">
+        <button onclick="mfSetServer(${id},'live')" id="mfsrv-${id}-live"
+          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all bg-green-500/20 text-green-600">Live</button>
+        <button onclick="mfSetServer(${id},'beta')" id="mfsrv-${id}-beta"
+          class="mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all text-on-surface-variant hover:bg-surface-container-highest">Beta</button>
+      </div>
+      <input type="hidden" id="mfserver-${id}" value="live"/>
+      <button onclick="mfCheckRow(${id})"
+        class="flex-1 bg-primary/10 text-primary text-[10px] font-bold py-1.5 rounded-full border border-primary/20 hover:bg-primary/20 transition-all">
+        Check Connect
+      </button>
+    </div>
+    <div id="mfstatus-${id}" class="hidden text-[9px] font-semibold"></div>
+    <div id="mfcurrency-${id}" class="hidden text-[9px] font-mono flex flex-wrap gap-2 pt-1"></div>`;
+  container.appendChild(div);
+}
+
+// REST OF THE FUNCTIONS
+function mfSetMethod(id, method) {
+  const row = document.getElementById('mfrow-' + id);
+  row.dataset.method = method;
+  ['lua','lib','json'].forEach(m => {
+    const btn = document.getElementById(`mftab-${id}-${m}`);
+    btn.className = `mftab flex-1 text-[9px] font-bold py-1 rounded-full border transition-all ${m===method?'bg-primary text-white shadow-md shadow-primary/25':'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`;
+  });
+  const ta = document.getElementById('mfinput-' + id);
+  ta.placeholder = method === 'lua' ? 'Paste Lua code here...' : method === 'lib' ? 'Paste Lib session code...' : '{"user":"...","session":"..."}';
+}
+function mfSetServer(id, server) {
+  document.getElementById('mfserver-' + id).value = server;
+  const isLive = server === 'live';
+  document.getElementById(`mfsrv-${id}-live`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${isLive ? 'bg-green-500/20 text-green-600' : 'text-on-surface-variant hover:bg-surface-container-highest'}`;
+  document.getElementById(`mfsrv-${id}-beta`).className = `mfsrv text-[9px] font-bold px-3 py-1 rounded-full transition-all ${!isLive ? 'bg-amber-400/20 text-amber-600' : 'text-on-surface-variant hover:bg-surface-container-highest'}`;
+}
+
+async function mfCheckRow(id) {
+  const row      = document.getElementById('mfrow-' + id);
+  const code     = document.getElementById('mfinput-' + id).value.trim();
+  const server   = document.getElementById('mfserver-' + id).value;
+  let   method   = row.dataset.method || 'lua';
+  if (code.startsWith('{')) method = 'json';
+  const statusEl   = document.getElementById('mfstatus-' + id);
+  const currencyEl = document.getElementById('mfcurrency-' + id);
+  if (!code) { showToast('Code is empty', 'error'); return; }
+  statusEl.textContent = 'Checking...'; statusEl.className = 'text-[9px] font-semibold text-on-surface-variant';
+  statusEl.classList.remove('hidden'); currencyEl.classList.add('hidden');
+  row.dataset.valid = '0';
+  try {
+    const res  = await fetch(API_BASE + '/api/check_session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ method, code, server })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      statusEl.textContent = `Connected (${(data.user_id||'').slice(0,12)}...)`;
+      statusEl.className = 'text-[9px] font-semibold text-green-600';
+      row.dataset.valid = '1';
+      if (data.currency) {
+        const icons = { candles:'candle', wax:'opacity', hearts:'favorite', seasonal_candles:'auto_awesome', ascended_candles:'star' };
+        currencyEl.innerHTML = Object.keys(data.currency).map(k =>
+          `<span class="flex items-center gap-0.5 bg-surface-container-low border border-outline-variant px-1.5 py-0.5 rounded-full">
+            <span class="material-symbols-outlined" style="font-size:10px">${icons[k]||'toll'}</span>${Number(data.currency[k]).toLocaleString()}
+          </span>`).join('');
+        currencyEl.classList.remove('hidden');
+      }
+    } else {
+      statusEl.textContent = 'Failed: ' + (data.error || 'Invalid session');
+      statusEl.className = 'text-[9px] font-semibold text-red-600';
+    }
+  } catch (e) {
+    statusEl.textContent = 'Error: ' + e.message;
+    statusEl.className = 'text-[9px] font-semibold text-red-600';
+  }
+  mfUpdateNext();
+}
+
+async function mfCheckAll() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  if (!rows.length) { showToast('Add at least one account', 'error'); return; }
+  const btn = document.getElementById('btnMfCheck');
+  btn.innerHTML = '<span class="spinner"></span>Checking...'; btn.disabled = true;
+  for (const row of rows) await mfCheckRow(row.id.replace('mfrow-', ''));
+  btn.textContent = 'CHECK ALL CONNECTIONS'; btn.disabled = false;
+
+  const validRows = [...document.querySelectorAll('#mfContainer > div[id^="mfrow-"]')].filter(r => r.dataset.valid === '1');
+  const panel = document.getElementById('mfCurrencyPanel');
+  if (validRows.length) {
+    panel.classList.remove('hidden');
+    panel.innerHTML = `<p class="font-label-caps text-on-surface-variant text-[11px] mb-2 font-bold">${validRows.length} Connected</p>` +
+      validRows.map((row, i) => {
+        const id = row.id.replace('mfrow-','');
+        return `<div class="flex items-center justify-between py-1.5 border-b border-outline-variant last:border-0">
+          <span class="text-[10px] text-on-surface-variant font-bold">Acc ${i+1}</span>
+          <div class="flex gap-1.5">${document.getElementById('mfcurrency-'+id)?.innerHTML||'—'}</div></div>`;
+      }).join('');
+  } else { panel.classList.add('hidden'); }
+}
+
+function mfUpdateNext() {
+  const valid = [...document.querySelectorAll('#mfContainer > div[id^="mfrow-"]')].filter(r => r.dataset.valid === '1').length;
+  const btn = document.getElementById('btnMfNext');
+  if (valid > 0) {
+    btn.disabled = false;
+    btn.className = 'w-full bg-primary text-white py-3.5 rounded-full text-xs font-bold transition-all active:scale-[.98] shadow-lg shadow-primary/20';
+    btn.textContent = `NEXT — SELECT FEATURES (${valid} account${valid>1?'s':''})`;
+  } else {
+    btn.disabled = true;
+    btn.className = 'w-full bg-surface-container text-on-surface-variant py-3.5 rounded-full text-xs font-bold opacity-50 cursor-not-allowed';
+    btn.textContent = 'NEXT — SELECT FEATURES';
+  }
+}
+
+function mfGoFeature() {
+  document.getElementById('mf-step-sessions').classList.add('hidden');
+  const f = document.getElementById('mf-step-features');
+  f.classList.remove('hidden'); f.style.display = 'flex'; f.style.flexDirection = 'column';
+  mfRenderFeatureGrid();
+}
+function mfBackToSessions() {
+  document.getElementById('mf-step-features').classList.add('hidden');
+  document.getElementById('mf-step-sessions').classList.remove('hidden');
+}
+function mfRenderFeatureGrid() {
+  document.getElementById('mfFeatureGrid').innerHTML = MF_FEATURES.map(f => `
+    <button onclick="mfToggleFeature('${f.id}')" id="mffeat-${f.id}"
+      class="text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(f.id)?'border-primary bg-primary/10 text-primary':'border-outline-variant bg-surface-container-low text-on-surface-variant'}">
+      ${f.label}</button>`).join('');
+  mfUpdateSummary();
+}
+function mfToggleFeature(id) {
+  if (mfSelectedFeatures.has(id)) { if (mfSelectedFeatures.size === 1) return; mfSelectedFeatures.delete(id); }
+  else { mfSelectedFeatures.add(id); }
+  const btn = document.getElementById('mffeat-' + id);
+  btn.className = `text-[10px] font-bold py-2 px-1 rounded-full border transition-all ${mfSelectedFeatures.has(id)?'border-primary bg-primary/10 text-primary':'border-outline-variant bg-surface-container-low text-on-surface-variant'}`;
+  mfUpdateSummary();
+}
+function mfUpdateSummary() {
+  const valid = [...document.querySelectorAll('#mfContainer > div[id^="mfrow-"]')].filter(r => r.dataset.valid === '1').length;
+  document.getElementById('mfSelectedSummary').textContent = `${valid} account${valid>1?'s':''} × [${[...mfSelectedFeatures].join(', ')}]`;
+}
+
+async function mfStart() {
+  const rows = document.querySelectorAll('#mfContainer > div[id^="mfrow-"]');
+  const entries = [];
+  rows.forEach(row => {
+    if (row.dataset.valid !== '1') return;
+    const id = row.id.replace('mfrow-','');
+    const code = document.getElementById('mfinput-'+id).value.trim();
+    const server = document.getElementById('mfserver-'+id).value;
+    let method = row.dataset.method || 'lua';
+    if (code.startsWith('{')) method = 'json';
+    entries.push({ code, method, server });
+  });
+  if (!entries.length) { showToast('No valid sessions', 'error'); return; }
+
+  const btn = document.getElementById('btnMfStart');
+  btn.innerHTML = '<span class="spinner"></span>STARTING...'; btn.disabled = true;
+
+  const panel = document.getElementById('mfProgressPanel');
+  const log   = document.getElementById('mfLog');
+  const bar   = document.getElementById('mfProgressBar');
+  panel.classList.remove('hidden'); log.innerHTML = ''; bar.style.width = '0%';
+  document.getElementById('mfStatusText').textContent = 'Starting...';
+
+  let jobId;
+  try {
+    const res  = await fetch(API_BASE + '/api/massfarm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
+      body: JSON.stringify({ telegram_id: TELEGRAM_ID, entries, features: [...mfSelectedFeatures] })
+    });
+    const data = await res.json();
+    if (!data.ok) { log.innerHTML += `<div style="color:#FF3B30">${data.error}</div>`; showToast(data.error, 'error'); btn.textContent = 'START EXECUTION'; btn.disabled = false; return; }
+    jobId = data.job_id;
+    log.innerHTML += `<div style="color:#2D31FA;font-weight:700;">Started — ${data.total} accounts, cost ${data.cost} coins</div>`;
+  } catch (e) {
+    log.innerHTML += `<div style="color:#FF3B30">Connection error: ${e.message}</div>`;
+    showToast('Connection error', 'error'); btn.textContent = 'START EXECUTION'; btn.disabled = false; return;
+  }
+
+  let rendered = 0;
+  const poll = setInterval(async () => {
+    try {
+      const res  = await fetch(`${API_BASE}/api/massfarm/status?job_id=${jobId}`, { headers: { 'ngrok-skip-browser-warning': '1' } });
+      const data = await res.json();
+      if (!data.ok) return;
+      bar.style.width = (data.total > 0 ? Math.round((data.current / data.total) * 100) : 0) + '%';
+      document.getElementById('mfStatusText').textContent = data.status;
+      data.results.slice(rendered).forEach(r => {
+        log.innerHTML += `<div style="color:${r.status==='success'?'#34C759':'#FF3B30'}">${r.msg}</div>`;
+        rendered++;
+      });
+      log.scrollTop = log.scrollHeight;
+      if (data.done) {
+        clearInterval(poll);
+        bar.style.width = '100%';
+        log.innerHTML += `<div style="color:#2D31FA;font-weight:700;border-top:1px solid #E5E5EA;padding-top:4px;">Done! ${data.success}/${data.total} success</div>`;
+        showToast(`Done! ${data.success}/${data.total} success`, 'success');
+        addHistory('Mass Farm', `${data.success}/${data.total} success — [${[...mfSelectedFeatures].join(',')}]`, 'success');
+        btn.textContent = 'START EXECUTION'; btn.disabled = false;
+        refreshCoins();
+      }
+    } catch (e) { /* silent */ }
+  }, 3000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Show home page, hide all others
+  ALL_PAGES.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el && p !== 'home') el.classList.add('layer-hidden');
+    else if (el) el.classList.remove('layer-hidden');
+  });
+
+  // Populate settings TG ID
+  const stg = document.getElementById('settingsTgId');
+  if (stg) stg.textContent = TELEGRAM_ID || 'N/A';
+
+  // Set avatar sources dynamically using the Telegram bot proxy endpoint to avoid empty user.photo_url issues
+  if (TELEGRAM_ID) {
+    const avatarUrl = API_BASE + '/api/telegram/avatar/' + TELEGRAM_ID;
+    const dashFallback = document.getElementById('dashAvatarFallback');
+    if (dashFallback) dashFallback.src = avatarUrl;
+    const accImg = document.getElementById('accAvatar');
+    if (accImg) accImg.src = avatarUrl;
+  }
+
+  renderHistory();
+  refreshCoins();
+  refreshRole();
+  mfAddRow(); // seed one mass farm row
+
+  // Haptic feedback
+  document.querySelectorAll('button, .interactive-scale').forEach(el => {
+    el.addEventListener('click', () => { if (navigator.vibrate) navigator.vibrate(8); });
+  });
+});
+
+function toggleTheme() {
+  const html = document.documentElement;
+  if (html.classList.contains('dark')) {
+    html.classList.remove('dark');
+    html.classList.add('light');
+    localStorage.setItem('theme', 'light');
+  } else {
+    html.classList.remove('light');
+    html.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  }
+}
 </script>
 </body>
 </html>
