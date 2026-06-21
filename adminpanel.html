@@ -476,6 +476,25 @@
         </div>
       </div>
     </section>
+
+    <!-- Server Config -->
+    <section class="space-y-stack-md">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">Server Configuration</h2>
+      <div class="silk-glass-card p-base space-y-base">
+        <p class="text-xs text-on-surface-variant">Set URL backend Flask (Pterodactyl server). Contoh: <span class="font-mono text-primary">http://node.hosting.com:8080</span></p>
+        <div class="space-y-2">
+          <label class="font-label-caps text-[11px] text-on-surface-variant/80 uppercase tracking-wider ml-1">Backend API URL</label>
+          <div class="flex gap-2">
+            <input id="adminApiBaseInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors text-xs" type="url" placeholder="http://IP_ATAU_DOMAIN:PORT"/>
+            <button onclick="setApiBase(document.getElementById('adminApiBaseInput').value.trim())" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SIMPAN</button>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-on-surface-variant">URL Aktif Sekarang</span>
+          <span id="adminCurrentApiBase" class="text-primary font-mono font-bold break-all text-right"></span>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- ═══════════════════════════════ TAB: GLOBAL ═══════════════════════════════ -->
@@ -592,11 +611,20 @@
     const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
 
     const API_BASE = (() => {
+      const saved = localStorage.getItem('api_base_url');
+      if (saved) return saved.replace(/\/$/, '');
       const h = location.hostname;
-      if (h.includes('ngrok')) return 'https://' + h;
-      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000';
-      return 'https://bright-toad-brightly.ngrok-free.app';
+      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5395';
+      return 'http://nodejsvipz.miunnst.site:5395';
     })();
+
+    function setApiBase(url) {
+      if (!url) { showToast('URL tidak boleh kosong!', 'error'); return; }
+      const cleaned = url.replace(/\/$/, '');
+      localStorage.setItem('api_base_url', cleaned);
+      showToast('Server URL tersimpan! Reload halaman.', 'success');
+      setTimeout(() => location.reload(), 1500);
+}
 
     let users = [];
     let selectedUser = null;
@@ -660,6 +688,12 @@
       
       if (name === 'requests') loadRequests();
       if (name === 'activity') loadActivity();
+      if (name === 'settings') {
+        const inp = document.getElementById('adminApiBaseInput');
+        const cur = document.getElementById('adminCurrentApiBase');
+        if (inp) inp.value = localStorage.getItem('api_base_url') || '';
+        if (cur) cur.textContent = API_BASE;
+      }
     }
 
     // Load Admin metadata from Telegram
