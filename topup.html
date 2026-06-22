@@ -149,7 +149,14 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-const API_BASE = "https://bright-toad-brightly.ngrok-free.app";
+const API_BASE = (() => {
+  const saved = localStorage.getItem('api_base_url');
+  const raw = saved ? saved.replace(/\/$/, '') : 'https://nodejsvipz.miunnst.site:5395';
+  if (location.protocol === 'https:' && raw.startsWith('http://')) {
+    return raw.replace(/^http:\/\//, 'https://');
+  }
+  return raw;
+})();
 const TELEGRAM_ID = tg.initDataUnsafe?.user?.id;
 
 // ── Helpers ──
