@@ -488,6 +488,12 @@
             <input id="adminApiBaseInput" class="flex-1 bg-surface-container-lowest border border-outline rounded-xl px-4 py-3 font-code-md text-on-surface outline-none focus:border-primary transition-colors text-xs" type="url" placeholder="http://IP_ATAU_DOMAIN:PORT"/>
             <button onclick="setApiBase(document.getElementById('adminApiBaseInput').value.trim())" class="bg-primary text-on-primary px-5 py-3 rounded-xl font-label-caps text-[12px] font-bold hover:bg-primary-container transition-all active:scale-95 shadow-lg shadow-primary/10">SIMPAN</button>
           </div>
+          <!-- Auto-detect button -->
+          <button id="autoDetectBtn" onclick="handleAutoDetect()" 
+            class="w-full flex items-center justify-center gap-2 border border-primary/30 text-primary py-2.5 rounded-xl text-xs font-bold hover:bg-primary/5 transition-all active:scale-95">
+            <span class="material-symbols-outlined" style="font-size:15px">travel_explore</span>
+            Auto-Detect URL Baru
+          </button>
         </div>
         <div class="flex justify-between items-center text-xs">
           <span class="text-on-surface-variant">URL Aktif Sekarang</span>
@@ -610,12 +616,20 @@
 
     const ADMIN_ID = tg?.initDataUnsafe?.user?.id || 861901986;
 
+    const DEFAULT_API_BASE = (() => {
+      const h = location.hostname;
+      const isLocal = h === 'localhost' || h === '127.0.0.1';
+      let raw = isLocal ? 'http://localhost:5395' : 'https://nodejsvipz.miunnst.site:5395';
+      if (location.protocol === 'https:' && raw.startsWith('http://')) {
+        return raw.replace(/^http:\/\//, 'https://');
+      }
+      return raw;
+    })();
+
     const API_BASE = (() => {
       const saved = localStorage.getItem('api_base_url');
       if (saved) return saved.replace(/\/$/, '');
-      const h = location.hostname;
-      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5395';
-      return 'http://nodejsvipz.miunnst.site:5395';
+      return DEFAULT_API_BASE;
     })();
 
     function setApiBase(url) {
@@ -624,7 +638,74 @@
       localStorage.setItem('api_base_url', cleaned);
       showToast('Server URL tersimpan! Reload halaman.', 'success');
       setTimeout(() => location.reload(), 1500);
-}
+    }
+
+    async function autoDetectTunnelUrl(silent = false) {
+      const urlsToTry = [API_BASE];
+      if (API_BASE !== DEFAULT_API_BASE) {
+        urlsToTry.push(DEFAULT_API_BASE);
+      }
+
+      for (const baseUrl of urlsToTry) {
+        try {
+          const res = await fetch(baseUrl + '/api/tunnel_url', {
+            headers: { 'ngrok-skip-browser-warning': '1' },
+            signal: AbortSignal.timeout(5000)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.ok && data.url) {
+              const newUrl = data.url.replace(/\/$/, '');
+              const currentSaved = localStorage.getItem('api_base_url') || '';
+              if (newUrl !== currentSaved) {
+                localStorage.setItem('api_base_url', newUrl);
+                if (!silent) {
+                  showToast('🔗 URL Server diperbarui! Memuat ulang...', 'success');
+                  setTimeout(() => location.reload(), 1500);
+                } else {
+                  location.reload();
+                }
+                return true;
+              }
+              return false;
+            }
+          }
+        } catch (e) {
+          console.warn(`Failed auto-detect from ${baseUrl}:`, e);
+        }
+      }
+      return false;
+    }
+
+    async function handleAutoDetect() {
+      const btn = document.getElementById('autoDetectBtn');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span class="animate-spin inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full mr-2"></span> Mendeteksi...'; }
+      const found = await autoDetectTunnelUrl(false);
+      if (!found) {
+        showToast('URL tidak berubah atau server tidak bisa dijangkau.', 'primary');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px">travel_explore</span> Auto-Detect URL Baru';
+        }
+      }
+    }
+
+    async function checkConnectivityOnStartup() {
+      try {
+        const res = await fetch(API_BASE + '/api/health', {
+          headers: { 'ngrok-skip-browser-warning': '1' },
+          signal: AbortSignal.timeout(5000)
+        });
+        if (res.ok) {
+          await autoDetectTunnelUrl(true);
+          return;
+        }
+      } catch (e) { /* unreachable */ }
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(checkConnectivityOnStartup, 800);
+    });
 
     let users = [];
     let selectedUser = null;
